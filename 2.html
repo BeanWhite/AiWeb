@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="js/vue.js"></script>
+	</head>
+	<body>
+		<div id="b">
+			{{b}}
+		</div>
+		<button onclick="p()">3333</button>
+	</body>
+	<script>
+		
+		
+		var k=2;
+		
+		var vue =new Vue({
+			el:'#b',
+			data:{
+				b:[k]
+			}
+		})
+		function p(){
+			console.log(this.k=9)
+		}
+		
+	</script>
+</html>

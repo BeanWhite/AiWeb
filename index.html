@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<!-- 引入背景变化控制js -->
+		<script src="./js/normalize.js"></script>
+		<!-- 引入jquery -->
+		<script type="text/javascript" src="./js/jquery-3.4.1.js"></script>
+		<!-- 背景动画 -->
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css">
+		<link rel="stylesheet" href="css/style.css">
+		<!-- 登录框样式 -->
+		<link rel="stylesheet" href="css/index.css" />
+
+		<link rel="stylesheet" type="text/css" href="js/print.css" />
+
+		<!--  pdf制作依赖文件-->
+		<script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+		<script src="https://cdn.bootcss.com/jspdf/1.3.4/jspdf.debug.js"></script>
+
+	</head>
+	<body>
+		<!-- 背景 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+
+		<!-- 登录框 -->
+		<div class="login-div">
+			<form class="login-form">
+				<div class="form-title">
+					<span>心理认知测评</span>
+				</div>
+				<input id="user" placeholder="账号" class="login-block login-input" />
+				<input id="pwd" placeholder="密码" class="login-block login-input" />
+				<input type="button" class="login-block login-buttom" value="登录" onclick="submitForm()" />
+			</form>
+		</div>
+		<img style="width: 400px;height: 400px;" />
+		<script>
+			/**
+			 * 封装localStorage，使其有过期时间
+			 */
+			class Storage {
+				constructor(arg) {
+					this.name = 'storage';
+				}
+				//设置缓存
+				setItem(key,value,expires) {
+					let obj = {
+						key: key,
+						value: value,
+						expires: expires, //过期时间
+						startTime: new Date().getTime() //记录缓存存入时间，毫秒级
+					};
+					let options = {};
+
+					//对象合并
+					Object.assign(options, obj);
+
+					if (options.expires) {
+						//如果设置了过期时间
+						localStorage.setItem(options.key, JSON.stringify(options));
+					} else {
+						//如果没有设置过期时间,获取value的对象类型
+						let type = Object.prototype.toString.call(options.value);
+
+						//如果是对象或者数组需要转为JSON字符串
+						if (type == '[object Object]')
+							options.value = JSON.stringify(options.value);
+						if (type == '[object Array]')
+							options.value = JSON.stringify(options.value);
+
+						localStorage.setItem(options.key, options.value);
+					}
+				}
+
+				//取出缓存
+				getItem(key) {
+					var item = localStorage.getItem(key);
+					try {
+						item = JSON.parse(item); //如果是JSON类型就转变为对象,一般用于封装存储
+					} catch(e){
+						item = item; //如果不是JSON类型就直接返回值，没有封装存储
+					} 
+
+					//判断是否设置了过期时间，通过封装存储的才有过期时间
+					if (item.startTime&&item.expires) {
+						let date = new Date().getTime();
+						if (date - item.startTime > item.expires) {
+							localStorage.removeItem(key)
+							return false;
+						} else {
+							return item.value
+						}
+					} else {
+						//返回未经过封装的对象
+						return item
+					}
+				}
+				removeItem(key) {
+					localStorage.removeItem(key);
+				}
+				clear() {
+					localStorage.clear();
+				}
+			}
+			
+			function submitForm() {
+				var user = document.getElementById("user").value;
+				var pwd = document.getElementById('pwd').value;
+				var data = {
+					id: user,
+					pwd: pwd
+				}
+
+
+				// var url;
+				// if(user.length == 6){
+				// 	url = ""
+				// }else if(user.length ==8){
+				// 	url =""
+				// }else if(user.length == 12){
+				// 	url =""
+				// }else{
+				// 	alert("账号错误")
+				// }
+				$.ajax({
+					type: "POST",
+					url: "http://localhost:80/login/admin",
+					dataType: "JSON",
+					data: data,
+					async: true,
+					success: function(data) {
+						console.log(data)
+						//console.log(i)
+						if(data.object == 1)
+						window.location.href = "html/doc.html"
+						else{
+							console.log(data.msg)
+						}
+					},
+					error: function() {
+						console.log(555)
+					}
+				})
+			}
+		</script>
+		<!-- 	<div id="" >
+			<button  type="button" class="exit" onclick="a()">退出系统</button>
+		</div> -->
+
+
+
+	</body>
+</html>

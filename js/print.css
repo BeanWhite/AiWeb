@@ -1,0 +1,26 @@
+@media print {
+	
+	body{
+		background: red;
+	}
+	/* 设置打印盒子背景为白色 */
+	.box-print{
+		
+	}
+	/* 隐藏图片 */
+	img{
+		background-color: red;
+		/* visibility: hidden; */
+	}
+	
+	/* 所有链接后显示地址 */
+	a::after{
+		content: '('attr(href)')';
+	}
+	/*自定义不需要打印的部分*/
+	.no-print{
+		display: none;
+	}
+	
+	
+}

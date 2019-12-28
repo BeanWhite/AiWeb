@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<!-- 背景动画 以及初始化样式 -->
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="../css/demo.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css">
+		<!-- 页面样式 -->
+		<link rel="stylesheet" type="text/css" href="../css/drawClock.css" />
+		<!-- 导入vue.js -->
+		<script type="text/javascript" src="../js/vue.js"></script>
+
+
+		<!-- 引入jQuery.js -->
+		<script src="../js/jquery/jquery.min.js"></script>
+	</head>
+	<body>
+		<!-- 背景 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+		<div id="content">
+			<div class="scale">
+				<div class="cdt-menu">
+					<span class="cdt">CDT-3</span>
+					<span class="cdt">CDT-4</span>
+					<span class="cdt">CDT-5</span>
+					<span class="cdt">CDT-7</span>
+					<span class="cdt">CDT-10</span>
+					<span class="cdt">CDT-30</span>
+				</div>
+
+				<div class="scale-right" id="scale-right">
+					<div id="scale-name">量表名称：画钟测验（{{name}}）</div>
+					<div class="scale-right-content content1">
+						<div class="content-title">指导语</div>
+						<div class="question-content">
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{guid}}</p>
+						</div>
+						<p class="question-title">图例:</p>
+						<div class="question-img">
+							<img src="../img/clock.png" id="question-img"/>
+						</div>
+						
+					</div>
+
+					<div class="scale-right-content  content2">
+						<div class="content-title">患者绘图结果展示</div>
+						<!-- 动态展示用户画板 -->
+						<div class="re-img">
+							<img id="re-img" />
+						</div>
+
+					</div>
+				</div>
+				<div class="scale-left">
+
+					<div class="scale-check  content1" onclick="checkScore()">查看患者绘图并打分>></div>
+					<div class="scale-check  content2" onclick="createReport()">
+						生成报告>>
+					</div>
+					<button class="back" onclick="backPage()">返回</button>
+					<div class="scale-content  content1">
+						<div class="content-title">量表说明</div>
+						<ul id="scale-list">
+							<li v-for="item in scale_explain">
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item.value}}</p>
+							</li>
+						</ul>
+					</div>
+
+
+					<div class="scale-content  content2">
+						<div class="content-title">
+							评判
+						</div>
+						<ul class="options">
+							<li v-bind:class="[indexList.indexOf(p)>-1 ? 'on' :'off']" v-for="(it,p) in scale_test_package" :key="it.index"
+							 v-on:click="greet(it,p)">{{it.aiQuestionOption}}</li>
+						</ul>
+						<div class="test-data">
+							<span id="do-time">完成时长:{{data}}</span>
+							<span id="do-score">
+								评判得分:{{data}}
+							</span>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+			<canvas id="" width="" height="" style="display: none;"></canvas>
+		</div>
+	</body>
+	<script>
+		
+		$(document).ready(function() {
+
+			$.ajax({
+				type: 'GET',
+				url: 'http://localhost:80/scales/testMsg/' + 11,
+				success: function(e) {
+					console.log(e.object)
+					all_test = e.object.slice(0, e.object.length);
+					//初始化引导语
+					for(let i=0;i<all_test.length;i++)
+					if(all_test[i].aiScoreMethodName =="CDT-3"){
+						scale_name.guid =  all_test[i].aiQuestionGuid;
+						break
+					}
+					
+				},
+				error: function() {
+
+				}
+			})
+
+			let s;
+			let scale;
+			try {
+				s = storage.getItem("scale").items;
+				for (let i = 0; i < s.length; i++)
+					if (s[i].aiScaleId == 11) {
+						scale = s[i];
+						break
+					}
+
+			} catch (e) {
+				console.log('出错了')
+				return
+			}
+			let p = [];
+			let f = "";
+			try {
+				for (let i = 0; i < scale.aiScaleOverview.length; i++) {
+					if (scale.aiScaleOverview[i] == '&') {
+						p.push(f);
+						f = "";
+					} else {
+						f += scale.aiScaleOverview[i];
+					}
+
+				}
+			} catch (e) {
+				console.log('出错')
+				//TODO handle the exception
+			}
+
+			p.push(f);
+			for (let j = 0; j < p.length; j++) {
+				let obj = {};
+				obj.value = p[j];
+				scale_explain.push(obj);
+			}
+			scale_explain.push({
+				value: "本次测量采用CDT-3评分法"
+			});
+
+			let obj1 = {
+				index: 0,
+				aiQuestionOption: "画好一个封闭的圆",
+				aiQuestionScore: 1
+			}
+			let obj2 = {
+				index: 1,
+				aiQuestionOption: "正确标出12个数字",
+				aiQuestionScore: 1
+			}
+
+			let obj3 = {
+				index: 2,
+				aiQuestionOption: "将指针置于正确位置",
+				aiQuestionScore: 1
+			}
+			scale_test_package.push(obj1, obj2, obj3)
+
+			for (let i = 0; i < cdt.length; i++)
+				cdt[i].onclick = function() {
+					for(let r=0;r<cdt.length;r++){
+						cdt[r].style.backgroundColor = "burlywood"
+					}
+					this.style.backgroundColor = "rosybrown"
+					
+					//量表说明
+					let obj = {};
+					obj.value = "本次测量采用" + cdt[i].innerText + "评分法";
+					scale_explain.pop();
+					scale_explain.push(obj);
+					scale_name.name = cdt[i].innerText;
+					
+					//配置图片
+					if(cdt[i].innerText=="CDT-7"){
+						document.getElementById('question-img').src="../img/poster-about.jpg";
+					}else{
+						document.getElementById('question-img').src="../img/clock.png";
+						
+					}
+					
+					//配置引导语
+					for(let n=0;n<all_test.length;n++)
+					if(all_test[n].aiScoreMethodName ==cdt[i].innerText){
+						scale_name.guid =  all_test[n].aiQuestionGuid;
+						break
+					}
+					
+
+					for (let k = 0; k < all_test.length; k++) {
+
+						if (cdt[i].innerText == all_test[k].aiScoreMethodName) {
+							let options = [];
+							let scores = [];
+							let str = "";
+							let test_package = [];
+							for (let t = 0; t < all_test[k].aiQuestionOption.length; t++) {
+								if (all_test[k].aiQuestionOption[t] == '&') {
+									options.push(str);
+									str = "";
+								} else
+									str += all_test[k].aiQuestionOption[t];
+							}
+							options.push(str);
+							str = "";
+							for (let t = 0; t < all_test[k].aiQuestionScore.length; t++) {
+								if (all_test[k].aiQuestionScore[t] == '&') {
+									scores.push(str);
+									str = "";
+								} else str += all_test[k].aiQuestionScore[t]
+							}
+							scores.push(str);
+							str = "";
+
+							//数组清空,分数置0
+							scale_test_package.splice(0, scale_test_package.length)
+							scale_test.indexList.splice(0)
+							do_score.data = 0;
+
+							for (let t = 0; t < scores.length; t++) {
+								let obj = {
+									index: t,
+									aiQuestionGuid: all_test[k].aiQuestionGuid,
+									aiQuestionId: all_test[k].aiQuestionId,
+									aiQuestionOption: options[t],
+									aiQuestionScore: scores[t],
+									aiQuestionType: all_test[k].aiQuestionType,
+									aiScaleId: all_test[k].aiScaleId,
+									aiScoreMethodName: all_test[k].aiScoreMethodName
+								}
+								scale_test_package.push(obj)
+							}
+							break;
+						}
+					}
+					
+				}
+
+			if(!scale)
+			alert("系统错误");
+
+		})
+
+		/**
+		 * 封装的localStorage
+		 */
+
+		class Storage {
+			constructor(arg) {
+				this.name = 'storage';
+			}
+			//设置缓存
+			setItem(key, value, expires) {
+				let obj = {
+					key: key,
+					value: value,
+					expires: expires, //过期时间
+					startTime: new Date().getTime() //记录缓存存入时间，毫秒级
+				};
+				let options = {};
+
+				//对象合并
+				Object.assign(options, obj);
+
+				if (options.expires) {
+					//如果设置了过期时间
+					localStorage.setItem(options.key, JSON.stringify(options));
+				} else {
+					//如果没有设置过期时间,获取value的对象类型
+					let type = Object.prototype.toString.call(options.value);
+
+					//如果是对象或者数组需要转为JSON字符串
+					if (type == '[object Object]')
+						options.value = JSON.stringify(options.value);
+					if (type == '[object Array]')
+						options.value = JSON.stringify(options.value);
+
+					localStorage.setItem(options.key, options.value);
+				}
+			}
+
+			//取出缓存
+			getItem(key) {
+				var item = localStorage.getItem(key);
+				try {
+					item = JSON.parse(item); //如果是JSON类型就转变为对象,一般用于封装存储
+				} catch (e) {
+					item = item; //如果不是JSON类型就直接返回值，没有封装存储
+				}
+
+				//判断是否设置了过期时间，通过封装存储的才有过期时间
+				if (item)
+					if (item.startTime && item.expires) {
+						let date = new Date().getTime();
+						if (date - item.startTime > item.expires) {
+							localStorage.removeItem(key)
+							return false;
+						} else {
+							return item.value
+						}
+					} else {
+						//返回未经过封装的对象
+						return item
+					}
+			}
+			removeItem(key) {
+				localStorage.removeItem(key);
+			}
+			clear() {
+				localStorage.clear();
+			}
+		}
+
+		var storage = new Storage();
+
+
+		var cdt = document.getElementsByClassName('cdt');
+
+		//所有题目信息
+		var all_test = [];
+
+		//量表说明数据包
+		var scale_explain = [];
+
+		//题目选项数据包
+		var scale_test_package = [];
+
+		var do_time=new Vue({
+			el: '#do-time',
+			data: {
+				data: 0
+			}
+		});
+
+		var do_score=new Vue({
+			el: '#do-score',
+			data: {
+				data: 0
+			}
+		});
+
+		var scale_list = new Vue({
+			el: '#scale-list',
+			data: {
+				scale_explain
+			}
+		})
+		var scale_name = new Vue({
+			el: '#scale-right',
+			data: {
+				name: 'CDT-3',
+				guid:""
+			}
+		});
+		var scale_test = new Vue({
+			el: '.options',
+			data: {
+				scale_test_package,
+				ispitch: false,
+				indexList: []
+			},
+			methods: {
+				greet: function(it, p) {
+					//console.log(it)
+					let arr = this.indexList.indexOf(p);
+					if (arr > -1) {
+						this.indexList.splice(arr, 1);
+						do_score.data -= parseInt(it.aiQuestionScore);
+					} else {
+						this.indexList.push(p);
+						do_score.data += parseInt(it.aiQuestionScore);
+					}
+					this.ispitch = ~this.ispitch;
+					//console.log(do_score.)
+				}
+			}
+		})
+
+		/**
+		 * 为选项列表添加事件
+		 */
+
+
+		/**
+		 * 切换窗口
+		 */
+		function checkScore() {
+			let a = document.getElementsByClassName('content1');
+			let b = document.getElementsByClassName('content2');
+			for (let i = 0; i < a.length; i++) {
+				b[i].style.display = getComputedStyle(a[i], null).getPropertyValue('display');
+				a[i].style.display = 'none';
+			}
+			document.getElementsByClassName('back')[0].style.display = 'initial';
+		}
+		/**
+		 * 返回上一层
+		 */
+		function backPage() {
+			document.getElementsByClassName('back')[0].style.display = 'none';
+			let a = document.getElementsByClassName('content1');
+			let b = document.getElementsByClassName('content2');
+			for (let i = 0; i < a.length; i++) {
+				a[i].style.display = getComputedStyle(b[i], null).getPropertyValue('display');
+				b[i].style.display = 'none';
+			}
+		}
+
+		/**
+		 * 打印报告
+		 */
+		function createReport() {
+			window.open("paintReport.html")
+		}
+
+		/**
+		 * websocket连接
+		 */
+		var websocket = null;
+		websocket = new WebSocket('ws://localhost:80/websocket/' + 123)
+		websocket.onopen = function(e) {
+			console.log('建立连接')
+		}
+
+		websocket.onclose = function(e) {
+			console.log('连接关闭')
+		}
+
+
+		var flag = false;
+		var src = '';
+		websocket.onmessage = function(e) {
+			var str = e.data;
+			if (str[0] == '#') {
+				str = str.slice(1, str.length)
+				src += str;
+			} else if (e.data == '#') {
+				document.getElementById('re-img').src = src;
+				//console.log(src)
+				src = ''
+			} else if (e.data[e.data.length - 1] == '#') {
+				src += e.data.slice(0, e.data.length - 1)
+				//console.log(src)
+				document.getElementById('re-img').src = src;
+				src = '';
+			} else {
+				src += str;
+			}
+
+			//console.log(str)
+
+			// console.log(e.data)
+
+		}
+
+		// function sendMSG() {
+		// 	websocket.send(JSON.stringify(b));
+
+		// }
+
+		websocket.onerror = function() {
+			console.log('建立连接出错')
+		}
+		window.onbeforeunload = function() {
+			websocket.close();
+		}
+
+		/**
+		 * 将byte数据变为字符串
+		 * @param {Object} arr 	
+		 */
+		function byteToString(arr) {
+			if (typeof arr === 'string') {
+				return arr;
+			}
+			var str = '',
+				_arr = arr;
+			for (var i = 0; i < _arr.length; i++) {
+				var one = _arr[i].toString(2),
+					v = one.match(/^1+?(?=0)/);
+				if (v && one.length == 8) {
+					var bytesLength = v[0].length;
+					var store = _arr[i].toString(2).slice(7 - bytesLength);
+					for (var st = 1; st < bytesLength; st++) {
+						store += _arr[st + i].toString(2).slice(2);
+					}
+					str += String.fromCharCode(parseInt(store, 2));
+					i += bytesLength - 1;
+				} else {
+					str += String.fromCharCode(_arr[i]);
+				}
+			}
+			return str;
+		}
+	</script>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../css/doc.css" />
+		<!-- 背景动画 以及初始化样式-->
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="../css/demo.css">
+		<link rel="stylesheet" href="../css/style.css">
+
+		<!-- 导入vue.js -->
+		<script src="../js/vue.js"></script>
+
+		<!-- 引入jQuery.js -->
+		<script src="../js/jquery/jquery.min.js"></script>
+
+	</head>
+	<body>
+
+		<!-- 背景图 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+		<div id="content" class="print-link no-print">
+			<!-- 模块菜单 -->
+			<div class="doc-pane" style="display: none;">
+				<span>量表评估模块</span>
+
+				<span>测验评估模块</span>
+
+				<span>查询/打印报告</span>
+			</div>
+			<!-- 量表评估模块 -->
+			<div class="scale">
+				<div class="scale-change scale-title">
+					<img src="../svg/change.svg" />
+					<p>切换自评模块</p>
+				</div>
+				<div class="scale-submit" onclick="issueTest()">发布测评</div>
+				<div class="scale-left">
+					<span class="scale-title"><img src="../svg/table.svg" />
+						<p>选择测评量表</p>
+					</span>
+					<div class="scale-list">
+						<input type="search" class="search" id="search" oninput="inputsearch()" />
+						<div class="scale-list-box">
+							<ul id="scale-add">
+								<li v-for="it in items" :key="it.aiScaleId" v-on:click="greet(it)">{{it.aiScaleName}}&nbsp;<img src="../svg/add.svg"
+									 style="margin-top: 10px ;"></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="scale-right">
+					<span class="scale-title"><img src="../svg/user.svg" />
+						<p>
+							选择测评对象
+						</p>
+					</span>
+
+					<div class="scale-right-select">
+						<input type="search" id="searchUser"  oninput="searchUser()"/>
+
+					</div>
+					<span class="scale-title"><img src="../svg/msg.svg" />
+						<p>基础信息</p>
+					</span>
+
+					<div class="scale-right-basMsg">
+						<div class="scale-right-basMsg-div">
+							姓名：<input type="" name="" id="userName" value="" />
+						</div>
+						<div class="scale-right-basMsg-div">
+							性别：<input type="" name="" id="userSex" value="" />
+						</div>
+						<div class="scale-right-basMsg-div">
+							年龄：<input type="" name="" id="userAge" value="" />
+						</div>
+						<div class="scale-right-basMsg-div">
+							学历：<input type="" name="" id="userEdu" value="" />
+						</div>
+						<div class="scale-right-basMsg-div">
+							婚姻：<input type="" name="" id="userMarr" value="" />
+						</div>
+						<div class="scale-right-basMsg-div">
+							职业：<input type="" name="" id="userPro" value="" />
+						</div>
+						<div class="scale-right-basMsg-div">
+							科室：<input type="" name="" id="userOffice" value="" />
+						</div>
+						<div class="scale-right-basMsg-div">
+							来源：<input type="" name="" id="userFrom" value="" />
+						</div>
+					</div>
+					<span class="scale-title"><img src="../svg/re.svg" />
+						<p> 选择量表</p>
+					</span>
+
+					<div class="scale-result">
+						<ul id="scale-result-list">
+							<li v-for="it in items" :key="it.aiScaleId" v-on:click="greet(it)">{{it.aiScaleName}}&nbsp;<img src="../svg/delete.svg" /></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script>
+		$(document).ready(function() {
+			$.ajax({
+				type: 'GET',
+				url: 'http://localhost:80/scales/all',
+				success: function(data) {
+					console.log(data.object)
+					scale.items = data.object.slice(0,data.object.length);
+					scale_list.items = data.object.slice(0,data.object.length);
+					scale_rest.items = data.object.slice(0,data.object.length);
+				},
+				error: function(data) {
+					console.log('连接失败')
+				}
+			})
+		});
+		
+		/**
+		 * 封装的localStorage
+		 */
+		
+		class Storage {
+			constructor(arg) {
+				this.name = 'storage';
+			}
+			//设置缓存
+			setItem(key,value,expires) {
+				let obj = {
+					key: key,
+					value: value,
+					expires: expires, //过期时间
+					startTime: new Date().getTime() //记录缓存存入时间，毫秒级
+				};
+				let options = {};
+		
+				//对象合并
+				Object.assign(options, obj);
+		
+				if (options.expires) {
+					//如果设置了过期时间
+					localStorage.setItem(options.key, JSON.stringify(options));
+				} else {
+					//如果没有设置过期时间,获取value的对象类型
+					let type = Object.prototype.toString.call(options.value);
+		
+					//如果是对象或者数组需要转为JSON字符串
+					if (type == '[object Object]')
+						options.value = JSON.stringify(options.value);
+					if (type == '[object Array]')
+						options.value = JSON.stringify(options.value);
+		
+					localStorage.setItem(options.key, options.value);
+				}
+			}
+		
+			//取出缓存
+			getItem(key) {
+				var item = localStorage.getItem(key);
+				try {
+					item = JSON.parse(item); //如果是JSON类型就转变为对象,一般用于封装存储
+				} catch(e){
+					item = item; //如果不是JSON类型就直接返回值，没有封装存储
+				} 
+		
+				//判断是否设置了过期时间，通过封装存储的才有过期时间
+				if (item.startTime) {
+					let date = new Date().getTime();
+					if (date - item.startTime > item.expires) {
+						localStorage.removeItem(key)
+						return false;
+					} else {
+						return item.value
+					}
+				} else {
+					//返回未经过封装的对象
+					return item
+				}
+			}
+			removeItem(key) {
+				localStorage.removeItem(key);
+			}
+			clear() {
+				localStorage.clear();
+			}
+		}
+		
+		var storage = new Storage();
+		//量表合集
+		var scale = {
+			items: []
+		};
+		//被选中的量表
+		var scale_result_list = {
+			items: []
+		};
+		//搜索出来的量表
+		var scale_search_list = {
+			items: []
+		};
+		//显示的量表
+		var scale_list = {
+			items: []
+		};
+		//未被选中的量表
+		var scale_rest = {
+			items:[]
+		};
+		
+		/**
+		 * 选择结果量表
+		 */
+		new Vue({
+			el: '#scale-result-list',
+			data: scale_result_list,
+			methods: {
+				greet: function(it) {
+					let o = {};
+					o.aiScaleName = it.aiScaleName;
+					o.aiScaleId = it.aiScaleId;
+					o.aiScaleOverview = it.o.aiScaleOverview;
+					scale_rest.items.push(o);
+					scale_list.items.push(o);
+					for (let i = 0; i < scale_result_list.items.length; i++) {
+						if (it.aiScaleId == scale_result_list.items[i].aiScaleId) {
+							scale_result_list.items.splice(i, 1)
+							break
+						}
+					}
+				}
+			}
+		});
+		/**
+		 * 所有显示的量表
+		 */
+		new Vue({
+			el: '#scale-add',
+			data: scale_list,
+			methods: {
+				greet: function(it) {
+					let o = {};
+					o.aiScaleName = it.aiScaleName;
+					o.aiScaleId = it.aiScaleId;
+					o.aiScaleOverview = it.aiScaleOverview;
+					scale_result_list.items.push(o);
+					for (let i = 0; i < scale_rest.items.length; i++) {
+						if (it.aiScaleId == scale_rest.items[i].aiScaleId) {
+							scale_rest.items.splice(i, 1);
+							break;
+						}
+					}
+					for (let i = 0; i < scale_list.items.length; i++) {
+						if (it.aiScaleId == scale_list.items[i].aiScaleId) {
+							scale_list.items.splice(i, 1);
+							break;
+						}
+					}
+				
+				}
+			}
+		});
+		/**
+		 * 搜索结果量表
+		 */
+		function inputsearch() {
+			let a = $('#search').val().replace(/\s*/g, "");
+			if (a == "") {
+				scale_list.items = scale_rest.items.slice(0,scale_rest.items.length);
+				return
+			}
+			let kw = new RegExp(a, 'i');
+			let arr = []
+			for (let i = 0; i < scale.items.length; i++) {
+				if (kw.test(scale.items[i].aiScaleName)) {
+					arr.push(scale.items[i]);
+				}
+			}
+			scale_list.items = arr;
+		}
+		/**
+		 * 搜索用户
+		 */
+		function searchUser(){
+			let a = $('#searchUser').val().replace(/\s*/g,"");
+			if(a==""){
+				$('#userName').val("");
+				$('#userAge').val("");
+				$('#userOffice').val("");
+				$('#userSex').val("");
+				$('#userPro').val("");
+				$('#userFrom').val("");
+				$('#userEdu').val("");
+				$('#userMarr').val("");
+				return
+			}
+			else{
+				$.ajax({
+					type:'GET',
+					url:'http://localhost:80/users/msgForDoc/'+a,
+					success:function(e){
+						var data = e.object[0];
+						$('#userName').val(data.aiUserName);
+						$('#userAge').val(data.aiUserAge);
+						$('#userOffice').val(data.aiUserOffice);
+						$('#userSex').val(data.aiUserSex);
+						$('#userPro').val(data.aiUserProfession);
+						$('#userFrom').val(data.aiUserFrom);
+						$('#userEdu').val(data.aiUserEduBg);
+						$('#userMarr').val(data.aiUserMarriage);
+						console.log(e)
+					},
+					error:function(e){
+						console.log('连接出错')
+					}
+				})
+			}
+		}
+		/**
+		 * 发布测评
+		 */
+		function issueTest(){
+			if(scale_result_list.items.length>0){
+				//先清空之前的缓存
+				storage.removeItem("scale");
+				storage.removeItem("scaleRest");
+				//本地存放所有量表
+				storage.setItem("scale",scale_result_list,5*24*60*60*1000);
+				//本地存放所有未做的量表，初始为所有量表
+				storage.setItem("scaleRest",scale_result_list,5*24*60*60*1000);
+				window.location.href = "drawClock.html";
+			}else{
+				alert("没有选中的测评哦")
+			}
+		}
+	</script>
+</html>
