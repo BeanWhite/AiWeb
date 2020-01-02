@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../css/user.css" />
+
+		<!-- 引入vue.js-->
+		<script type="text/javascript" src="../js/vue.min.js"></script>
+		
+		<!-- 引入jQuery.js -->
+		<script type="text/javascript" src="../js/jquery/jquery.min.js"></script>
+	</head>
+	<body class="main">
+		<!-- 背景 -->
+		<img id="back" src="../img/poster-about.jpg" style="width: 100%;height: 100%;">
+
+
+		<!-- 菜单 -->
+		<div class="menue">
+			<div id="menue-test">
+				开始评估
+			</div>
+			<div id="menue-report">
+				我的历史报告
+			</div>
+		</div>
+
+
+		<!-- 画板 -->
+		<div class="draw-clock">
+			<div id="bot">
+				<div id="draw-title" style="display: ;">
+					<ul>
+						<li style="float: left;">量表名称:画钟测验({{CDT-3}})</li>
+						<li style="margin-left: 90%;">完成</li>
+					</ul>
+				</div>
+				<div id="bot-box">
+					<div id="draw-tools">
+						<ul id="tools-list">
+							<li id="tools-title">工具栏</li>
+							<li>
+								<hr />
+							</li>
+							<li id="tools-pencil"> <img src="../svg/pen.svg" id="pencil-img" alt="1" />画笔
+								<div id="pen-color">
+									<ul id="color-lisst">
+										<li style="background-color: red;" onclick="getPen('red')"></li>
+										<li style="background-color: blueviolet;" onclick="getPen('blueviolet')"></li>
+										<li style="background-color: black;" onclick="getPen('black')"></li>
+										<li style="background-color: yellow;" onclick="getPen('yellow')"></li>
+										<li style="background-color: lightskyblue;" onclick="getPen('lightskyblue')"></li>
+									</ul>
+								</div>
+							</li>
+							<li id="tools-cancle" onclick="cancle_pen()"><img src="../svg/eraser.svg" />撤销</li>
+							<li id="tools-cancle" onclick="drawAgain()"><img src="../svg/eraser.svg" />重画</li>
+						</ul>
+					</div>
+					<iframe src="iframe/clock.html" width="790" height="680"></iframe>
+					<!-- <canvas id="myCanvas" width="800" height="683">
+									</canvas> -->
+					
+					
+				</div>
+
+			</div>
+		</div>
+
+	</body>
+	<script>
+		let main = new Vue({
+			el:'',
+			data:{
+				isPlay:false
+			},
+			methods:{
+				
+			}
+		})
+		
+	</script>
+	<script>
+		document.getElementById('menue-test').onclick = function() {
+			alert(1)
+		};
+
+		document.getElementById('menue-report').onclick = function() {
+			alert(2)
+		};
+		document.getElementById('pencil-img').ontouchstart = function() {
+			if (this.alt == 1) {
+				$("#pen-color").fadeIn(1000);
+				this.alt = 0;
+			} else {
+				$("#pen-color").fadeOut(600);
+				this.alt = 1;
+			}
+		}
+		document.getElementById('bot').ontouchstart = function() {
+			$("#pen-color").fadeOut(600, () => {
+				document.getElementById('pencil-img').alt = 1;
+			});
+		}
+	</script>
+	<script>
+		/**
+		 * ！！！！要设置为在画布中有记录之后才能发送消息！！！！
+		 */
+
+		var bot = document.getElementById('myCanvas'); //画布div
+		var myCanvas = document.getElementById('myCanvas', 0.1); //创建画布
+		var x, y, x1, y1; //记录坐标
+		var x0 = bot.getBoundingClientRect().x,
+			y0 = bot.getBoundingClientRect().y; //画板坐标偏移量
+		var flag = 0;
+		var context = myCanvas.getContext('2d'); //获取上下文
+		var isMouseDown = false; //判断鼠标是否按下，默认没有
+		var isMove = false; //判断有没有移动
+		var dataURL; //画图内容
+		var imgStack = []; //图像栈
+		var flag_img = 0;
+		var pen_color = 'red';
+		var pen_width = 2;
+		window.onload = function() {
+			// bot.onmousedown = mouseDownAction;
+			// bot.onmousemove = mouseMoveAction;
+			// bot.onmouseup = mouseUpAction;
+			bot.ontouchstart = mouseDownAction;
+			bot.ontouchmove = mouseMoveAction;
+			bot.ontouchend = mouseUpAction;
+		}
+
+		/**
+		 * 选择画笔颜色
+		 */
+		function getPen(colour) {
+			$("#pen-color").fadeOut(600, () => {
+				document.getElementById('pencil-img').alt = 1;
+			});
+
+			pen_color = colour + ""; //线条粗细
+			pen_width = 2; //线条颜色
+		}
+
+		/**
+		 * 撤回
+		 */
+		function cancle_pen() {
+			if (dataURL == imgStack[imgStack.length - 1])
+				imgStack.pop()
+			dataURL = imgStack[imgStack.length - 1];
+			bot.height = bot.height;
+			let img = new Image();
+			img.src = dataURL;
+			img.addEventListener('load', () => {
+				sendMSG();
+				context.drawImage(img, 0, 0)
+			})
+		}
+
+		/**
+		 * 重画
+		 */
+		function drawAgain() {
+			bot.height = bot.height;
+			dataURL = myCanvas.toDataURL();
+			imgStack.push(dataURL);
+			sendMSG();
+		}
+
+
+		/**
+		 * 鼠标按下
+		 */
+		function mouseDownAction(e) {
+			isMouseDown = true;
+			// x = e.offsetX;
+			// y = e.offsetY;
+
+			x = e.touches[0].pageX - x0;
+			y = e.touches[0].pageY - y0;
+		}
+
+		/**
+		 * 鼠标开始移动
+		 */
+		function mouseMoveAction(e) {
+			if (isMouseDown) {
+				// x1 = e.offsetX;
+				// y1 = e.offsetY;
+				x1 = e.touches[0].pageX - x0;
+				y1 = e.touches[0].pageY - y0;
+				drowLine(x, y, x1, y1);
+				flag++;
+				if (flag == 10000)
+					flag = 1;
+			}
+		}
+
+		/**
+		 * 鼠标弹起来
+		 */
+		function mouseUpAction() {
+
+			isMouseDown = false;
+			flag = 0;
+			if (isMove) {
+
+				imgStack.push(dataURL);
+				isMove = false;
+				sendMSG();
+			}
+		}
+
+		/**
+		 * 画线
+		 */
+		function drowLine(X, Y, X1, Y1) {
+			//开启新的路径
+			if (flag) {
+
+				context.beginPath();
+				if (X != X1 && Y != Y1) {
+					isMove = true;
+				}
+			}
+
+			context.lineWidth = pen_width; //线条粗细
+			context.strokeStyle = pen_color; //线条颜色
+			context.moveTo(X, Y); //画笔起点坐标
+			context.lineTo(X1, Y1); //画笔终点坐标
+			context.stroke(); //绘制
+			if (flag != 0) {
+				x = x1;
+				y = y1;
+				dataURL = myCanvas.toDataURL();
+			}
+		}
+
+		/**
+		 * websocket连接
+		 */
+		var websocket = null;
+		websocket = new WebSocket('ws://localhost:80/websocket/' + 124)
+
+		websocket.onopen = function(e) {
+			console.log('建立连接')
+			//websocket.binaryType = 'arraybuffer'	//传送arraybuffer字符串
+		}
+
+		websocket.onclose = function(e) {
+			console.log('连接关闭')
+		}
+
+		websocket.onmessage = function(e) {
+			console.log("有消息推送", e.data, '***');
+
+		}
+
+		websocket.onerror = function() {
+			console.log('建立连接出错')
+		}
+
+		//窗口关闭
+		window.onbeforeunload = function() {
+			websocket.close();
+		}
+
+
+		function sendMSG() {
+			//发送消息是截断处理
+			var str = dataURL + '';
+			//	console.log(dataURL)
+			var strArr = [];
+			//消息发送目标用户
+			var targetUsers = ['123'];
+			if (str.length > 7000) {
+				for (let i = 0, index = 0; i < str.length; index++, i += 7000) {
+					strArr[index] = str.slice(i, i + 7000);
+				}
+			} else {
+				strArr[0] = str;
+			}
+			for (let i = 0; i < strArr.length; i++) {
+				if (i == 0)
+					strArr[i] = '#' + strArr[i];
+				if (i == strArr.length - 1)
+					strArr[i] = strArr[i] + '#';
+				websocket.send(targetUsers.join('|') + '|' + strArr[i]);
+			}
+		}
+	</script>
+</html>

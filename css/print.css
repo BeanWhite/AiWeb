@@ -1,0 +1,37 @@
+@media print {
+	@page {
+		size: A4 portrait;
+		margin: 3.7cm 2.6cm 3.5cm;
+	}
+
+	/* 页面内容区域底部添加一条 1rem 的灰线 */
+	@bottom-left,
+	@bottom-center,
+	@bottom-right {
+		border-top: 1rem solid gray;
+	}
+
+	/* 页脚中间显示格式如 "第 3 页" 的页码 */
+	@bottom-center {
+		content: "第"counter(page) "页";
+	}
+
+	.ot {
+		display: none;
+	}
+
+	#page {
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		margin: auto;
+	}
+
+}
+
+#page {
+	width: 600rem;
+	height: 1600rem;
+	background-color: #5F9EA0;
+}

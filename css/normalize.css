@@ -40,6 +40,8 @@ body {
 	margin: 0;
 	min-width: 1800px;
 	min-height: 860px;
+	height: 100%;
+	width: 100%;
 }
 
 a:focus {
@@ -118,6 +120,11 @@ sub {
 
 img {
 	border: 0;
+	-webkit-user-drag: none;
+	-moz-user-drag: none;
+	-ms-user-drag: none;
+	user-drag: none;
+
 }
 
 svg:not(:root) {
@@ -194,9 +201,11 @@ input::-moz-focus-inner {
 	border: 0;
 	padding: 0;
 }
-input:focus{
-	   outline: none;
+
+input:focus {
+	outline: none;
 }
+
 textarea {
 	overflow: auto;
 	vertical-align: top;
@@ -206,7 +215,8 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-ul{
+
+ul {
 	list-style: none;
 	margin: 0;
 	padding: 10px 30px 20px 30px;
@@ -238,5 +248,3 @@ ul{
 	padding-top: 30px;
 	padding-bottom: 30px;
 }
-
-
