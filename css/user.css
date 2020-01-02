@@ -1,15 +1,4 @@
-.menue {
-	display: none; 
-	justify-content: space-around;
-	align-items: center;
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	margin: auto 0;
-	width: 100%;
-	z-index: 10;
-	/* background-color: rosybrown; */
-}
+
 
 .draw-clock {
 	height: 100%;
@@ -22,7 +11,6 @@
 	bottom: 0;
 	margin: auto 0;
 	width: 100%;
-	
 	background-color: white;
 }
 
@@ -35,43 +23,9 @@ body {
 
 
 
-#menue-test {
-	text-align: center;
-	line-height: 80px;
-	width: 200px;
-	height: 80px;
-	margin-left: 50px;
-	background-color: rgba(255, 255, 255, 0.54);
-	border-color: rgb(255, 255, 255);
-	border-width: 1px;
-	border-style: solid;
-	color: rgb(255, 255, 255);
-	border-radius: 5px;
-	font-size: 28px;
-}
 
-#menue-report {
-	text-align: center;
-	line-height: 80px;
-	width: 200px;
-	height: 80px;
-	margin-right: 50px;
-	background-color: rgba(255, 255, 255, 0.54);
-	border-color: rgb(255, 255, 255);
-	border-width: 1px;
-	border-style: solid;
-	color: rgb(255, 255, 255);
-	border-radius: 5px;
-	font-size: 28px;
-}
 
-#back {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	margin: auto 0;
-	z-index: -10;
-}
+
 
 #draw-title {
 	font-family: SourceHanSansSC;
@@ -91,7 +45,7 @@ body {
 }
 
 #draw-tools {
-	width: 100px;
+	width: 100%;
 	height: 95%;
 	/* background-color: rgba(155, 155, 155, 0.9);
 	border-color: rgb(187, 187, 187); */
@@ -105,15 +59,19 @@ body {
 	/* background-color: #FFB6C1; */
 }
 #bot-box{
+	position: relative;
+	width: 100%;
+	height: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
-	border-width: 1px;
-	border-style: solid;
-	background-color: rgb(235,235,235);
+	/* border-width: 1px;
+	border-style: solid;*/
+	background-color: rgb(235,235,235); 
 }
 #myCanvas {
 	background-color: white;
+	height: 100%;
 }
 
 ul {

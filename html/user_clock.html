@@ -5,104 +5,68 @@
 
 		<title></title>
 		<link rel="stylesheet" type="text/css" href="../css/user.css" />
-
-		<!-- 引入vue.js-->
-		<script type="text/javascript" src="../js/vue.min.js"></script>
-		
 		<!-- 引入jQuery.js -->
 		<script type="text/javascript" src="../js/jquery/jquery.min.js"></script>
 	</head>
 	<body class="main">
-		<!-- 背景 -->
-		<img id="back" src="../img/poster-about.jpg" style="width: 100%;height: 100%;">
 
-
-		<!-- 菜单 -->
-		<div class="menue">
-			<div id="menue-test">
-				开始评估
-			</div>
-			<div id="menue-report">
-				我的历史报告
-			</div>
-		</div>
 
 
 		<!-- 画板 -->
-		<div class="draw-clock">
-			<div id="bot">
-				<div id="draw-title" style="display: ;">
+		<div class="draw-clock" id="draw-clock">
+			<!-- <div id="bot"> -->
+			<!-- <div id="draw-title" style="display: ;">
 					<ul>
 						<li style="float: left;">量表名称:画钟测验({{CDT-3}})</li>
 						<li style="margin-left: 90%;">完成</li>
 					</ul>
+				</div> -->
+			<div id="bot-box">
+				<div id="draw-tools">
+					<ul id="tools-list">
+						<li id="tools-title">工具栏</li>
+						<li>
+							<hr />
+						</li>
+						<li id="tools-pencil"> <img src="../svg/pen.svg" id="pencil-img" alt="1" />画笔
+							<div id="pen-color">
+								<ul id="color-lisst">
+									<li style="background-color: red;" onclick="getPen('red')"></li>
+									<li style="background-color: blueviolet;" onclick="getPen('blueviolet')"></li>
+									<li style="background-color: black;" onclick="getPen('black')"></li>
+									<li style="background-color: yellow;" onclick="getPen('yellow')"></li>
+									<li style="background-color: lightskyblue;" onclick="getPen('lightskyblue')"></li>
+								</ul>
+							</div>
+						</li>
+						<li id="tools-cancle" onclick="cancle_pen()"><img src="../svg/eraser.svg" />撤销</li>
+						<li id="tools-cancle" onclick="drawAgain()"><img src="../svg/eraser.svg" />重画</li>
+					</ul>
 				</div>
-				<div id="bot-box">
-					<div id="draw-tools">
-						<ul id="tools-list">
-							<li id="tools-title">工具栏</li>
-							<li>
-								<hr />
-							</li>
-							<li id="tools-pencil"> <img src="../svg/pen.svg" id="pencil-img" alt="1" />画笔
-								<div id="pen-color">
-									<ul id="color-lisst">
-										<li style="background-color: red;" onclick="getPen('red')"></li>
-										<li style="background-color: blueviolet;" onclick="getPen('blueviolet')"></li>
-										<li style="background-color: black;" onclick="getPen('black')"></li>
-										<li style="background-color: yellow;" onclick="getPen('yellow')"></li>
-										<li style="background-color: lightskyblue;" onclick="getPen('lightskyblue')"></li>
-									</ul>
-								</div>
-							</li>
-							<li id="tools-cancle" onclick="cancle_pen()"><img src="../svg/eraser.svg" />撤销</li>
-							<li id="tools-cancle" onclick="drawAgain()"><img src="../svg/eraser.svg" />重画</li>
-						</ul>
-					</div>
-					<iframe src="iframe/clock.html" width="790" height="680"></iframe>
-					<!-- <canvas id="myCanvas" width="800" height="683">
-									</canvas> -->
-					
-					
-				</div>
-
+				<canvas id="myCanvas" width="900" height="760">
+				</canvas>
 			</div>
+
+			<!-- </div> -->
 		</div>
 
 	</body>
 	<script>
-		let main = new Vue({
-			el:'',
-			data:{
-				isPlay:false
-			},
-			methods:{
-				
-			}
-		})
-		
-	</script>
-	<script>
-		document.getElementById('menue-test').onclick = function() {
-			alert(1)
-		};
-
-		document.getElementById('menue-report').onclick = function() {
-			alert(2)
-		};
 		document.getElementById('pencil-img').ontouchstart = function() {
 			if (this.alt == 1) {
 				$("#pen-color").fadeIn(1000);
 				this.alt = 0;
 			} else {
-				$("#pen-color").fadeOut(600);
+				$("#pen-color").fadeOut(1000);
 				this.alt = 1;
 			}
-		}
-		document.getElementById('bot').ontouchstart = function() {
-			$("#pen-color").fadeOut(600, () => {
-				document.getElementById('pencil-img').alt = 1;
-			});
+			// let that = this;
+			// document.getElementById('draw-clock').ontouchstart = function() {
+			// 	$("#pen-color").fadeOut(1000, () => {
+			// 		that.alt = 1;
+			// 		console.log("=====")
+			// 	});
+			// }
 		}
 	</script>
 	<script>
@@ -124,6 +88,7 @@
 		var flag_img = 0;
 		var pen_color = 'red';
 		var pen_width = 2;
+		let dt;//
 		window.onload = function() {
 			// bot.onmousedown = mouseDownAction;
 			// bot.onmousemove = mouseMoveAction;
@@ -132,13 +97,16 @@
 			bot.ontouchmove = mouseMoveAction;
 			bot.ontouchend = mouseUpAction;
 		}
-
+		
+		
+		
 		/**
 		 * 选择画笔颜色
 		 */
 		function getPen(colour) {
 			$("#pen-color").fadeOut(600, () => {
 				document.getElementById('pencil-img').alt = 1;
+				console.log("**===")
 			});
 
 			pen_color = colour + ""; //线条粗细
@@ -168,7 +136,7 @@
 			bot.height = bot.height;
 			dataURL = myCanvas.toDataURL();
 			imgStack.push(dataURL);
-			sendMSG();
+			//sendMSG();
 		}
 
 
@@ -176,6 +144,10 @@
 		 * 鼠标按下
 		 */
 		function mouseDownAction(e) {
+			// dt = setInterval(()=>{
+			// 	if(websocket.readyState == 1)
+			// 	sendMSG()
+			// 	},0.5)
 			isMouseDown = true;
 			// x = e.offsetX;
 			// y = e.offsetY;
@@ -204,14 +176,15 @@
 		 * 鼠标弹起来
 		 */
 		function mouseUpAction() {
-
+			sendT()
+			clearInterval(dt)
 			isMouseDown = false;
 			flag = 0;
 			if (isMove) {
 
 				imgStack.push(dataURL);
 				isMove = false;
-				sendMSG();
+				//sendMSG();
 			}
 		}
 
@@ -245,7 +218,7 @@
 		 */
 		var websocket = null;
 		websocket = new WebSocket('ws://localhost:80/websocket/' + 124)
-
+		websocket.binaryType = "arraybuffer"
 		websocket.onopen = function(e) {
 			console.log('建立连接')
 			//websocket.binaryType = 'arraybuffer'	//传送arraybuffer字符串
@@ -289,8 +262,41 @@
 					strArr[i] = '#' + strArr[i];
 				if (i == strArr.length - 1)
 					strArr[i] = strArr[i] + '#';
+				
 				websocket.send(targetUsers.join('|') + '|' + strArr[i]);
 			}
+		}
+		
+		
+		function sendT(){
+			let str = base64ToUint8Array(dataURL);
+			console.log(str)
+			
+			
+			
+		}
+		function base64ToUint8Array(base64String) {
+		　　　　const padding = '='.repeat((4 - base64String.length % 4) % 4);
+		       const base64 = (base64String + padding)
+		                    .replace(/\-/g, '+')
+		                    .replace(/_/g, '/');
+		
+		       const rawData = window.atob(base64);
+		       const outputArray = new Uint8Array(rawData.length);
+		
+		       for (let i = 0; i < rawData.length; ++i) {
+		            outputArray[i] = rawData.charCodeAt(i);
+		       }
+		       return outputArray;
+		}
+		function arrayBufferToBase64(buffer) {
+		         var binary = '';
+		         var bytes = new Uint8Array(buffer);
+		         var len = bytes.byteLength;
+		         for (var i = 0; i < len; i++) {
+		               binary += String.fromCharCode(bytes[i]);
+		         }
+		         return window.btoa(binary);
 		}
 	</script>
 </html>
