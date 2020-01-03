@@ -60,13 +60,6 @@
 				$("#pen-color").fadeOut(1000);
 				this.alt = 1;
 			}
-			// let that = this;
-			// document.getElementById('draw-clock').ontouchstart = function() {
-			// 	$("#pen-color").fadeOut(1000, () => {
-			// 		that.alt = 1;
-			// 		console.log("=====")
-			// 	});
-			// }
 		}
 	</script>
 	<script>
@@ -75,7 +68,9 @@
 		 */
 
 		var bot = document.getElementById('myCanvas'); //画布div
-		var myCanvas = document.getElementById('myCanvas', 0.1); //创建画布
+		bot.height = parseInt(window.screen.availHeight) 
+		bot.width = window.screen.availWidth-100;
+		var myCanvas = document.getElementById('myCanvas', 1); //创建画布
 		var x, y, x1, y1; //记录坐标
 		var x0 = bot.getBoundingClientRect().x,
 			y0 = bot.getBoundingClientRect().y; //画板坐标偏移量
@@ -89,10 +84,8 @@
 		var pen_color = 'red';
 		var pen_width = 2;
 		let dt;//
+		console.log(document.getElementById('draw-clock').offsetWidth)
 		window.onload = function() {
-			// bot.onmousedown = mouseDownAction;
-			// bot.onmousemove = mouseMoveAction;
-			// bot.onmouseup = mouseUpAction;
 			bot.ontouchstart = mouseDownAction;
 			bot.ontouchmove = mouseMoveAction;
 			bot.ontouchend = mouseUpAction;
@@ -134,9 +127,11 @@
 		 */
 		function drawAgain() {
 			bot.height = bot.height;
-			dataURL = myCanvas.toDataURL();
+			console.log(dataURL)
+			dataURL = myCanvas.toDataURL('image/webp');
+			console.log(dataURL)
 			imgStack.push(dataURL);
-			//sendMSG();
+			sendMSG();
 		}
 
 
@@ -144,10 +139,10 @@
 		 * 鼠标按下
 		 */
 		function mouseDownAction(e) {
-			// dt = setInterval(()=>{
-			// 	if(websocket.readyState == 1)
-			// 	sendMSG()
-			// 	},0.5)
+			dt = setInterval(()=>{
+				if(websocket.readyState == 1)
+				sendMSG()
+				},0.3)
 			isMouseDown = true;
 			// x = e.offsetX;
 			// y = e.offsetY;
@@ -176,7 +171,6 @@
 		 * 鼠标弹起来
 		 */
 		function mouseUpAction() {
-			sendT()
 			clearInterval(dt)
 			isMouseDown = false;
 			flag = 0;
@@ -184,7 +178,7 @@
 
 				imgStack.push(dataURL);
 				isMove = false;
-				//sendMSG();
+				sendMSG();
 			}
 		}
 
@@ -209,7 +203,7 @@
 			if (flag != 0) {
 				x = x1;
 				y = y1;
-				dataURL = myCanvas.toDataURL();
+				dataURL = myCanvas.toDataURL('image/jpeg',0.5);
 			}
 		}
 
@@ -269,10 +263,8 @@
 		
 		
 		function sendT(){
-			let str = base64ToUint8Array(dataURL);
-			console.log(str)
-			
-			
+			//let str = base64ToUint8Array(dataURL);
+			//console.log(str)
 			
 		}
 		function base64ToUint8Array(base64String) {

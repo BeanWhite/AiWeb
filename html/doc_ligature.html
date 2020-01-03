@@ -8,11 +8,9 @@
 		<link rel="stylesheet" type="text/css" href="../css/demo.css">
 		<link rel="stylesheet" type="text/css" href="../css/style.css">
 		<!-- 页面样式 -->
-		<link rel="stylesheet" type="text/css" href="../css/drawClock.css" />
+		<link rel="stylesheet" type="text/css" href="../css/doc_ligature.css" />
 		<!-- 导入vue.js -->
 		<script type="text/javascript" src="../js/vue.js"></script>
-
-
 		<!-- 引入jQuery.js -->
 		<script src="../js/jquery/jquery.min.js"></script>
 	</head>
@@ -25,39 +23,34 @@
 		<div id="content">
 			<div class="scale">
 				<div class="cdt-menu">
-					<span class="cdt">CDT-3</span>
-					<span class="cdt">CDT-4</span>
-					<span class="cdt">CDT-5</span>
-					<span class="cdt">CDT-7</span>
-					<span class="cdt">CDT-10</span>
-					<span class="cdt">CDT-30</span>
+					<span class="cdt">A部分练习</span>
+					<span class="cdt">A部分测试</span>
+					<span class="cdt">B部分练习</span>
+					<span class="cdt">B部分测试</span>
 				</div>
-
+		
 				<div class="scale-right" id="scale-right">
-					<div id="scale-name">量表名称：画钟测验（{{name}}）</div>
+					<div id="scale-name">量表名称：连线测验（{{name}}）</div>
 					<div class="scale-right-content content1">
-						<div class="content-title">指导语</div>
+						<div class="content-title">使用方法</div>
 						<div class="question-content">
-							<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{guid}}</p>
+							<ul id="use-method">
+								<li v-for="item in methods">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item}}</li>
+							</ul>
 						</div>
-						<p class="question-title">图例:</p>
-						<div class="question-img">
-							<img src="../img/clock.png" id="question-img"/>
-						</div>
-						
 					</div>
-
+		
 					<div class="scale-right-content  content2">
 						<div class="content-title">患者绘图结果展示</div>
 						<!-- 动态展示用户画板 -->
 						<div class="re-img">
 							<img id="re-img" />
 						</div>
-
+		
 					</div>
 				</div>
 				<div class="scale-left">
-
+		
 					<div class="scale-check  content1" onclick="checkScore()">查看患者绘图并打分>></div>
 					<div class="scale-check  content2" onclick="createReport()">
 						生成报告>>
@@ -71,15 +64,17 @@
 							</li>
 						</ul>
 					</div>
-
-
+		
+		
 					<div class="scale-content  content2">
 						<div class="content-title">
-							评判
+							注意事项
 						</div>
 						<ul class="options">
-							<li v-bind:class="[indexList.indexOf(p)>-1 ? 'on' :'off']" v-for="(it,p) in scale_test_package" :key="it.index"
-							 v-on:click="greet(it,p)">{{it.aiQuestionOption}}</li>
+							<li >
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+							</li>
+							
 						</ul>
 						<div class="test-data">
 							<span id="do-time">完成时长:{{data}}</span>
@@ -87,9 +82,9 @@
 								评判得分:{{data}}
 							</span>
 						</div>
-
+		
 					</div>
-
+		
 				</div>
 			</div>
 			<canvas id="" width="" height="" style="display: none;"></canvas>
@@ -98,43 +93,41 @@
 	<script>
 		
 		$(document).ready(function() {
-
 			$.ajax({
 				type: 'GET',
-				url: 'http://localhost:80/scales/testMsg/' + 11,
+				url: 'http://localhost:80/scales/testMsg/' + 20,
 				success: function(e) {
 					console.log(e.object)
 					all_test = e.object.slice(0, e.object.length);
-					//初始化引导语
-					for(let i=0;i<all_test.length;i++)
-					if(all_test[i].aiScoreMethodName =="CDT-3"){
-						scale_name.guid =  all_test[i].aiQuestionGuid;
-						break
-					}
-					
 				},
 				error: function() {
-
+	
 				}
 			})
-
+	
 			let s;
 			let scale;
+			//检测内容是否发送过来
 			try {
 				s = storage.getItem("scale").items;
 				for (let i = 0; i < s.length; i++)
-					if (s[i].aiScaleId == 11) {
+					if (s[i].aiScaleId == 20) {
 						scale = s[i];
+						
 						break
 					}
-
+	
 			} catch (e) {
 				console.log('出错了')
 				return
 			}
 			let p = [];
 			let f = "";
+			let f2 = "";
+			let p2 = [];
+			//处理量表描述 and 量表用法
 			try {
+				//描述
 				for (let i = 0; i < scale.aiScaleOverview.length; i++) {
 					if (scale.aiScaleOverview[i] == '&') {
 						p.push(f);
@@ -142,129 +135,62 @@
 					} else {
 						f += scale.aiScaleOverview[i];
 					}
-
+	
+				}
+				//用法
+				for(let i=0;i<scale.aiScaleNotice.length;i++){
+					if (scale.aiScaleNotice[i] == '&') {
+						p2.push(f2);
+						f2 = "";
+					} else {
+						f2 += scale.aiScaleNotice[i];
+					}
 				}
 			} catch (e) {
 				console.log('出错')
 				//TODO handle the exception
 			}
-
+	
 			p.push(f);
+			p2.push(f2)
+			//添加量表说明
 			for (let j = 0; j < p.length; j++) {
 				let obj = {};
 				obj.value = p[j];
 				scale_explain.push(obj);
 			}
-			scale_explain.push({
-				value: "本次测量采用CDT-3评分法"
-			});
-
-			let obj1 = {
-				index: 0,
-				aiQuestionOption: "画好一个封闭的圆",
-				aiQuestionScore: 1
+			for(let j=0;j<p2.length;j++){
+				let obj ={};
+				obj.value = p2[j];
+				user_methods.methods.push(obj) //methods.push(obj);
 			}
-			let obj2 = {
-				index: 1,
-				aiQuestionOption: "正确标出12个数字",
-				aiQuestionScore: 1
-			}
-
-			let obj3 = {
-				index: 2,
-				aiQuestionOption: "将指针置于正确位置",
-				aiQuestionScore: 1
-			}
-			scale_test_package.push(obj1, obj2, obj3)
-
+			
+			//顶部按钮点击事件
 			for (let i = 0; i < cdt.length; i++)
 				cdt[i].onclick = function() {
+					//设置样式
 					for(let r=0;r<cdt.length;r++){
 						cdt[r].style.backgroundColor = "burlywood"
 					}
 					this.style.backgroundColor = "rosybrown"
+					//加载注意事项和指导语
 					
-					//量表说明
-					let obj = {};
-					obj.value = "本次测量采用" + cdt[i].innerText + "评分法";
-					scale_explain.pop();
-					scale_explain.push(obj);
-					scale_name.name = cdt[i].innerText;
-					
-					//配置图片
-					if(cdt[i].innerText=="CDT-7"){
-						document.getElementById('question-img').src="../img/poster-about.jpg";
-					}else{
-						document.getElementById('question-img').src="../img/clock.png";
+					for (let k = 0; k < all_test.length; k++) {
 						
 					}
 					
-					//配置引导语
-					for(let n=0;n<all_test.length;n++)
-					if(all_test[n].aiScoreMethodName ==cdt[i].innerText){
-						scale_name.guid =  all_test[n].aiQuestionGuid;
-						break
-					}
-					
-
-					for (let k = 0; k < all_test.length; k++) {
-
-						if (cdt[i].innerText == all_test[k].aiScoreMethodName) {
-							let options = [];
-							let scores = [];
-							let str = "";
-							let test_package = [];
-							for (let t = 0; t < all_test[k].aiQuestionOption.length; t++) {
-								if (all_test[k].aiQuestionOption[t] == '&') {
-									options.push(str);
-									str = "";
-								} else
-									str += all_test[k].aiQuestionOption[t];
-							}
-							options.push(str);
-							str = "";
-							for (let t = 0; t < all_test[k].aiQuestionScore.length; t++) {
-								if (all_test[k].aiQuestionScore[t] == '&') {
-									scores.push(str);
-									str = "";
-								} else str += all_test[k].aiQuestionScore[t]
-							}
-							scores.push(str);
-							str = "";
-
-							//数组清空,分数置0
-							scale_test_package.splice(0, scale_test_package.length)
-							scale_test.indexList.splice(0)
-							do_score.data = 0;
-
-							for (let t = 0; t < scores.length; t++) {
-								let obj = {
-									index: t,
-									aiQuestionGuid: all_test[k].aiQuestionGuid,
-									aiQuestionId: all_test[k].aiQuestionId,
-									aiQuestionOption: options[t],
-									aiQuestionScore: scores[t],
-									aiQuestionType: all_test[k].aiQuestionType,
-									aiScaleId: all_test[k].aiScaleId,
-									aiScoreMethodName: all_test[k].aiScoreMethodName
-								}
-								scale_test_package.push(obj)
-							}
-							break;
-						}
-					}
-					
 				}
-
+	
 			if(!scale)
 			alert("系统错误");
-
+			console.log(methods,'===',scale_explain)
+	
 		})
-
+	
 		/**
 		 * 封装的localStorage
 		 */
-
+	
 		class Storage {
 			constructor(arg) {
 				this.name = 'storage';
@@ -278,27 +204,27 @@
 					startTime: new Date().getTime() //记录缓存存入时间，毫秒级
 				};
 				let options = {};
-
+	
 				//对象合并
 				Object.assign(options, obj);
-
+	
 				if (options.expires) {
 					//如果设置了过期时间
 					localStorage.setItem(options.key, JSON.stringify(options));
 				} else {
 					//如果没有设置过期时间,获取value的对象类型
 					let type = Object.prototype.toString.call(options.value);
-
+	
 					//如果是对象或者数组需要转为JSON字符串
 					if (type == '[object Object]')
 						options.value = JSON.stringify(options.value);
 					if (type == '[object Array]')
 						options.value = JSON.stringify(options.value);
-
+	
 					localStorage.setItem(options.key, options.value);
 				}
 			}
-
+	
 			//取出缓存
 			getItem(key) {
 				var item = localStorage.getItem(key);
@@ -307,7 +233,7 @@
 				} catch (e) {
 					item = item; //如果不是JSON类型就直接返回值，没有封装存储
 				}
-
+	
 				//判断是否设置了过期时间，通过封装存储的才有过期时间
 				if (item)
 					if (item.startTime && item.expires) {
@@ -330,77 +256,61 @@
 				localStorage.clear();
 			}
 		}
-
+	
 		var storage = new Storage();
-
-
+	
+	
 		var cdt = document.getElementsByClassName('cdt');
-
+	
 		//所有题目信息
 		var all_test = [];
-
+	
 		//量表说明数据包
 		var scale_explain = [];
-
-		//题目选项数据包
-		var scale_test_package = [];
-
+	
+		//评分方式数据包
+		var methods = [];
+		
+		//指导语数据包
+		var guids = [];
+		
+		//评分方式控制
+		var user_methods = new Vue({
+			el:'#use-method',
+			data:{
+				methods
+			}
+		})
+		//时间控制
 		var do_time=new Vue({
 			el: '#do-time',
 			data: {
 				data: 0
 			}
 		});
-
-		var do_score=new Vue({
-			el: '#do-score',
-			data: {
-				data: 0
-			}
-		});
-
+		
+		//量表说明控制
 		var scale_list = new Vue({
 			el: '#scale-list',
 			data: {
 				scale_explain
 			}
 		})
+		
+		//练习名称控制
 		var scale_name = new Vue({
 			el: '#scale-right',
 			data: {
-				name: 'CDT-3',
-				guid:""
+				name: 'A部分练习'
 			}
 		});
-		var scale_test = new Vue({
-			el: '.options',
-			data: {
-				scale_test_package,
-				ispitch: false,
-				indexList: []
-			},
-			methods: {
-				greet: function(it, p) {
-					//console.log(it)
-					let arr = this.indexList.indexOf(p);
-					if (arr > -1) {
-						this.indexList.splice(arr, 1);
-						do_score.data -= parseInt(it.aiQuestionScore);
-					} else {
-						this.indexList.push(p);
-						do_score.data += parseInt(it.aiQuestionScore);
-					}
-					this.ispitch = ~this.ispitch;
-					//console.log(do_score.)
-				}
-			}
-		})
-
+		
+	
 		/**
 		 * 为选项列表添加事件
 		 */
-
-
+	
+	
 		/**
 		 * 切换窗口
 		 */
@@ -425,14 +335,14 @@
 				b[i].style.display = 'none';
 			}
 		}
-
+	
 		/**
 		 * 打印报告
 		 */
 		function createReport() {
 			window.open("paintReport.html")
 		}
-
+	
 		/**
 		 * websocket连接
 		 */
@@ -441,12 +351,12 @@
 		websocket.onopen = function(e) {
 			console.log('建立连接')
 		}
-
+	
 		websocket.onclose = function(e) {
 			console.log('连接关闭')
 		}
-
-
+	
+	
 		var flag = false;
 		var src = '';
 		websocket.onmessage = function(e) {
@@ -474,25 +384,25 @@
 			} else {
 				src += str;
 			}
-
+	
 			//console.log(str)
-
+	
 			// console.log(e.data)
-
+	
 		}
-
+	
 		// function sendMSG() {
 		// 	websocket.send(JSON.stringify(b));
-
+	
 		// }
-
+	
 		websocket.onerror = function() {
 			console.log('建立连接出错')
 		}
 		window.onbeforeunload = function() {
 			websocket.close();
 		}
-
+	
 		/**
 		 * 将byte数据变为字符串
 		 * @param {Object} arr 	

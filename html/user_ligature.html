@@ -56,6 +56,8 @@
 		 */
 
 		var bot = document.getElementById('myCanvas'); //画布div
+		bot.height = window.screen.availHeight
+		bot.width = window.screen.availWidth-100;
 		var myCanvas = document.getElementById('myCanvas', 0.1); //创建画布
 		var x, y, x1, y1; //记录坐标
 		var XL, YL; //记录横纵坐标偏移量
@@ -73,7 +75,7 @@
 		let dt;
 		var R = 15; //圆半径
 		var Circle; //当前圆
-		var status =1;//当前圆状态
+		var status =4;//当前圆状态
 		//圆
 		var Circle_1 = {
 			c1: {
@@ -490,7 +492,7 @@
 		 */
 		function drawAgain() {
 			bot.height = bot.height;
-			dataURL = myCanvas.toDataURL();
+			dataURL = myCanvas.toDataURL("image/jpeg");
 			imgStack.push(dataURL);
 			init_canvas()
 			sendMSG();
@@ -513,7 +515,7 @@
 			dt = setInterval(()=>{
 			if(websocket.readyState == 1)
 			sendMSG()
-			},1);
+			},0.3);
 			x = e.touches[0].pageX - x0;
 			y = e.touches[0].pageY - y0;
 		}
@@ -568,7 +570,7 @@
 			if (flag != 0) {
 				x = x1;
 				y = y1;
-				dataURL = myCanvas.toDataURL();
+				dataURL = myCanvas.toDataURL("image/jpeg");
 			}
 		}
 

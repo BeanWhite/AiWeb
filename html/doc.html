@@ -247,10 +247,12 @@
 			data: scale_list,
 			methods: {
 				greet: function(it) {
+					console.log(it)
 					let o = {};
 					o.aiScaleName = it.aiScaleName;
 					o.aiScaleId = it.aiScaleId;
 					o.aiScaleOverview = it.aiScaleOverview;
+					o.aiScaleNotice = it.aiScaleNotice;
 					scale_result_list.items.push(o);
 					for (let i = 0; i < scale_rest.items.length; i++) {
 						if (it.aiScaleId == scale_rest.items[i].aiScaleId) {
@@ -336,7 +338,7 @@
 				storage.setItem("scale",scale_result_list,5*24*60*60*1000);
 				//本地存放所有未做的量表，初始为所有量表
 				storage.setItem("scaleRest",scale_result_list,5*24*60*60*1000);
-				window.location.href = "drawClock.html";
+				window.location.href = "doc_ligature.html";
 			}else{
 				alert("没有选中的测评哦")
 			}

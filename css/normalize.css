@@ -42,6 +42,7 @@ body {
 	min-height: 860px;
 	height: 100%;
 	width: 100%;
+	user-select:none;
 }
 
 a:focus {
