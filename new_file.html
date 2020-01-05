@@ -1,44 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html style="height: 100%;">
 	<head>
 		<meta charset="utf-8">
 		<title></title>
-		<script type="text/javascript" src="js/vue.js">
-			
-		</script>
+		<link rel="stylesheet" type="text/css" href="css/print.css" />
 	</head>
+	<style type="text/css">
+		body {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+		}
+
+		#ot {
+			background-color: red;
+		}
+
+		.page {
+			height: 100%;
+		}
+
+		button {
+			margin-top: 100px;
+		}
+	</style>
 	<body>
-		<!-- <canvas id="canvas" width="555" height="600" style="background-color: #D3D3D3;"></canvas> -->
-		<ul id="t">
-			<li>{{p}}</li>
-		</ul>
+		<button type="button" onclick="print_PDF()" id="ot">ok</button>
+		<div id="content" class=".A4 page" id="page">
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+			<h1>1</h1>
+			<h1>2</h1>
+		</div>
+		<div id="divHeader">
+			页眉
+		</div>
+		<div id="divFooter">
+			页脚
+		</div>
+		
 	</body>
 	<script>
-		new Vue({
-			el:'#t',
-			data:{
-				p:'456'
-			}
-		})
-		// var canvas = document.getElementById('canvas',0.1);
-		// var ctx = canvas.getContext('2d');
-		
-		// ctx.beginPath()
-		// ctx.lineWidth = 2;
-		// ctx.strokeStyle = 'red';
-		// ctx.moveTo(10,10)
-		// ctx.lineTo(100,100)
-		// ctx.stroke()
-		// ctx.beginPath()
-		// ctx.lineWidth = 2;
-		// ctx.strokeStyle = 'black';
-		// ctx.moveTo(200,20)
-		// ctx.lineTo(200,200)
-		// ctx.stroke()
-		// console.log(canvas.toDataURL("image/jpeg",0.8))
-		// canvas.toBlob(function(b){
-		// 	console.log(b)
-		// },'image/jpeg')
-		
+		function print_PDF() {
+			// var ot = document.getElementsByClassName('ot');
+			// for(let i=0;i<ot.length;i++)
+			// ot[i].style.display = 'none';
+			window.print();
+		}
 	</script>
 </html>

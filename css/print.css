@@ -1,37 +1,64 @@
 @media print {
-	@page {
-		size: A4 portrait;
-		margin: 3.7cm 2.6cm 3.5cm;
+ 	@page {
+ 		size: A4 portrait;
+ 		padding: 0.5cm 1cm 0.5cm 1cm;
+		@top-center{
+			content: element(divHeader);
+		}
+		@bottom-center{
+			content: element(divFooter);
+		}
+ 	}
+	
+	h1{
+		margin: 0;
+		padding: 0;
 	}
-
-	/* 页面内容区域底部添加一条 1rem 的灰线 */
-	@bottom-left,
-	@bottom-center,
-	@bottom-right {
-		border-top: 1rem solid gray;
-	}
-
-	/* 页脚中间显示格式如 "第 3 页" 的页码 */
-	@bottom-center {
-		content: "第"counter(page) "页";
-	}
-
-	.ot {
+ 	button{
 		display: none;
 	}
-
-	#page {
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		margin: auto;
+	
+	#page{
+		
 	}
+	#divHeader {
+		text-align: center;
+		line-height: 100px;
+		opacity: 0.3;
+		position:running(divHeader) ;
+		top: 0px;
+		/* display: none; */
+		width: 100%;
+		height: 100px;
+		background-color: antiquewhite;
+	}
+	
+	#divFooter {
+		opacity: 0.3;
+		height: 100px;
+		text-align: center;
+		line-height: 100px;
+		position: running(divFooter);
+		width: 100%;
+		bottom: 0;
+		background-color: #5F9EA0;
+	}
+ }
 
-}
+ @media screen {
+ 	#divHeader {
+		position: fixed;
+		top: 0;
+ 		/* display: none; */
+ 		width: 100%;
+		background-color: antiquewhite;
+ 	}
 
-#page {
-	width: 600rem;
-	height: 1600rem;
-	background-color: #5F9EA0;
-}
+ 	#divFooter {
+		position: fixed;
+		bottom: 0;
+ 		/* display: none; */
+		width: 100%;
+		background-color: #5F9EA0;
+ 	}
+ }
