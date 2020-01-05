@@ -2,7 +2,6 @@
 <html style="height: 100%;">
 	<head>
 		<meta charset="utf-8">
-		<title></title>
 		<link rel="stylesheet" type="text/css" href="css/print.css" />
 	</head>
 	<style type="text/css">
@@ -15,77 +14,87 @@
 		#ot {
 			background-color: red;
 		}
-
-		.page {
+		.page{
 			height: 100%;
 		}
-
+		
+		
 		button {
 			margin-top: 100px;
 		}
 	</style>
-	<body>
+	<body style="height: 100%;">
 		<button type="button" onclick="print_PDF()" id="ot">ok</button>
-		<div id="content" class=".A4 page" id="page">
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
-			<h1>1</h1>
-			<h1>2</h1>
+		
+		<div class="page">
+			<!-- <h1>ppppppppppp</h1> -->
+				<p>222</p>
+				<p>222</p>
+				<p>222</p>
+				<p>222</p>
+				<p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p>	<p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p>
+				<!-- <h1>dfasdfa</h1> -->
+				<p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p>	<p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p>	<p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p>
+				<p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p><p>222</p>
+				<p>222</p><p>222</p><p>222</p><p>222</p>
 		</div>
 		<div id="divHeader">
-			页眉
+			<div id="header-fix">
+				
+			</div>
 		</div>
 		<div id="divFooter">
-			页脚
+			<div id="footer-fix">
+				<div id="footer-box">
+					<div class="line-top">
+						<p id="report-date">1</p>
+					<p id="office">2</p>
+					</div>
+					<div class="line-center"></div>
+					<div class="line-bottom"></div>
+					<div id="page-num">
+						
+					</div>
+				</div>
+			</div>
 		</div>
-		
 	</body>
 	<script>
-		function print_PDF() {
-			// var ot = document.getElementsByClassName('ot');
-			// for(let i=0;i<ot.length;i++)
-			// ot[i].style.display = 'none';
-			window.print();
-		}
+		
 	</script>
 </html>

@@ -1,64 +1,88 @@
 @media print {
+	
  	@page {
  		size: A4 portrait;
- 		padding: 0.5cm 1cm 0.5cm 1cm;
+ 		margin: 2.5cm 1cm 4.5cm 1cm;
+		padding: 0;
 		@top-center{
+			width: 100%;
+			height: 100%;
 			content: element(divHeader);
 		}
 		@bottom-center{
-			content: element(divFooter);
+			width: 100%;
+			height: 100%;
+			content:element(divFooter);
 		}
+		
  	}
 	
 	h1{
 		margin: 0;
 		padding: 0;
+		/* page-break-before: always; */
+	}
+	p{
+		margin: 0;
+		padding: 0;
+	}
+	#header-fix{
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		background-color: rosybrown;
+		content: counter(page);
+	}
+	#footer-fix{
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		/* background-color: palevioletred; */
+	}
+	#footer-box{
+		height: 100%;
+		width: 100%;
+	}
+	#report-date{
+	
+	}
+	#office{
+	
+	}
+	.line-top{
+		display: flex;
+		justify-content: space-between;
+		border-bottom: 1px solid black;
+	}
+	.line-center{
+		margin-top: 2px;
+		border-top: 3px solid black;
+	}
+	.line-bottom{
+		margin-top: 3px;
+		border-bottom:1px solid black;
+	}
+	#page-num{
+		width: 100%;
+		text-align: center;
+		content:"(第"counter(page)"页)";
 	}
  	button{
 		display: none;
 	}
-	
-	#page{
-		
-	}
-	#divHeader {
-		text-align: center;
-		line-height: 100px;
-		opacity: 0.3;
+	#divHeader {    
 		position:running(divHeader) ;
-		top: 0px;
-		/* display: none; */
-		width: 100%;
-		height: 100px;
-		background-color: antiquewhite;
+		width: 100%;	
+		height: 100%;
+		/* background-color: green; */
 	}
+	
 	
 	#divFooter {
-		opacity: 0.3;
-		height: 100px;
-		text-align: center;
-		line-height: 100px;
 		position: running(divFooter);
 		width: 100%;
-		bottom: 0;
-		background-color: #5F9EA0;
+		/* background-color: red; */
+		height: 100%;
 	}
- }
-
- @media screen {
- 	#divHeader {
-		position: fixed;
-		top: 0;
- 		/* display: none; */
- 		width: 100%;
-		background-color: antiquewhite;
- 	}
-
- 	#divFooter {
-		position: fixed;
-		bottom: 0;
- 		/* display: none; */
-		width: 100%;
-		background-color: #5F9EA0;
- 	}
+	
  }
