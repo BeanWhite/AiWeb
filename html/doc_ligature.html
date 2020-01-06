@@ -82,16 +82,16 @@
 						<div class="option-content" style="	width: 100%;padding-top: 40px;">
 							<table border="0" cellspacing="3" cellpadding="10" style="width: 100%;text-align: center;">
 								<tr>
-									<td><span class="" style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">1</span></td>
-									<td><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">2</span></td>
-									<td><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">3</span></td>
-									<td><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">4</span></td>
+									<td class="option-child" onclick="sendValue(this)"><span class="" style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">1</span></td>
+									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">2</span></td>
+									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">3</span></td>
+									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">4</span></td>
 								</tr>
 								<tr>
-									<td><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">A</span></td>
-									<td><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">B</span></td>
-									<td><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">C</span></td>
-									<td><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">D</span></td>
+									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">A</span></td>
+									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">B</span></td>
+									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">C</span></td>
+									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">D</span></td>
 								</tr>
 							</table>
 
@@ -114,6 +114,7 @@
 		</div>
 	</body>
 	<script>
+		
 		$(document).ready(function() {
 			$.ajax({
 				type: 'GET',
@@ -232,7 +233,13 @@
 								scale_name.name = this.innerText;
 								break;
 							}
-
+						
+						let obj = {};
+						obj.target = 124;
+						obj.from_who = 123;
+						obj.status = 0;
+						obj.data = i+1;
+						sendMSG(obj);
 					}
 
 
@@ -342,7 +349,7 @@
 		// 		methods
 		// 	}
 		// })
-
+		
 		new Vue({
 			el: '.options',
 			data: {
@@ -380,7 +387,18 @@
 		/**
 		 * 为选项列表添加事件
 		 */
-
+		function sendValue(t){
+			let targetId = 124;
+			let docId = 456;
+			obj = {};
+			obj.target = targetId;
+			obj.from_who = docId;
+			obj.status = 1;
+			obj.data = t.childNodes[0].innerHTML;
+			obj.incise = false;
+			obj.isLongData = false;
+			sendMSG(obj);
+		}
 
 		/**
 		 * 切换窗口
@@ -431,41 +449,26 @@
 		var flag = false;
 		var src = '';
 		websocket.onmessage = function(e) {
-
-			var str = e.data;
-			console.log(src)
-			if (str[0] == "#" && str[str.length - 1] == "#") {
-				src = str.slice(1, str.length - 1);
-				document.getElementById('re-img').src = src;
-				console.log(src)
-			} else if (str[0] == '#') {
-				str = str.slice(1, str.length)
-				src += str;
-			} else if (e.data == '#') {
-				document.getElementById('re-img').src = src;
-				console.log(src)
-				//console.log(src)
-				src = ''
-			} else if (e.data[e.data.length - 1] == '#') {
-				src += e.data.slice(0, e.data.length - 1)
-				//console.log(src)
-				document.getElementById('re-img').src = src;
-				console.log(src)
-				src = '';
-			} else {
-				src += str;
+			try{
+				let data = JSON.parse(e.data);
+				//console.log(e.data)
+				if(data.endIncise){
+					src +=data.data;
+					document.getElementById('re-img').src = src;
+					//console.log(src);
+					src = "";
+				}else if(data.data!='undefined'){
+					src +=data.data;
+				}
+			}catch(e){
+				//TODO handle the exception
 			}
-
-			//console.log(str)
-
-			// console.log(e.data)
-
+			
 		}
 
-		// function sendMSG() {
-		// 	websocket.send(JSON.stringify(b));
-
-		// }
+		function sendMSG(obj) {
+			websocket.send(JSON.stringify(obj));
+		}
 
 		websocket.onerror = function() {
 			console.log('建立连接出错')

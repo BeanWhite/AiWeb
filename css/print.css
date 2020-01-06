@@ -8,6 +8,7 @@
 			width: 100%;
 			height: 100%;
 			content: element(divHeader);
+			
 		}
 		@bottom-center{
 			width: 100%;
@@ -16,13 +17,16 @@
 		}
 		
  	}
+
 	
-	h1{
-		margin: 0;
-		padding: 0;
-		/* page-break-before: always; */
+	.first-h1{
+		page-break-before: avoid;
 	}
-	p{
+	h1{
+		page-break-before: always;
+	}
+	
+	h1,h2,h3,h4,h5,h6,p{
 		margin: 0;
 		padding: 0;
 	}
@@ -37,7 +41,6 @@
 		position: absolute;
 		height: 100%;
 		width: 100%;
-		/* background-color: palevioletred; */
 	}
 	#footer-box{
 		height: 100%;
@@ -65,18 +68,20 @@
 	#page-num{
 		width: 100%;
 		text-align: center;
-		content:"(第"counter(page)"页)";
+		content:"(第"counter(page)"页/共"counter(pages)"页)";
 	}
  	button{
 		display: none;
 	}
 	#divHeader {    
+		
+		
 		position:running(divHeader) ;
+		prince-flow:static(divHeader,start)
 		width: 100%;	
-		height: 100%;
+		height: 100px;
 		/* background-color: green; */
 	}
-	
 	
 	#divFooter {
 		position: running(divFooter);

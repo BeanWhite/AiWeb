@@ -51,6 +51,11 @@
 		}
 	</script>
 	<script>
+		
+		$(document).ready(function(){
+			init_canvas();
+			imgStack.push(myCanvas.toDataURL());
+		})
 		/**
 		 * ！！！！要设置为在画布中有记录之后才能发送消息！！！！
 		 */
@@ -75,7 +80,7 @@
 		let dt;
 		var R = 15; //圆半径
 		var Circle; //当前圆
-		var status =4;//当前圆状态
+		var status =1;//当前圆状态
 		//圆
 		var Circle_1 = {
 			c1: {
@@ -475,15 +480,17 @@
 		 * 撤回
 		 */
 		function cancle_pen() {
-			if (dataURL == imgStack[imgStack.length - 1])
-				imgStack.pop()
+			if (dataURL == imgStack[imgStack.length - 1]&&imgStack.length>1){
+				imgStack.pop();	
+			}
+				
 			dataURL = imgStack[imgStack.length - 1];
 			bot.height = bot.height;
 			let img = new Image();
-			img.src = dataURL;
+			img.src = dataURL; 
 			img.addEventListener('load', () => {
 				sendMSG();
-				context.drawImage(img, 0, 0)
+				context.drawImage(img, 0, 0,)
 			})
 		}
 
@@ -492,7 +499,7 @@
 		 */
 		function drawAgain() {
 			bot.height = bot.height;
-			dataURL = myCanvas.toDataURL("image/jpeg");
+			dataURL = myCanvas.toDataURL("image/webp");
 			imgStack.push(dataURL);
 			init_canvas()
 			sendMSG();
@@ -510,12 +517,10 @@
 		 */
 		function mouseDownAction(e) {
 			isMouseDown = true;
-			// x = e.offsetX;
-			// y = e.offsetY;
 			dt = setInterval(()=>{
 			if(websocket.readyState == 1)
 			sendMSG()
-			},0.3);
+			},0.2);
 			x = e.touches[0].pageX - x0;
 			y = e.touches[0].pageY - y0;
 		}
@@ -570,7 +575,7 @@
 			if (flag != 0) {
 				x = x1;
 				y = y1;
-				dataURL = myCanvas.toDataURL("image/jpeg");
+				dataURL = myCanvas.toDataURL("image/webp");
 			}
 		}
 
@@ -590,8 +595,56 @@
 		}
 
 		websocket.onmessage = function(e) {
-			console.log("有消息推送", e.data, '***');
-
+			let p;
+			let data;
+			console.log(e)
+			try{
+				data = JSON.parse(e.data);
+				p = JSON.parse(e.data).data;
+			}catch(e){
+				return
+				//TODO handle the exception
+			}
+			console.log(data)
+			if(data.status == 0){
+				console.log(data)
+				status = data.data;
+				bot.height = bot.height;
+				
+				imgStack.splice(0,imgStack.length);
+				init_canvas();
+				dataURL = myCanvas.toDataURL("image/webp");
+				imgStack.push(dataURL);
+				sendMSG();   
+				
+			}else if(data.status == 1){
+				if (status == 1)
+					Circle = Circle_1;
+				else if (status == 2)
+					Circle = Circle_2;
+				else if (status == 3)
+					Circle = Circle_3;
+				else
+					Circle = Circle_4;
+				for (i in Circle) {
+					if(Circle[i].value == p){
+						context.beginPath();
+						context.strokeStyle = '#ff0000';
+						context.lineWidth = 2;
+						context.arc(Circle[i].x, Circle[i].y, R + 5, 0, 2 * Math.PI);
+						context.stroke();
+						setTimeout(function(){
+							context.beginPath();
+							context.strokeStyle = '#000000';
+							context.lineWidth = 2;
+							context.arc(Circle[i].x, Circle[i].y, R + 5, 0, 2 * Math.PI);
+							context.stroke()
+						},1000);
+						break;
+					}
+					
+				}
+			}
 		}
 
 		websocket.onerror = function() {
@@ -610,7 +663,8 @@
 			//	console.log(dataURL)
 			var strArr = [];
 			//消息发送目标用户
-			var targetUsers = ['123'];
+			//var targetUsers = ['123'];
+			
 			if (str.length > 7000) {
 				for (let i = 0, index = 0; i < str.length; index++, i += 7000) {
 					strArr[index] = str.slice(i, i + 7000);
@@ -619,11 +673,16 @@
 				strArr[0] = str;
 			}
 			for (let i = 0; i < strArr.length; i++) {
-				if (i == 0)
-					strArr[i] = '#' + strArr[i];
-				if (i == strArr.length - 1)
-					strArr[i] = strArr[i] + '#';
-				websocket.send(targetUsers.join('|') + '|' + strArr[i]);
+				let obj ={};
+				obj.targets = [1,2,3,4,5,6,7,8];
+				obj.target = 123;
+				obj.data = strArr[i];
+				obj.incise = true;
+				if(i==strArr.length-1)
+				obj.endIncise = true;
+					
+				//websocket.send(JSON.stringify(targetUsers.join('|') + '|' + strArr[i]));
+				websocket.send(JSON.stringify(obj));
 			}
 		}
 	</script>

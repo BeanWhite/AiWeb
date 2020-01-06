@@ -136,6 +136,7 @@ margin: auto 0;
 	color: rgb(16, 112, 193);
 }
 .options{
+	width: 100%;
 	border-bottom: 2px solid darkgray;
 }
 
