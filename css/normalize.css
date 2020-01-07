@@ -237,8 +237,10 @@ ul {
 	display: flex;
 	justify-content: center;
 	align-items: flex-start;
-	width: 1764px;
-	height: 820px;
+	/* width: 1764px;
+	height: 820px; */
+	width: 80%;
+	height: 90%;
 	background-color: rgba(255, 255, 255, 0.9);
 	border-color: rgb(255, 255, 255);
 	border-width: 1px;
@@ -246,6 +248,5 @@ ul {
 	border-radius: 5px;
 	font-size: 16px;
 	opacity: 1;
-	padding-top: 30px;
-	padding-bottom: 30px;
+	padding: 30px 30px 30px 30px;
 }
