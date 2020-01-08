@@ -244,7 +244,7 @@
 			}
 		});
 		
-		//var ws = new WebSocket(config.wsURL+"/websocket"+)
+		
 		/**
 		 * 所有显示的量表
 		 */
@@ -374,11 +374,38 @@
 				//本地存放所有未做的量表，初始为所有量表(发布测评中的量表)
 				storage.setItem("scaleRest",scale_result_list,5*24*60*60*1000);
 				
+				//将测评量表发送至用户
+				var obj={
+					target:a,
+					data:scale_result_list,
+					isCache:true
+				};
 				
 				//需要根据scale_result_list转到相应的页面
 				window.location.href = "doc_ligature.html?"+USER_ID;
 				
 			}
+		}
+	
+		var ws = new WebSocket(config.wsURL+'/websocket/'+USER_ID);
+		ws.onopen = function(e){
+			console.log('连接成功');
+		}
+		
+		ws.onmessage = function(e){
+			console.log('有消息推送');
+		}
+		ws.onerror = function(e){
+			console.log('连接出错');
+		}
+		ws.onclose = function(e){
+			console.log('连接关闭');
+		}
+		function sendMSG(msg){
+			ws.send(JSON.stringify(msg));
+		}
+		window.onbeforeunload = function(){
+			ws.close();
 		}
 	</script>
 </html>

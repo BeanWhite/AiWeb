@@ -96,7 +96,7 @@
 		</div>
 	</body>
 	<script>
-		
+		let USER_ID = window.location.search.split('?')[1].split(0,1);
 		$(document).ready(function() {
 
 			$.ajax({
@@ -437,7 +437,7 @@
 		 * websocket连接
 		 */
 		var websocket = null;
-		websocket = new WebSocket(config.wsURL+'/websocket/' + 123)
+		websocket = new WebSocket(config.wsURL+'/websocket/' + USER_ID)
 		websocket.onopen = function(e) {
 			console.log('建立连接')
 		}
