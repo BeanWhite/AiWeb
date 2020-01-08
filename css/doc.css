@@ -161,6 +161,9 @@
 }
 
 .scale-right-basMsg-div {
+	display: flex;
+	justify-content: flex-start;align-items: flex-start;
+	width: 20%;
 	border-color: rgb(187, 187, 187);
 	border-width: 1px;
 	border-style: solid;
@@ -170,7 +173,7 @@
 }
 
 .scale-right-basMsg input {
-	width: 200px;
+	width: 60%;
 	border: none;
 }
 

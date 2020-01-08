@@ -16,7 +16,7 @@
 		<!-- 登录框样式 -->
 		<link rel="stylesheet" href="css/index.css" />
 		<link rel="stylesheet" type="text/css" href="js/print.css" />
-
+		<script src="./html/config/urlConfig.js"></script>
 		<!--  pdf制作依赖文件-->
 		<script src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
 		<script src="https://cdn.bootcss.com/jspdf/1.3.4/jspdf.debug.js"></script>
@@ -116,32 +116,27 @@
 					id: user,
 					pwd: pwd
 				}
-
-
-				// var url;
-				// if(user.length == 6){
-				// 	url = ""
-				// }else if(user.length ==8){
-				// 	url =""
-				// }else if(user.length == 12){
-				// 	url =""
-				// }else{
-				// 	alert("账号错误")
-				// }
 				$.ajax({
 					type: "POST",
-					url: "http://localhost:80/login/admin",
+					url: config.url+"/login/u",
 					dataType: "JSON",
 					data: data,
 					async: true,
 					success: function(data) {
 						console.log(data)
-						//console.log(i)
-						if(data.object == 1)
-						window.location.href = "html/doc.html"
-						else{
+						if(data.object == "管理员"||data.object==0){
+							//跳转到管理员界面
+						}else if(data.object=="医生"||data.object==1){
+							//跳转到医生界面
+							window.location.href = "html/doc.html?"+user;
+						}else if(data.object=="用户"||data.object==2){
+							//跳转到用户界面
+							window.location.href = "html/user_menue.html?"+user;
+						}else {
+							//开发界面
 							console.log(data.msg)
 						}
+						
 					},
 					error: function() {
 						console.log(555)

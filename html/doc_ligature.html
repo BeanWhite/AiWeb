@@ -9,6 +9,7 @@
 		<link rel="stylesheet" type="text/css" href="../css/style.css">
 		<!-- 页面样式 -->
 		<link rel="stylesheet" type="text/css" href="../css/doc_ligature.css" />
+		<script type="text/javascript" src="./config/urlConfig.js"></script>
 		<!-- 导入vue.js -->
 		<script type="text/javascript" src="../js/vue.js"></script>
 		<!-- 引入jQuery.js -->
@@ -74,12 +75,11 @@
 							<li v-for="item in notice">
 								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item.value}}</p>
 							</li>
-
 						</ul>
 						<div class="content-title">
 							提示选项
 						</div>
-						<div class="option-content" style="	width: 100%;padding-top: 40px;">
+						<div class="option-content" style="	width: 100%;padding-top: 15px;">
 							<table border="0" cellspacing="3" cellpadding="10" style="width: 100%;text-align: center;">
 								<tr>
 									<td class="option-child" onclick="sendValue(this)"><span class="" style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">1</span></td>
@@ -94,7 +94,6 @@
 									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">D</span></td>
 								</tr>
 							</table>
-
 						</div>
 						<div class="test-data" id="bc">
 							<span id="do-time">完成时长:{{time}}</span>
@@ -114,11 +113,12 @@
 		</div>
 	</body>
 	<script>
+	
 		
 		$(document).ready(function() {
 			$.ajax({
 				type: 'GET',
-				url: 'http://localhost:80/scales/testMsg/' + 20,
+				url: config.url+'/scales/testMsg/' + 20,
 				success: function(e) {
 					console.log(e.object)
 					all_test = e.object.slice(0, e.object.length);
@@ -436,7 +436,12 @@
 		 * websocket连接
 		 */
 		var websocket = null;
-		websocket = new WebSocket('ws://localhost:80/websocket/' + 123)
+		if('WebSocket' in window){
+			
+		}else{
+			
+		}
+		websocket = new WebSocket(config.wsURL+'/websocket/' + 123)
 		websocket.onopen = function(e) {
 			console.log('建立连接')
 		}

@@ -4,7 +4,9 @@
 		<meta charset="utf-8">
 
 		<title></title>
+		
 		<link rel="stylesheet" type="text/css" href="../css/user.css" />
+		<script type="text/javascript" src="./config/urlConfig.js"></script>
 		<!-- 引入jQuery.js -->
 		<script type="text/javascript" src="../js/jquery/jquery.min.js"></script>
 	</head>
@@ -52,6 +54,7 @@
 
 	</body>
 	<script>
+	
 		document.getElementById('pencil-img').ontouchstart = function() {
 			if (this.alt == 1) {
 				$("#pen-color").fadeIn(1000);
@@ -89,6 +92,10 @@
 			bot.ontouchstart = mouseDownAction;
 			bot.ontouchmove = mouseMoveAction;
 			bot.ontouchend = mouseUpAction;
+			
+			// bot.onmousedown = mouseDownAction;
+			// bot.onmousemove = mouseMoveAction;
+			// bot.onmouseup = mouseUpAction;
 		}
 		
 		
@@ -211,7 +218,7 @@
 		 * websocket连接
 		 */
 		var websocket = null;
-		websocket = new WebSocket('ws://localhost:80/websocket/' + 124)
+		websocket = new WebSocket(config.wsURL+'/websocket/' + 124)
 		websocket.binaryType = "arraybuffer"
 		websocket.onopen = function(e) {
 			console.log('建立连接')

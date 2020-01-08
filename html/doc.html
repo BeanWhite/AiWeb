@@ -11,7 +11,7 @@
 
 		<!-- 导入vue.js -->
 		<script src="../js/vue.js"></script>
-
+<script type="text/javascript" src="./config/urlConfig.js"></script>
 		<!-- 引入jQuery.js -->
 		<script src="../js/jquery/jquery.min.js"></script>
 
@@ -109,11 +109,14 @@
 
 	</body>
 	<script>
+		let USER_ID = window.location.search.split('?')[1].split(0,1);
+		console.log(USER_ID);
 		$(document).ready(function() {
 			$.ajax({
 				type: 'GET',
-				url: 'http://localhost:80/scales/all',
+				url: config.url+'/scales/all',
 				success: function(data) {
+					//alert(data.object)
 					console.log(data.object)
 					scale.items = data.object.slice(0,data.object.length);
 					scale_list.items = data.object.slice(0,data.object.length);
@@ -224,10 +227,11 @@
 			data: scale_result_list,
 			methods: {
 				greet: function(it) {
+					console.log(it)
 					let o = {};
 					o.aiScaleName = it.aiScaleName;
 					o.aiScaleId = it.aiScaleId;
-					o.aiScaleOverview = it.o.aiScaleOverview;
+					o.aiScaleOverview = it.aiScaleOverview;
 					scale_rest.items.push(o);
 					scale_list.items.push(o);
 					for (let i = 0; i < scale_result_list.items.length; i++) {
@@ -239,6 +243,8 @@
 				}
 			}
 		});
+		
+		//var ws = new WebSocket(config.wsURL+"/websocket"+)
 		/**
 		 * 所有显示的量表
 		 */
@@ -281,9 +287,9 @@
 			}
 			let kw = new RegExp(a, 'i');
 			let arr = []
-			for (let i = 0; i < scale.items.length; i++) {
-				if (kw.test(scale.items[i].aiScaleName)) {
-					arr.push(scale.items[i]);
+			for (let i = 0; i < scale_rest.items.length; i++) {
+				if (kw.test(scale_rest.items[i].aiScaleName)) {
+					arr.push(scale_rest.items[i]);
 				}
 			}
 			scale_list.items = arr;
@@ -307,10 +313,20 @@
 			else{
 				$.ajax({
 					type:'GET',
-					url:'http://localhost:80/users/msgForDoc/'+a,
+					url:config.url+'/users/msgForDoc/'+a,
 					success:function(e){
 						var data = e.object[0];
-						$('#userName').val(data.aiUserName);
+						if(e.object.length==0){
+							$('#userName').val("");
+							$('#userAge').val("");
+							$('#userOffice').val("");
+							$('#userSex').val("");
+							$('#userPro').val("");
+							$('#userFrom').val("");
+							$('#userEdu').val("");
+							$('#userMarr').val("");
+						}else{
+							$('#userName').val(data.aiUserName);
 						$('#userAge').val(data.aiUserAge);
 						$('#userOffice').val(data.aiUserOffice);
 						$('#userSex').val(data.aiUserSex);
@@ -318,7 +334,10 @@
 						$('#userFrom').val(data.aiUserFrom);
 						$('#userEdu').val(data.aiUserEduBg);
 						$('#userMarr').val(data.aiUserMarriage);
-						console.log(e)
+						}
+						console.log(e.object.length)
+						
+						
 					},
 					error:function(e){
 						console.log('连接出错')
@@ -330,17 +349,35 @@
 		 * 发布测评
 		 */
 		function issueTest(){
-			if(scale_result_list.items.length>0){
+			let a = $('#searchUser').val().replace(/\s*/g,"");
+			if(scale_result_list.items.length==0){
+				alert("没有选中的测评哦");
+			}else if(a==""){
+				alert("请选择测评对象");
+			}else if(
+			$('#userName').val().replace(/\s*/g,"")==""||
+			$('#userAge').val().replace(/\s*/g,"")==""||
+			$('#userOffice').val().replace(/\s*/g,"")==""||
+			$('#userSex').val().replace(/\s*/g,"")==""||
+			$('#userPro').val().replace(/\s*/g,"")==""||
+			$('#userFrom').val().replace(/\s*/g,"")==""||
+			$('#userEdu').val().replace(/\s*/g,"")==""||
+			$('#userMarr').val().replace(/\s*/g,"")==""
+			){
+				alert("请填写完基础信息");
+			}else{
 				//先清空之前的缓存
 				storage.removeItem("scale");
 				storage.removeItem("scaleRest");
 				//本地存放所有量表
 				storage.setItem("scale",scale_result_list,5*24*60*60*1000);
-				//本地存放所有未做的量表，初始为所有量表
+				//本地存放所有未做的量表，初始为所有量表(发布测评中的量表)
 				storage.setItem("scaleRest",scale_result_list,5*24*60*60*1000);
-				window.location.href = "doc_ligature.html";
-			}else{
-				alert("没有选中的测评哦")
+				
+				
+				//需要根据scale_result_list转到相应的页面
+				window.location.href = "doc_ligature.html?"+USER_ID;
+				
 			}
 		}
 	</script>
