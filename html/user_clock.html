@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-
+		<meta name="viewport" content="width=device-width, height=device-height,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<title></title>
 		
 		<link rel="stylesheet" type="text/css" href="../css/user.css" />
@@ -69,14 +69,20 @@
 		/**
 		 * ！！！！要设置为在画布中有记录之后才能发送消息！！！！
 		 */
-
 		var bot = document.getElementById('myCanvas'); //画布div
-		bot.height = parseInt(window.screen.availHeight) 
-		bot.width = window.screen.availWidth-100;
+		bot.height = parseInt(window.screen.availHeight) ;
+		bot.width = window.screen.availWidth;
+		//alert(bot.height+","+bot.width)
 		var myCanvas = document.getElementById('myCanvas', 1); //创建画布
 		var x, y, x1, y1; //记录坐标
-		var x0 = bot.getBoundingClientRect().x,
-			y0 = bot.getBoundingClientRect().y; //画板坐标偏移量
+		function kkk(){
+			alert(JSON.stringify(bot.getBoundingClientRect()))
+		return
+		}
+		//kkk()
+		// var x0 = bot.getBoundingClientRect().x,
+		// 	y0 = bot.getBoundingClientRect().y; //画板坐标偏移量
+		var x0 = 30,y0=0;
 		var flag = 0;
 		var context = myCanvas.getContext('2d'); //获取上下文
 		var isMouseDown = false; //判断鼠标是否按下，默认没有
@@ -87,7 +93,6 @@
 		var pen_color = 'red';
 		var pen_width = 2;
 		let dt;//
-		console.log(document.getElementById('draw-clock').offsetWidth)
 		window.onload = function() {
 			bot.ontouchstart = mouseDownAction;
 			bot.ontouchmove = mouseMoveAction;
@@ -108,11 +113,9 @@
 				document.getElementById('pencil-img').alt = 1;
 				console.log("**===")
 			});
-
 			pen_color = colour + ""; //线条粗细
 			pen_width = 2; //线条颜色
 		}
-
 		/**
 		 * 撤回
 		 */
@@ -128,7 +131,6 @@
 				context.drawImage(img, 0, 0)
 			})
 		}
-
 		/**
 		 * 重画
 		 */
@@ -136,28 +138,33 @@
 			bot.height = bot.height;
 			console.log(dataURL)
 			dataURL = myCanvas.toDataURL('image/webp');
-			console.log(dataURL)
 			imgStack.push(dataURL);
-			sendMSG();
+			sendMSG(dataURL);
 		}
-
-
 		/**
 		 * 鼠标按下
 		 */
 		function mouseDownAction(e) {
 			dt = setInterval(()=>{
-				if(websocket.readyState == 1)
-				sendMSG()
+				if(websocket.readyState == 1){
+					sendMSG(myCanvas.toDataURL('image/webp'))
+				}
+				
 				},0.2)
 			isMouseDown = true;
 			// x = e.offsetX;
 			// y = e.offsetY;
-
+			//alert(e.touches[0].pageX+"&"+e.touches[0].pageY)
+			
 			x = e.touches[0].pageX - x0;
 			y = e.touches[0].pageY - y0;
+			if (e && e.stopPropagation)
+				//因此它支持W3C的stopPropagation()方法 
+				e.stopPropagation();
+			else
+				//否则，我们需要使用IE的方式来取消事件冒泡 
+				window.event.cancelBubble = true;
 		}
-
 		/**
 		 * 鼠标开始移动
 		 */
@@ -171,9 +178,14 @@
 				flag++;
 				if (flag == 10000)
 					flag = 1;
+					if (e && e.stopPropagation)
+						//因此它支持W3C的stopPropagation()方法 
+						e.stopPropagation();
+					else
+						//否则，我们需要使用IE的方式来取消事件冒泡 
+						window.event.cancelBubble = true;
 			}
 		}
-
 		/**
 		 * 鼠标弹起来
 		 */
@@ -182,26 +194,30 @@
 			isMouseDown = false;
 			flag = 0;
 			if (isMove) {
-
 				imgStack.push(dataURL);
 				isMove = false;
-				sendMSG();
+				dataURL = myCanvas.toDataURL('image/webp');
+				sendMSG(dataURL);
+				
 			}
+			if (e && e.stopPropagation)
+				//因此它支持W3C的stopPropagation()方法 
+				e.stopPropagation();
+			else
+				//否则，我们需要使用IE的方式来取消事件冒泡 
+				window.event.cancelBubble = true;
 		}
-
 		/**
 		 * 画线
 		 */
 		function drowLine(X, Y, X1, Y1) {
 			//开启新的路径
 			if (flag) {
-
 				context.beginPath();
 				if (X != X1 && Y != Y1) {
 					isMove = true;
 				}
 			}
-
 			context.lineWidth = pen_width; //线条粗细
 			context.strokeStyle = pen_color; //线条颜色
 			context.moveTo(X, Y); //画笔起点坐标
@@ -210,10 +226,8 @@
 			if (flag != 0) {
 				x = x1;
 				y = y1;
-				dataURL = myCanvas.toDataURL('image/webp');
 			}
 		}
-
 		/**
 		 * websocket连接
 		 */
@@ -224,29 +238,22 @@
 			console.log('建立连接')
 			//websocket.binaryType = 'arraybuffer'	//传送arraybuffer字符串
 		}
-
 		websocket.onclose = function(e) {
 			console.log('连接关闭')
 		}
-
 		websocket.onmessage = function(e) {
 			console.log("有消息推送", e.data, '***');
-
 		}
-
 		websocket.onerror = function() {
 			console.log('建立连接出错')
 		}
-
 		//窗口关闭
 		window.onbeforeunload = function() {
 			websocket.close();
 		}
-
-
-		function sendMSG() {
+		function sendMSG(str) {
 			//发送消息是截断处理
-			var str = dataURL + '';
+			//var str = da + '';
 			//	console.log(dataURL)
 			var strArr = [];
 			//消息发送目标用户
@@ -260,8 +267,8 @@
 			}
 			for (let i = 0; i < strArr.length; i++) {
 				let obj ={};
-				obj.targets = [1,2,3,4,5,6,7,8];
-				obj.target = 123;
+				//obj.targets = [1,2,3,4,5,6,7,8];
+				obj.target = 11;
 				obj.data = strArr[i];
 				obj.incise = true;
 				if(i==strArr.length-1)

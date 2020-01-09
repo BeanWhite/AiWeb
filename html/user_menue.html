@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title></title>
+		<script src="./config/urlConfig.js"></script>
 	</head>
 	<style type="text/css">
 		#back {
@@ -88,7 +89,7 @@
 		</div>
 	</body>
 	<script>
-		
+		let USER_ID = window.location.search.split('?')[1].split(0,1);
 		document.getElementById('menue-test').onclick = function() {
 			alert(1)
 		};
@@ -96,5 +97,27 @@
 		document.getElementById('menue-report').onclick = function() {
 			alert(2)
 		};
+		
+		var ws = new WebSocket(config.wsURL+'/websocket/'+USER_ID);
+		ws.onopen = function(e){
+			console.log('连接成功');
+		}
+		
+		ws.onmessage = function(e){
+			
+			console.log('有消息推送',JSON.parse(e.data));
+		}
+		ws.onerror = function(e){
+			console.log('连接出错');
+		}
+		ws.onclose = function(e){
+			console.log('连接关闭');
+		}
+		function sendMSG(msg){
+			ws.send(JSON.stringify(msg));
+		}
+		window.onbeforeunload = function(){
+			ws.close();
+		}
 	</script>
 </html>

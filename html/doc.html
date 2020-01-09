@@ -11,9 +11,11 @@
 
 		<!-- 导入vue.js -->
 		<script src="../js/vue.js"></script>
-<script type="text/javascript" src="./config/urlConfig.js"></script>
+		<script type="text/javascript" src="./config/urlConfig.js"></script>
 		<!-- 引入jQuery.js -->
 		<script src="../js/jquery/jquery.min.js"></script>
+		
+		<script src="../js/toJump.js"></script>
 
 	</head>
 	<body>
@@ -61,7 +63,7 @@
 					</span>
 
 					<div class="scale-right-select">
-						<input type="search" id="searchUser"  oninput="searchUser()"/>
+						<input type="search" id="searchUser" oninput="searchUser()" />
 
 					</div>
 					<span class="scale-title"><img src="../svg/msg.svg" />
@@ -69,6 +71,9 @@
 					</span>
 
 					<div class="scale-right-basMsg">
+						<div style="display: none;">
+							姓名：<input type="" name="" id="userId" value="" />
+						</div>
 						<div class="scale-right-basMsg-div">
 							姓名：<input type="" name="" id="userName" value="" />
 						</div>
@@ -109,35 +114,35 @@
 
 	</body>
 	<script>
-		let USER_ID = window.location.search.split('?')[1].split(0,1);
+		let USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
 		console.log(USER_ID);
 		$(document).ready(function() {
 			$.ajax({
 				type: 'GET',
-				url: config.url+'/scales/all',
+				url: config.url + '/scales/all',
 				success: function(data) {
 					//alert(data.object)
 					console.log(data.object)
-					scale.items = data.object.slice(0,data.object.length);
-					scale_list.items = data.object.slice(0,data.object.length);
-					scale_rest.items = data.object.slice(0,data.object.length);
+					scale.items = data.object.slice(0, data.object.length);
+					scale_list.items = data.object.slice(0, data.object.length);
+					scale_rest.items = data.object.slice(0, data.object.length);
 				},
 				error: function(data) {
 					console.log('连接失败')
 				}
 			})
 		});
-		
+
 		/**
 		 * 封装的localStorage
 		 */
-		
+
 		class Storage {
 			constructor(arg) {
 				this.name = 'storage';
 			}
 			//设置缓存
-			setItem(key,value,expires) {
+			setItem(key, value, expires) {
 				let obj = {
 					key: key,
 					value: value,
@@ -145,36 +150,36 @@
 					startTime: new Date().getTime() //记录缓存存入时间，毫秒级
 				};
 				let options = {};
-		
+
 				//对象合并
 				Object.assign(options, obj);
-		
+
 				if (options.expires) {
 					//如果设置了过期时间
 					localStorage.setItem(options.key, JSON.stringify(options));
 				} else {
 					//如果没有设置过期时间,获取value的对象类型
 					let type = Object.prototype.toString.call(options.value);
-		
+
 					//如果是对象或者数组需要转为JSON字符串
 					if (type == '[object Object]')
 						options.value = JSON.stringify(options.value);
 					if (type == '[object Array]')
 						options.value = JSON.stringify(options.value);
-		
+
 					localStorage.setItem(options.key, options.value);
 				}
 			}
-		
+
 			//取出缓存
 			getItem(key) {
 				var item = localStorage.getItem(key);
 				try {
 					item = JSON.parse(item); //如果是JSON类型就转变为对象,一般用于封装存储
-				} catch(e){
+				} catch (e) {
 					item = item; //如果不是JSON类型就直接返回值，没有封装存储
-				} 
-		
+				}
+
 				//判断是否设置了过期时间，通过封装存储的才有过期时间
 				if (item.startTime) {
 					let date = new Date().getTime();
@@ -196,7 +201,7 @@
 				localStorage.clear();
 			}
 		}
-		
+
 		var storage = new Storage();
 		//量表合集
 		var scale = {
@@ -216,9 +221,9 @@
 		};
 		//未被选中的量表
 		var scale_rest = {
-			items:[]
+			items: []
 		};
-		
+
 		/**
 		 * 选择结果量表
 		 */
@@ -243,8 +248,8 @@
 				}
 			}
 		});
-		
-		
+
+
 		/**
 		 * 所有显示的量表
 		 */
@@ -253,7 +258,6 @@
 			data: scale_list,
 			methods: {
 				greet: function(it) {
-					console.log(it)
 					let o = {};
 					o.aiScaleName = it.aiScaleName;
 					o.aiScaleId = it.aiScaleId;
@@ -272,7 +276,7 @@
 							break;
 						}
 					}
-				
+
 				}
 			}
 		});
@@ -282,7 +286,7 @@
 		function inputsearch() {
 			let a = $('#search').val().replace(/\s*/g, "");
 			if (a == "") {
-				scale_list.items = scale_rest.items.slice(0,scale_rest.items.length);
+				scale_list.items = scale_rest.items.slice(0, scale_rest.items.length);
 				return
 			}
 			let kw = new RegExp(a, 'i');
@@ -297,9 +301,10 @@
 		/**
 		 * 搜索用户
 		 */
-		function searchUser(){
-			let a = $('#searchUser').val().replace(/\s*/g,"");
-			if(a==""){
+		function searchUser() {
+			let a = $('#searchUser').val().replace(/\s*/g, "");
+			if (a == "") {
+				$('#userId').val("");
 				$('#userName').val("");
 				$('#userAge').val("");
 				$('#userOffice').val("");
@@ -308,15 +313,16 @@
 				$('#userFrom').val("");
 				$('#userEdu').val("");
 				$('#userMarr').val("");
+
 				return
-			}
-			else{
+			} else {
 				$.ajax({
-					type:'GET',
-					url:config.url+'/users/msgForDoc/'+a,
-					success:function(e){
+					type: 'GET',
+					url: config.url + '/users/msgForDoc/' + a,
+					success: function(e) {
 						var data = e.object[0];
-						if(e.object.length==0){
+						if (e.object.length == 0) {
+							$('#userId').val("");
 							$('#userName').val("");
 							$('#userAge').val("");
 							$('#userOffice').val("");
@@ -325,21 +331,22 @@
 							$('#userFrom').val("");
 							$('#userEdu').val("");
 							$('#userMarr').val("");
-						}else{
+						} else {
+							$('#userId').val(data.aiUserId);
 							$('#userName').val(data.aiUserName);
-						$('#userAge').val(data.aiUserAge);
-						$('#userOffice').val(data.aiUserOffice);
-						$('#userSex').val(data.aiUserSex);
-						$('#userPro').val(data.aiUserProfession);
-						$('#userFrom').val(data.aiUserFrom);
-						$('#userEdu').val(data.aiUserEduBg);
-						$('#userMarr').val(data.aiUserMarriage);
+							$('#userAge').val(data.aiUserAge);
+							$('#userOffice').val(data.aiUserOffice);
+							$('#userSex').val(data.aiUserSex);
+							$('#userPro').val(data.aiUserProfession);
+							$('#userFrom').val(data.aiUserFrom);
+							$('#userEdu').val(data.aiUserEduBg);
+							$('#userMarr').val(data.aiUserMarriage);
 						}
 						console.log(e.object.length)
-						
-						
+
+
 					},
-					error:function(e){
+					error: function(e) {
 						console.log('连接出错')
 					}
 				})
@@ -348,63 +355,74 @@
 		/**
 		 * 发布测评
 		 */
-		function issueTest(){
-			let a = $('#searchUser').val().replace(/\s*/g,"");
-			if(scale_result_list.items.length==0){
+		function issueTest() {
+			let a = $('#searchUser').val().replace(/\s*/g, "");
+			if (scale_result_list.items.length == 0) {
 				alert("没有选中的测评哦");
-			}else if(a==""){
+			} else if (a == "") {
 				alert("请选择测评对象");
-			}else if(
-			$('#userName').val().replace(/\s*/g,"")==""||
-			$('#userAge').val().replace(/\s*/g,"")==""||
-			$('#userOffice').val().replace(/\s*/g,"")==""||
-			$('#userSex').val().replace(/\s*/g,"")==""||
-			$('#userPro').val().replace(/\s*/g,"")==""||
-			$('#userFrom').val().replace(/\s*/g,"")==""||
-			$('#userEdu').val().replace(/\s*/g,"")==""||
-			$('#userMarr').val().replace(/\s*/g,"")==""
-			){
+			} else if (
+				$('#userName').val().replace(/\s*/g, "") == "" ||
+				$('#userAge').val().replace(/\s*/g, "") == "" ||
+				$('#userOffice').val().replace(/\s*/g, "") == "" ||
+				$('#userSex').val().replace(/\s*/g, "") == "" ||
+				$('#userPro').val().replace(/\s*/g, "") == "" ||
+				$('#userFrom').val().replace(/\s*/g, "") == "" ||
+				$('#userEdu').val().replace(/\s*/g, "") == "" ||
+				$('#userMarr').val().replace(/\s*/g, "") == ""
+			) {
 				alert("请填写完基础信息");
-			}else{
+			} else {
 				//先清空之前的缓存
 				storage.removeItem("scale");
 				storage.removeItem("scaleRest");
+
 				//本地存放所有量表
-				storage.setItem("scale",scale_result_list,5*24*60*60*1000);
+				storage.setItem("scale", scale_result_list, 5 * 24 * 60 * 60 * 1000);
+
 				//本地存放所有未做的量表，初始为所有量表(发布测评中的量表)
-				storage.setItem("scaleRest",scale_result_list,5*24*60*60*1000);
-				
+				storage.setItem("scaleRest", scale_result_list, 5 * 24 * 60 * 60 * 1000);
+
+
 				//将测评量表发送至用户
-				var obj={
-					target:a,
-					data:scale_result_list,
-					isCache:true
+				var obj = {
+					target: $('#userId').val(),
+					from_who: USER_ID,
+					data: scale_result_list.items,
+					isCache: true,
+					status: 0,
+					dataType: "scale",
+					dataName: '量表信息'
 				};
-				
+				sendMSG(obj);
+				console.log(scale_result_list.items[0].aiScaleId)
+				toJump(scale_result_list.items[0].aiScaleId)
+				//window.location.href  = "iframe/scales.html?"+USER_ID;
 				//需要根据scale_result_list转到相应的页面
-				window.location.href = "doc_ligature.html?"+USER_ID;
-				
+				//window.location.href = "doc_ligature.html?"+USER_ID;
+
 			}
 		}
-	
-		var ws = new WebSocket(config.wsURL+'/websocket/'+USER_ID);
-		ws.onopen = function(e){
+
+		var ws = new WebSocket(config.wsURL + '/websocket/' + USER_ID);
+		ws.onopen = function(e) {
 			console.log('连接成功');
 		}
-		
-		ws.onmessage = function(e){
+
+		ws.onmessage = function(e) {
 			console.log('有消息推送');
 		}
-		ws.onerror = function(e){
+		ws.onerror = function(e) {
 			console.log('连接出错');
 		}
-		ws.onclose = function(e){
+		ws.onclose = function(e) {
 			console.log('连接关闭');
 		}
-		function sendMSG(msg){
+
+		function sendMSG(msg) {
 			ws.send(JSON.stringify(msg));
 		}
-		window.onbeforeunload = function(){
+		window.onbeforeunload = function() {
 			ws.close();
 		}
 	</script>
