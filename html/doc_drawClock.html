@@ -24,6 +24,10 @@
 		</div>
 		<div id="content">
 			<div class="scale">
+				<div id="next-scale">
+					<button type="button" onclick="next_scale()">下一个</button>
+					
+				</div>
 				<div class="cdt-menu">
 					<span class="cdt">CDT-3</span>
 					<span class="cdt">CDT-4</span>
@@ -40,7 +44,7 @@
 						<div class="question-content">
 							<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{guid}}</p>
 						</div>
-						<p class="question-title">图例:</p>
+						<p class="question-title toH">图例:</p>
 						<div class="question-img">
 							<img src="../img/clock.png" id="question-img"/>
 						</div>
@@ -95,8 +99,11 @@
 			<canvas id="" width="" height="" style="display: none;"></canvas>
 		</div>
 	</body>
+	<script src="utils/Storage.js"></script>
+	<script src="../js/toJump.js"></script>
 	<script>
-		let USER_ID = window.location.search.split('?')[1].split(0,1).join("");
+		//let USER_ID = window.location.search.split('?')[1].split(0,1).join("");
+		let USER_ID = 22;
 		$(document).ready(function() {
 
 			$.ajax({
@@ -118,13 +125,13 @@
 				}
 			})
 
-			let s;
 			let scale;
 			try {
-				s = storage.getItem("scale").items;
-				for (let i = 0; i < s.length; i++)
-					if (s[i].aiScaleId == 11) {
-						scale = s[i];
+				//取出第一个量表，然后从本地中删除这个量表信息
+				s = storage.getItem("scaleRest");
+				for (let i = 0; i < s.items.length; i++)
+					if (s.items[i].aiScaleId == 11) {
+						scale = s.items[i];
 						break
 					}
 
@@ -259,78 +266,11 @@
 			if(!scale)
 			alert("系统错误");
 
-		})
+		});
 
-		/**
-		 * 封装的localStorage
-		 */
-
-		class Storage {
-			constructor(arg) {
-				this.name = 'storage';
-			}
-			//设置缓存
-			setItem(key, value, expires) {
-				let obj = {
-					key: key,
-					value: value,
-					expires: expires, //过期时间
-					startTime: new Date().getTime() //记录缓存存入时间，毫秒级
-				};
-				let options = {};
-
-				//对象合并
-				Object.assign(options, obj);
-
-				if (options.expires) {
-					//如果设置了过期时间
-					localStorage.setItem(options.key, JSON.stringify(options));
-				} else {
-					//如果没有设置过期时间,获取value的对象类型
-					let type = Object.prototype.toString.call(options.value);
-
-					//如果是对象或者数组需要转为JSON字符串
-					if (type == '[object Object]')
-						options.value = JSON.stringify(options.value);
-					if (type == '[object Array]')
-						options.value = JSON.stringify(options.value);
-
-					localStorage.setItem(options.key, options.value);
-				}
-			}
-
-			//取出缓存
-			getItem(key) {
-				var item = localStorage.getItem(key);
-				try {
-					item = JSON.parse(item); //如果是JSON类型就转变为对象,一般用于封装存储
-				} catch (e) {
-					item = item; //如果不是JSON类型就直接返回值，没有封装存储
-				}
-
-				//判断是否设置了过期时间，通过封装存储的才有过期时间
-				if (item)
-					if (item.startTime && item.expires) {
-						let date = new Date().getTime();
-						if (date - item.startTime > item.expires) {
-							localStorage.removeItem(key)
-							return false;
-						} else {
-							return item.value
-						}
-					} else {
-						//返回未经过封装的对象
-						return item
-					}
-			}
-			removeItem(key) {
-				localStorage.removeItem(key);
-			}
-			clear() {
-				localStorage.clear();
-			}
-		}
-
+		//从本地读出的量表信息
+		let s;
+		
 		var storage = new Storage();
 
 
@@ -394,11 +334,33 @@
 					//console.log(do_score.)
 				}
 			}
-		})
-
+		});
+		
 		/**
-		 * 为选项列表添加事件
+		 * 页面跳转
 		 */
+		function next_scale(){
+	
+			let c = confirm('您是否测试完题目?')
+			if(c==true){
+				let ind;
+				console.log(s);
+				for(let i=0;i<s.items.length;i++){
+					if(s.items[i].aiScaleId == 11)
+					ind = i;
+				}
+				
+				if(ind+1 == s.items.length){
+					window.location.href = 'finish.html'
+				}else{
+					toJump(s.items[ind+1].aiScaleId)
+				}
+				
+				alert('页面跳转')
+			}else{
+				//nothing
+			}
+		}
 
 
 		/**

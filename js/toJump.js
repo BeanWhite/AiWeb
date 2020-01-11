@@ -8,7 +8,7 @@ function toJump(id) {
 			break;
 		case 4:
 			break;
-		case 5:window.location.href = '../html/doc_ADAS.html'
+		case 5:window.location.href = '../html/doc_ADAS.html?'+USER_ID;
 			break;
 		case 6:
 			break;
@@ -20,7 +20,7 @@ function toJump(id) {
 			break;
 		case 10:
 			break;
-		case 11:window.location.href = '../html/doc_drawClock.html'
+		case 11:window.location.href = '../html/doc_drawClock.html?'+USER_ID;
 			break;
 		case 12:
 			break;
@@ -38,7 +38,7 @@ function toJump(id) {
 			break;
 		case 19:
 			break;
-		case 20:window.location.href = '../html/doc_ligature.html'
+		case 20:window.location.href = '../html/doc_ligature.html?'+USER_ID;
 			break;
 		case 21:
 			break;

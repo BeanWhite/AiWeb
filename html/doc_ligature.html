@@ -23,6 +23,9 @@
 		</div>
 		<div id="content">
 			<div class="scale">
+				<div id="next-scale">
+					<button type="button" onclick="next_scale()">下一个</button>
+				</div>
 				<div class="cdt-menu">
 					<span class="cdt">A部分练习</span>
 					<span class="cdt">A部分测试</span>
@@ -112,6 +115,8 @@
 			<canvas id="" width="" height="" style="display: none;"></canvas>
 		</div>
 	</body>
+	<script src="utils/Storage.js"></script>
+	<script src="../js/toJump.js"></script>
 	<script>
 	let USER_ID = window.location.search.split('?')[1].split(0,1).join("");
 		
@@ -149,15 +154,14 @@
 				}
 			})
 
-			let s;
+			
 			let scale;
 			//检测内容是否发送过来
 			try {
-				s = storage.getItem("scale").items;
-				for (let i = 0; i < s.length; i++)
-					if (s[i].aiScaleId == 20) {
-						scale = s[i];
-
+				s = storage.getItem("scaleRest");
+				for (let i = 0; i < s.items.length; i++)
+					if (s.items[i].aiScaleId == 20) {
+						scale = s.items[i];
 						break
 					}
 
@@ -165,6 +169,7 @@
 				console.log('出错了')
 				return
 			}
+			
 			let p = [];
 			let f = "";
 			let f2 = "";
@@ -212,12 +217,13 @@
 			//顶部按钮点击事件
 			for (let i = 0; i < cdt.length; i++)
 				cdt[i].onclick = function() {
-					if (i > Pos)
+					if (i > Pos+1)
 						alert('请先完成前面的测试')
 					else {
-						Pos++;
-						if (Pos > 10)
-							Pos = 10;
+						if(i>Pos)
+							Pos++;
+						if(Pos>3)
+						Pos = 3;
 						this.style.backgroundColor = "rosybrown";
 
 						notice.splice(0, notice.length);
@@ -249,83 +255,16 @@
 				alert("系统错误");
 		})
 
-		/**
-		 * 封装的localStorage
-		 */
-
-		class Storage {
-			constructor(arg) {
-				this.name = 'storage';
-			}
-			//设置缓存
-			setItem(key, value, expires) {
-				let obj = {
-					key: key,
-					value: value,
-					expires: expires, //过期时间
-					startTime: new Date().getTime() //记录缓存存入时间，毫秒级
-				};
-				let options = {};
-
-				//对象合并
-				Object.assign(options, obj);
-
-				if (options.expires) {
-					//如果设置了过期时间
-					localStorage.setItem(options.key, JSON.stringify(options));
-				} else {
-					//如果没有设置过期时间,获取value的对象类型
-					let type = Object.prototype.toString.call(options.value);
-
-					//如果是对象或者数组需要转为JSON字符串
-					if (type == '[object Object]')
-						options.value = JSON.stringify(options.value);
-					if (type == '[object Array]')
-						options.value = JSON.stringify(options.value);
-
-					localStorage.setItem(options.key, options.value);
-				}
-			}
-
-			//取出缓存
-			getItem(key) {
-				var item = localStorage.getItem(key);
-				try {
-					item = JSON.parse(item); //如果是JSON类型就转变为对象,一般用于封装存储
-				} catch (e) {
-					item = item; //如果不是JSON类型就直接返回值，没有封装存储
-				}
-
-				//判断是否设置了过期时间，通过封装存储的才有过期时间
-				if (item)
-					if (item.startTime && item.expires) {
-						let date = new Date().getTime();
-						if (date - item.startTime > item.expires) {
-							localStorage.removeItem(key)
-							return false;
-						} else {
-							return item.value
-						}
-					} else {
-						//返回未经过封装的对象
-						return item
-					}
-			}
-			removeItem(key) {
-				localStorage.removeItem(key);
-			}
-			clear() {
-				localStorage.clear();
-			}
-		}
-
+		//从本地读取的量表信息
+		let s;
+		
 		var storage = new Storage();
 
 
 		var cdt = document.getElementsByClassName('cdt');
 
 		//记录当前测试位置
-		var Pos = 0;
+		var Pos = -1;
 
 		//所有题目信息
 		var all_test = [];
@@ -382,6 +321,25 @@
 				methods
 			}
 		});
+		
+		function next_scale(){
+			if(Pos>=3){
+				let ind;
+				console.log(s);
+				for(let i=0;i<s.items.length;i++){
+					if(s.items[i].aiScaleId == 20)
+					ind = i;
+				}
+				if(ind+1 == s.items.length){
+					window.location.href = 'finish.html'
+				}else{
+					toJump(s.items[ind+1].aiScaleId)
+				}
+				alert('可以跳转');
+			}else{
+				alert('您还有未完成的内容');
+			}
+		}
 
 
 		/**
@@ -404,6 +362,7 @@
 		 * 切换窗口
 		 */
 		function checkScore() {
+			document.getElementsByClassName('cdt-menu')[0].style.visibility = 'visible';
 			let a = document.getElementsByClassName('content1');
 			let b = document.getElementsByClassName('content2');
 			for (let i = 0; i < a.length; i++) {
@@ -416,6 +375,7 @@
 		 * 返回上一层
 		 */
 		function backPage() {
+			document.getElementsByClassName('cdt-menu')[0].style.visibility = 'hidden';
 			document.getElementsByClassName('back')[0].style.display = 'none';
 			let a = document.getElementsByClassName('content1');
 			let b = document.getElementsByClassName('content2');

@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, height=device-height,initial-scale=1, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 		<title></title>
-		
+
 		<link rel="stylesheet" type="text/css" href="../css/user.css" />
 		<script type="text/javascript" src="./config/urlConfig.js"></script>
 		<!-- 引入jQuery.js -->
@@ -54,7 +54,6 @@
 
 	</body>
 	<script>
-	
 		document.getElementById('pencil-img').ontouchstart = function() {
 			if (this.alt == 1) {
 				$("#pen-color").fadeIn(1000);
@@ -70,19 +69,20 @@
 		 * ！！！！要设置为在画布中有记录之后才能发送消息！！！！
 		 */
 		var bot = document.getElementById('myCanvas'); //画布div
-		bot.height = parseInt(window.screen.availHeight) ;
+		bot.height = parseInt(window.screen.availHeight);
 		bot.width = window.screen.availWidth;
 		//alert(bot.height+","+bot.width)
 		var myCanvas = document.getElementById('myCanvas', 1); //创建画布
 		var x, y, x1, y1; //记录坐标
-		function kkk(){
+		function kkk() {
 			alert(JSON.stringify(bot.getBoundingClientRect()))
-		return
+			return
 		}
 		//kkk()
 		// var x0 = bot.getBoundingClientRect().x,
 		// 	y0 = bot.getBoundingClientRect().y; //画板坐标偏移量
-		var x0 = 30,y0=0;
+		var x0 = 30,
+			y0 = 0;
 		var flag = 0;
 		var context = myCanvas.getContext('2d'); //获取上下文
 		var isMouseDown = false; //判断鼠标是否按下，默认没有
@@ -92,19 +92,19 @@
 		var flag_img = 0;
 		var pen_color = 'red';
 		var pen_width = 2;
-		let dt;//
+		let dt; //
 		window.onload = function() {
 			bot.ontouchstart = mouseDownAction;
 			bot.ontouchmove = mouseMoveAction;
 			bot.ontouchend = mouseUpAction;
-			
+
 			// bot.onmousedown = mouseDownAction;
 			// bot.onmousemove = mouseMoveAction;
 			// bot.onmouseup = mouseUpAction;
 		}
-		
-		
-		
+
+
+
 		/**
 		 * 选择画笔颜色
 		 */
@@ -145,17 +145,17 @@
 		 * 鼠标按下
 		 */
 		function mouseDownAction(e) {
-			dt = setInterval(()=>{
-				if(websocket.readyState == 1){
+			dt = setInterval(() => {
+				if (websocket.readyState == 1) {
 					sendMSG(myCanvas.toDataURL('image/webp'))
 				}
-				
-				},0.2)
+
+			}, 0.2)
 			isMouseDown = true;
 			// x = e.offsetX;
 			// y = e.offsetY;
 			//alert(e.touches[0].pageX+"&"+e.touches[0].pageY)
-			
+
 			x = e.touches[0].pageX - x0;
 			y = e.touches[0].pageY - y0;
 			if (e && e.stopPropagation)
@@ -178,12 +178,12 @@
 				flag++;
 				if (flag == 10000)
 					flag = 1;
-					if (e && e.stopPropagation)
-						//因此它支持W3C的stopPropagation()方法 
-						e.stopPropagation();
-					else
-						//否则，我们需要使用IE的方式来取消事件冒泡 
-						window.event.cancelBubble = true;
+				if (e && e.stopPropagation)
+					//因此它支持W3C的stopPropagation()方法 
+					e.stopPropagation();
+				else
+					//否则，我们需要使用IE的方式来取消事件冒泡 
+					window.event.cancelBubble = true;
 			}
 		}
 		/**
@@ -198,7 +198,7 @@
 				isMove = false;
 				dataURL = myCanvas.toDataURL('image/webp');
 				sendMSG(dataURL);
-				
+
 			}
 			if (e && e.stopPropagation)
 				//因此它支持W3C的stopPropagation()方法 
@@ -232,7 +232,7 @@
 		 * websocket连接
 		 */
 		var websocket = null;
-		websocket = new WebSocket(config.wsURL+'/websocket/' + 124)
+		websocket = new WebSocket(config.wsURL + '/websocket/' + 124)
 		websocket.binaryType = "arraybuffer"
 		websocket.onopen = function(e) {
 			console.log('建立连接')
@@ -251,6 +251,7 @@
 		window.onbeforeunload = function() {
 			websocket.close();
 		}
+
 		function sendMSG(str) {
 			//发送消息是截断处理
 			//var str = da + '';
@@ -266,45 +267,47 @@
 				strArr[0] = str;
 			}
 			for (let i = 0; i < strArr.length; i++) {
-				let obj ={};
+				let obj = {};
 				//obj.targets = [1,2,3,4,5,6,7,8];
 				obj.target = 11;
 				obj.data = strArr[i];
 				obj.incise = true;
-				if(i==strArr.length-1)
-				obj.endIncise = true;
+				if (i == strArr.length - 1)
+					obj.endIncise = true;
 				websocket.send(JSON.stringify(obj));
 			}
 		}
-		
-		
-		function sendT(){
+
+
+		function sendT() {
 			//let str = base64ToUint8Array(dataURL);
 			//console.log(str)
-			
+
 		}
+
 		function base64ToUint8Array(base64String) {
-		　　　　const padding = '='.repeat((4 - base64String.length % 4) % 4);
-		       const base64 = (base64String + padding)
-		                    .replace(/\-/g, '+')
-		                    .replace(/_/g, '/');
-		
-		       const rawData = window.atob(base64);
-		       const outputArray = new Uint8Array(rawData.length);
-		
-		       for (let i = 0; i < rawData.length; ++i) {
-		            outputArray[i] = rawData.charCodeAt(i);
-		       }
-		       return outputArray;
+			const padding = '='.repeat((4 - base64String.length % 4) % 4);
+			const base64 = (base64String + padding)
+				.replace(/\-/g, '+')
+				.replace(/_/g, '/');
+
+			const rawData = window.atob(base64);
+			const outputArray = new Uint8Array(rawData.length);
+
+			for (let i = 0; i < rawData.length; ++i) {
+				outputArray[i] = rawData.charCodeAt(i);
+			}
+			return outputArray;
 		}
+
 		function arrayBufferToBase64(buffer) {
-		         var binary = '';
-		         var bytes = new Uint8Array(buffer);
-		         var len = bytes.byteLength;
-		         for (var i = 0; i < len; i++) {
-		               binary += String.fromCharCode(bytes[i]);
-		         }
-		         return window.btoa(binary);
+			var binary = '';
+			var bytes = new Uint8Array(buffer);
+			var len = bytes.byteLength;
+			for (var i = 0; i < len; i++) {
+				binary += String.fromCharCode(bytes[i]);
+			}
+			return window.btoa(binary);
 		}
 	</script>
 </html>

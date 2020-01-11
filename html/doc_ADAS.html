@@ -11,6 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="../css/doc_ADAS.css" />
 		<!-- 导入vue.js -->
 		<script type="text/javascript" src="../js/vue.js"></script>
+		<!-- <script type="text/javascript" src="../js/vue.min.js"></script> -->
 		<!-- 引入jQuery.js -->
 		<script src="../js/jquery/jquery.min.js"></script>
 	</head>
@@ -21,9 +22,255 @@
 			<div class="dynamic-area2"></div>
 		</div>
 		<div id="content">
-			<div class="ADAS-content">
-				555555
+			<div class="scale scale-Title vue">
+				<div id="title">{{data[0]}}</div>
+				<div class="dialog dialog-back"></div>
+				<div class="dialog-content dialog">
+					<img src="../img/cdt-7.png" >
+					<div id="">
+						描述
+					</div>
+				</div>
+				<div id="first" class="page-content toHidden">
+					<div class="scale-left">
+						<div class="content-title">
+							指导语
+						</div>
+						<div class="guid-content">
+							<ul style="background-color: #A9A9A9;">
+								<li v-for="it in data">{{it}}</li>
+							</ul>
+						</div>
+
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							量表说明
+						</div>
+						<ul class="scale-explain-content">
+							<li></li>
+						</ul>
+					</div>
+				</div>
+				<div id="second" class="page-content toHidden">
+					<div class="scale-left">
+						<div class="content-title">
+							1.单词回忆任务
+						</div>
+						<div class="second-content">
+							指导语:{{}}<br>
+							操作:{{}}
+						</div>
+						<div class="content-title-size">
+							{第一组}
+						</div>
+						<ul class="scale-topic">
+							<li class="toNext">进入下一组</li>
+							<li v-for="" class="word-group">
+								<div class="word">
+									<img src="" class="pointer">
+									{单词}
+								</div>
+								<div class="word-check">
+									{复选框}
+								</div>
+							</li>
+
+						</ul>
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评判
+						</div>
+						<ul class="judege">
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									第一组
+								</div>
+								<div style="width: 100%;display: flex;justify-content: space-between;">
+									<span>未能回忆的单词数:</span>
+									<span>9</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									第二组
+								</div>
+								<div style="width: 100%;display: flex;justify-content: space-between;">
+									<span>未能回忆的单词数:</span>
+									<span>9</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									第三组
+								</div>
+								<div style="width: 100%;display: flex;justify-content: space-between;">
+									<span>未能回忆的单词数:</span>
+									<span>9</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="width: 100%;display: flex;justify-content: flex-start;">
+									<span>评判得分:</span>
+									<span>9</span>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div id="third" class="page-content toShow">
+					<div class="scale-left">
+						<div class="content-title">
+							1.命名物体或手指
+						</div>
+						<div class="third-content">
+							指导语:{{}}<br>
+							操作:{{}}
+						</div>
+						<ul class="scale-topic">
+							<li v-for="" class="word-group word-group-wrap">
+								<div class="word-group-content"></div>
+							</li>
+							<li v-for="" class="word-group word-group-wrap">
+								<div class="word-group-content"></div>
+							</li>
+							<li v-for="" class="word-group word-group-wrap">
+								<div class="word-group-content"></div>
+							</li>
+							
+						</ul>
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评判
+						</div>
+						<ul class="judege">
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									第一组
+								</div>
+								<div style="width: 100%;display: flex;justify-content: space-between;">
+									<span>未能回忆的单词数:</span>
+									<span>9</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									第二组
+								</div>
+								<div style="width: 100%;display: flex;justify-content: space-between;">
+									<span>未能回忆的单词数:</span>
+									<span>9</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									第三组
+								</div>
+								<div style="width: 100%;display: flex;justify-content: space-between;">
+									<span>未能回忆的单词数:</span>
+									<span>9</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="width: 100%;display: flex;justify-content: flex-start;">
+									<span>评判得分:</span>
+									<span>9</span>
+								</div>
+							</li>
+						</ul>
+
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
+	<script src="config/urlConfig.js"></script>
+	<script>
+		$(document).ready(function(){
+			$.ajax({
+				url:config.url+'/scales/testMsg/'+5,
+				type:'GET',
+				success:function(e){
+					console.log(e)
+				},
+				error:function(e){
+					console.log('后台获取出错')
+				}
+			})
+			
+		});
+		//题目信息数据包
+		
+		const topicData = {
+			first:{
+				
+			},
+			second:{
+				
+			},
+			third:{
+				
+			},
+			fourth:{
+				
+			},
+			fifth:{
+				
+			},
+			sixth:{
+				
+			},
+			seventh:{
+				
+			},
+			ninth:{
+				
+			},
+			tenth:{
+				
+			},
+			eleventh:{
+				
+			},
+			twentieth:{
+				
+			}
+		};
+		
+		//vue控制器
+		const vue = new Vue({
+			el: '.vue',
+			data: {
+				data: [1, 2, 3, 4, 5, 6, 7],
+				isShow: true
+			}
+		});
+		var p =document.documentElement.outerHTML;
+		var array = new ArrayBuffer(1024);
+		var longInt8View = new Uint8Array(array);
+		 
+		for (var i=0; i< longInt8View.length; i++) {
+		  longInt8View[i] = i % 255;
+		}
+		
+		console.log(array) 
+		// var xhr = new XMLHttpRequest;
+		// xhr.open("POST", url, false);
+		// xhr.send(myArray);
+		var a = document.createElement('a');
+		 $.ajax({
+			 type:'POST',
+			 data:p,
+			 url:'http://localhost:80/pdf/p'
+		 });
+		
+	</script>
 </html>

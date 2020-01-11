@@ -1,12 +1,14 @@
 .cdt-menu{
+	visibility: hidden;
+	white-space: nowrap;
 	width: 700px;
 	position: absolute;
 	top: 40px;
 	left: 0;
-	right: 100px;
+	right: 0;
 	margin: 0 auto;
 	display: flex;
-	justify-content: space-around;
+	justify-content: center;
 	align-items: center;
 }
 .cdt{
@@ -21,6 +23,7 @@
 	padding: 0 5px 0 5px;
 	cursor: default;
 	user-select:none ;
+	margin-right: 20px;
 }
 .slid-bar {
 	display: none;
@@ -259,3 +262,11 @@ margin: auto 0;
 .off{
 	background: cadetblue;
 }
+
+#next-scale{
+	z-index: 20;
+	position: absolute;
+	bottom: 40px;
+	right: 40px;
+}
+

@@ -125,6 +125,7 @@
 					success: function(data) {
 						console.log(data)
 						if(data.object == "管理员"||data.object==0){
+							alert('管理员')
 							//跳转到管理员界面
 						}else if(data.object=="医生"||data.object==1){
 							//跳转到医生界面
@@ -134,6 +135,7 @@
 							window.location.href = "html/user_menue.html?"+user;
 						}else {
 							//开发界面
+							
 							console.log(data.msg)
 						}
 						
