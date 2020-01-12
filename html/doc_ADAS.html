@@ -253,24 +253,7 @@
 				isShow: true
 			}
 		});
-		var p =document.documentElement.outerHTML;
-		var array = new ArrayBuffer(1024);
-		var longInt8View = new Uint8Array(array);
-		 
-		for (var i=0; i< longInt8View.length; i++) {
-		  longInt8View[i] = i % 255;
-		}
 		
-		console.log(array) 
-		// var xhr = new XMLHttpRequest;
-		// xhr.open("POST", url, false);
-		// xhr.send(myArray);
-		var a = document.createElement('a');
-		 $.ajax({
-			 type:'POST',
-			 data:p,
-			 url:'http://localhost:80/pdf/p'
-		 });
 		
 	</script>
 </html>

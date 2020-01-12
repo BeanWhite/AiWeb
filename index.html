@@ -49,7 +49,7 @@
 					this.name = 'storage';
 				}
 				//设置缓存
-				setItem(key,value,expires) {
+				setItem(key, value, expires) {
 					let obj = {
 						key: key,
 						value: value,
@@ -83,12 +83,12 @@
 					var item = localStorage.getItem(key);
 					try {
 						item = JSON.parse(item); //如果是JSON类型就转变为对象,一般用于封装存储
-					} catch(e){
+					} catch (e) {
 						item = item; //如果不是JSON类型就直接返回值，没有封装存储
-					} 
+					}
 
 					//判断是否设置了过期时间，通过封装存储的才有过期时间
-					if (item.startTime&&item.expires) {
+					if (item.startTime && item.expires) {
 						let date = new Date().getTime();
 						if (date - item.startTime > item.expires) {
 							localStorage.removeItem(key)
@@ -108,7 +108,7 @@
 					localStorage.clear();
 				}
 			}
-			
+
 			function submitForm() {
 				var user = document.getElementById("user").value;
 				var pwd = document.getElementById('pwd').value;
@@ -118,27 +118,32 @@
 				}
 				$.ajax({
 					type: "POST",
-					url: config.url+"/login/u",
+					url: config.url + "/login/u",
 					dataType: "JSON",
 					data: data,
 					async: true,
 					success: function(data) {
 						console.log(data)
-						if(data.object == "管理员"||data.object==0){
-							alert('管理员')
-							//跳转到管理员界面
-						}else if(data.object=="医生"||data.object==1){
-							//跳转到医生界面
-							window.location.href = "html/doc.html?"+user;
-						}else if(data.object=="用户"||data.object==2){
-							//跳转到用户界面
-							window.location.href = "html/user_menue.html?"+user;
-						}else {
-							//开发界面
-							
-							console.log(data.msg)
+						if (data.msg == '登录成功') {
+							if (data.object == "管理员" || data.object == 0) {
+								alert('管理员')
+								//跳转到管理员界面
+							} else if (data.object == "医生" || data.object == 1) {
+								//跳转到医生界面
+								window.location.href = "html/doc.html?" + user;
+							} else if (data.object == "用户" || data.object == 2) {
+								//跳转到用户界面
+								window.location.href = "html/user_menue.html?" + user;
+							} else {
+								//开发界面
+
+								console.log(data.msg)
+							}
+						}else{
+							alert(data.msg)
 						}
-						
+
+
 					},
 					error: function() {
 						console.log(555)
