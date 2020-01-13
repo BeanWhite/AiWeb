@@ -6,98 +6,113 @@
 		<script src="js/jquery/jquery.min.js"></script>
 		<style type="text/css">
 			@media print {
-				
-			 	@page {
-			 		size: A4 portrait;
-			 		margin: 2.5cm 1cm 4.5cm 1cm;
+
+				@page {
+					size: A4 portrait;
+					margin: 2.5cm 1cm 4.5cm 1cm;
 					padding: 0;
-					@top-center{
+
+					@top-center {
 						width: 100%;
 						height: 100%;
 						content: element(divHeader);
-						
+
 					}
-					@bottom-center{
+
+					@bottom-center {
 						width: 100%;
 						height: 100%;
-						content:element(divFooter);
+						content: element(divFooter);
 					}
-					
-			 	}
-			
-				
-				.first-h1{
+
+				}
+
+
+				.first-h1 {
 					page-break-before: avoid;
 				}
-				h1{
+
+				h1 {
 					page-break-before: always;
 				}
-				
-				h1,h2,h3,h4,h5,h6,p{
+
+				h1,
+				h2,
+				h3,
+				h4,
+				h5,
+				h6,
+				p {
 					margin: 0;
 					padding: 0;
 				}
-				#header-fix{
+
+				#header-fix {
 					position: absolute;
 					height: 100%;
 					width: 100%;
 					background-color: rosybrown;
 					content: counter(page);
 				}
-				#footer-fix{
+
+				#footer-fix {
 					position: absolute;
 					height: 100%;
 					width: 100%;
 				}
-				#footer-box{
+
+				#footer-box {
 					height: 100%;
 					width: 100%;
 				}
-				#report-date{
-				
-				}
-				#office{
-				
-				}
-				.line-top{
+
+				#report-date {}
+
+				#office {}
+
+				.line-top {
 					display: flex;
 					justify-content: space-between;
 					border-bottom: 1px solid black;
 				}
-				.line-center{
+
+				.line-center {
 					margin-top: 2px;
 					border-top: 3px solid black;
 				}
-				.line-bottom{
+
+				.line-bottom {
 					margin-top: 3px;
-					border-bottom:1px solid black;
+					border-bottom: 1px solid black;
 				}
-				#page-num{
+
+				#page-num {
 					width: 100%;
 					text-align: center;
-					content:"(第"counter(page)"页/共"counter(pages)"页)";
+					content: "(第"counter(page)"页/共"counter(pages)"页)";
 				}
-			 	button{
+
+				button {
 					display: none;
 				}
-				#divHeader {    
-					
-					
-					position:running(divHeader) ;
-					prince-flow:static(divHeader,start)
-					width: 100%;	
+
+				#divHeader {
+
+
+					position: running(divHeader);
+					prince-flow: static(divHeader, start) width: 100%;
 					height: 100px;
 					/* background-color: green; */
 				}
-				
+
 				#divFooter {
 					position: running(divFooter);
 					width: 100%;
 					/* background-color: red; */
 					height: 100%;
 				}
-				
-			 }
+
+			}
 		</style>
 
 	</head>
@@ -123,11 +138,9 @@
 		}
 	</style>
 	<body style="height: 100%;">
-		<span id="">
-			<img src="http://i1.sinaimg.cn/ent/d/2008-06-04/U105P28T3D2048907F326DT20080604225106.jpg" style="width: 100px;">888
-		</span>
 
-		<button type="button" onclick="print_PDF()" id="ot">ok</button>
+
+
 		<div id="divHeader">
 			<div id="header-fix">
 
@@ -149,38 +162,56 @@
 			</div>
 		</div>
 		<div class="page">
-			<h1 class="first-h1">ppppppppppp</h1>
-			<p>222</p>
-			<p>222</p>
-			<p>222</p>
-			<p>222</p>
 			
-<input type="file" name="" id="file"/>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<p>dafaf</p>
+			<span id="">
+				<img src="http://i1.sinaimg.cn/ent/d/2008-06-04/U105P28T3D2048907F326DT20080604225106.jpg" style="width: 100px;">888
+			</span>
+			<button type="button" onclick="print_PDF()" id="ot">ok</button>
+			<input type="file" name="" id="file" />
+		</div>
 
-		<div id="kkk">
-			999
-		</div>
-		</div>
-		
 
 	</body>
+	<script src="html/config/urlConfig.js"></script>
 	<script>
-		 var pdf = '../'+'3.pdf';
+		var pdf = '../' + '1.pdf';
 		// window.href = 'js/pdf.js/web/viewer.html?' + pdf;
-		 //window.open('js/pdf.js/web/viewer.html?' + pdf, 'PDF');
-		
+		//window.open('js/pdf.js/web/viewer.html?' + pdf, 'PDF');
+
 		// window.location.href = 'html/doc.html'
 		var p = document.documentElement.outerHTML;
 		var array = new ArrayBuffer(1024);
 		var longInt8View = new Uint8Array(array);
 		var fi = document.getElementById('file');
-		
+
 		var str = 'fdasfd21啊发多';
 		var a = document.getElementById('kkk');
 		var blob = new Blob([p], {
 			type: "text/plain"
 		});
-		console.log(blob,'blob')
+		console.log(blob, 'blob')
 		console.log(sliceBlob(blob, 0, 8), 'slice方法')
 		var reader = new FileReader();
 		reader.addEventListener("loadend", function(e) {
@@ -190,37 +221,43 @@
 		reader.readAsArrayBuffer(blob);
 		var text = (new Response(blob)).text();
 		console.log(text, 'text')
-		
+
 		var formData = new FormData();
-		formData.append('b',blob);
-		console.log(formData,"da")
+		formData.append('b', blob);
+		console.log(formData, "da")
 		// var request = new XMLHttpRequest();
 		// request.open("POST","http://localhost:80/pdf/p1");
 		// request.send(formData);
 		$.ajax({
 			type: "POST",
-			url: 'http://localhost:80/pdf/p1',
-			data: {b:formData},
+			url: config.url + '/pdf/p1',
+			data: {
+				b: formData
+			},
 			processData: false, // 告诉jQuery不要去处理发送的数据
 			contentType: false, // 告诉jQuery不要去设置Content-Type请求头
 			success: function(data) {
-				console.log(data,"gygu")
-		
+				console.log(data, "gygu")
+
 			},
 			error: function() {
 				console.log(555)
 			}
 		})
+
 		function print_PDF() {
-			window.open('js/pdf.js/web/viewer.html?' + pdf, 'PDF');
+			//window.open('js/pdf.js/web/viewer.html?' + pdf, 'PDF');
 			$.ajax({
 				type: "POST",
-				url: 'http://localhost:80/pdf/p',
-				data: {s:p},
+				url: config.url + '/pdf/p',
+				data: {
+					s: p
+				},
 				// processData: false, // 告诉jQuery不要去处理发送的数据
 				// contentType: false, // 告诉jQuery不要去设置Content-Type请求头
 				success: function(data) {
-					console.log(data)
+					if (data.object == true)
+						window.open('js/pdf.js/web/viewer.html?' + pdf, 'PDF');
 
 				},
 				error: function() {
@@ -228,7 +265,7 @@
 				}
 			})
 		}
-		
+
 
 		for (var i = 0; i < longInt8View.length; i++) {
 			longInt8View[i] = i % 255;

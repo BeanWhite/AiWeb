@@ -23,13 +23,19 @@
 		</div>
 		<div id="content">
 			<div class="scale scale-Title vue">
-				<div id="title">{{data[0]}}</div>
-				<div class="dialog dialog-back"></div>
-				<div class="dialog-content dialog">
-					<img src="../img/cdt-7.png" >
-					<div id="">
-						描述
-					</div>
+				<div id="title">量表名称：{{scaleData.index.aiScaleName}}-认知</div>
+				<div class="dialog-back" v-bind:class="[isShow?'dialog-on':'dialog-off']"></div>
+				<div class="dialog-content" v-bind:class="[isShow?'dialog-on':'dialog-off']">
+					<!-- <img src="../img/cdt-7.png"> -->
+					<ul class="clue-1">
+						<li class="clue-1-list" v-for="(it,index) in scaleData['2'].aiQuestionAnswerDescribe">
+							<span class="clue-title">{{it[0]}}</span>
+							<ul class="clue-2">
+								<li class="clue-2-list" v-for="i in it.slice(1)">{{i}}</li>
+							</ul>
+						</li>
+					</ul>
+					<button type="button" v-on:click="closeDialog()">close</button>
 				</div>
 				<div id="first" class="page-content toHidden">
 					<div class="scale-left">
@@ -37,8 +43,8 @@
 							指导语
 						</div>
 						<div class="guid-content">
-							<ul style="background-color: #A9A9A9;">
-								<li v-for="it in data">{{it}}</li>
+							<ul class="guid-content-list">
+								<li v-for="(it,index) in scaleData.index.aiScaleNotice">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{it}}</li>
 							</ul>
 						</div>
 
@@ -48,7 +54,7 @@
 							量表说明
 						</div>
 						<ul class="scale-explain-content">
-							<li></li>
+							<li v-for="(it,index) in scaleData.index.aiScaleOverview">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{it}}</li>
 						</ul>
 					</div>
 				</div>
@@ -58,23 +64,28 @@
 							1.单词回忆任务
 						</div>
 						<div class="second-content">
-							指导语:{{}}<br>
-							操作:{{}}
+							指导语:{{scaleData['1'].aiQuestionGuid}}<br>
+							操作:{{scaleData['1'].aiQuestionNotice}}
 						</div>
 						<div class="content-title-size">
-							{第一组}
+							第一组
 						</div>
 						<ul class="scale-topic">
-							<li class="toNext">进入下一组</li>
-							<li v-for="" class="word-group">
-								<div class="word">
-									<img src="" class="pointer">
-									{单词}
+							<li class="toNext" v-on:click="toNextGroup_1()">进入下一组</li>
+							<li v-for="(it,index) in scaleData['1'].aiQuestionContent[0]" class="word-group">
+								<div class="word" v-on:click="wordClick(it,index)" v-bind:class="[wordTouch.indexOf(index)>-1?'word-bgc':'']">
+									<div v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" class="pointer-content">点击并朗读</div>
+									<img v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/pointer.svg" class="pointer">
+									{{it}}
 								</div>
-								<div class="word-check">
-									{复选框}
+								<div class="line">
+								</div>
+								<div class="word-check" v-on:click="checkBox(it,index)">
+									<img class="checkBox-svg" v-bind:class="[checkBoxIndex_1.indexOf(index)>-1?'toHidden':'toShow']" src="../svg/checkBox_off.svg">
+									<img class="checkBox-svg" v-bind:class="[checkBoxIndex_1.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/checkBox_on.svg">
 								</div>
 							</li>
+							<li style="border-right: solid 1px darkgray;height: 100%;"></li>
 
 						</ul>
 					</div>
@@ -125,135 +136,439 @@
 				<div id="third" class="page-content toShow">
 					<div class="scale-left">
 						<div class="content-title">
-							1.命名物体或手指
+							2.命名物体或手指
 						</div>
 						<div class="third-content">
-							指导语:{{}}<br>
-							操作:{{}}
+							指导语:{{scaleData['2'].aiQuestionGuid}}<br>
+							操作:{{scaleData['2'].aiQuestionNotice}}
 						</div>
-						<ul class="scale-topic">
-							<li v-for="" class="word-group word-group-wrap">
-								<div class="word-group-content"></div>
-							</li>
-							<li v-for="" class="word-group word-group-wrap">
-								<div class="word-group-content"></div>
-							</li>
-							<li v-for="" class="word-group word-group-wrap">
-								<div class="word-group-content"></div>
-							</li>
-							
+						<ul class="scale-topic" style="justify-content: flex-start;">
+							<li v-for="(it,index) in scaleData['2'].aiQuestionContent" class="word-group word-group-wrap word-max"
+							 v-on:click="showPic_2(it,index)">{{it[0]}}</li>
 						</ul>
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
 							评判
 						</div>
-						<ul class="judege">
-							<li class="judege-list">
-								<div style="text-align: left;width: 100%;">
-									第一组
+						<ul class="scale-topic">
+							<li v-for="" class="word-group word-group-wrap">
+								<div class="word-group-content">
+									<img class="word-select" src="" style="width: 20px;height: 20px;background-color: #000000;">
 								</div>
-								<div style="width: 100%;display: flex;justify-content: space-between;">
-									<span>未能回忆的单词数:</span>
-									<span>9</span>
-								</div>
-								<div class="line"></div>
 							</li>
-							<li class="judege-list">
-								<div style="text-align: left;width: 100%;">
-									第二组
-								</div>
-								<div style="width: 100%;display: flex;justify-content: space-between;">
-									<span>未能回忆的单词数:</span>
-									<span>9</span>
-								</div>
-								<div class="line"></div>
+							<li v-for="" class="word-group word-group-wrap">
+								<div class="word-group-content"></div>
 							</li>
-							<li class="judege-list">
-								<div style="text-align: left;width: 100%;">
-									第三组
-								</div>
-								<div style="width: 100%;display: flex;justify-content: space-between;">
-									<span>未能回忆的单词数:</span>
-									<span>9</span>
-								</div>
-								<div class="line"></div>
-							</li>
-							<li class="judege-list">
-								<div style="width: 100%;display: flex;justify-content: flex-start;">
-									<span>评判得分:</span>
-									<span>9</span>
-								</div>
+							<li v-for="" class="word-group word-group-wrap">
+								<div class="word-group-content"></div>
 							</li>
 						</ul>
+						<div class="score">
+							<div class="score-content">
+								<span>评判得分:{}</span>
+							</div>
+						</div>
 
 					</div>
 				</div>
+				<div id="fourth" class="page-content toHidden">
+					<div class="scale-left">
+						<div class="content-title">
+							3.命令
+						</div>
+						<div class="third-content">
+							指导语:{{}}<br>
+							操作:{{}}
+						</div>
+						<div class="line">
+
+						</div>
+						<ul class="list">
+							<li class="list-items">
+								<div class="list-items-left">
+									8
+								</div>
+								<div class="list-items-right">
+									5
+								</div>
+							</li>
+							<li class="list-items">
+								<div class="list-items-left">
+									8
+								</div>
+								<div class="list-items-right">
+									5
+								</div>
+							</li>
+							<li class="list-items">
+								<div class="list-items-left">
+									8
+								</div>
+								<div class="list-items-right">
+									5
+								</div>
+							</li>
+
+						</ul>
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评判
+						</div>
+						<ul class="list">
+							<li class="list-items list-items-options">8</li>
+						</ul>
+						<div class="score">
+							<div class="score-content">
+								<span>评判得分:{}</span>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
 	</body>
 	<script src="config/urlConfig.js"></script>
+	<script src="utils/Storage.js"></script>
 	<script>
-		$(document).ready(function(){
+		//const USER_ID = window.location.search;
+		/**
+		 * 数据初始化
+		 */
+		$(document).ready(function() {
 			$.ajax({
-				url:config.url+'/scales/testMsg/'+5,
-				type:'GET',
-				success:function(e){
-					console.log(e)
+				url: config.url + '/scales/testMsg/' + 5,
+				type: 'GET',
+				success: function(e) {
+					let topicMsg = e.object;
+					console.log(topicMsg)
+					//渲染每个题目数据
+					let reg_1 = /&/;
+					let reg_2 = /$/;
+
+					for (let i = 0; i < topicMsg.length; i++) {
+						let obj = {};
+						//获取对象属性名
+						let propertyNames = Object.getOwnPropertyNames(topicMsg[i])
+						for (let j = 0; j < propertyNames.length; j++) {
+							//一级分段
+							if (reg_1.test(topicMsg[i][propertyNames[j]])) {
+								let arr = topicMsg[i][propertyNames[j]].split('&');
+								//二级分段
+								if (reg_2.test(topicMsg[i][propertyNames[j]])) {
+									obj[propertyNames[j]] = arr;
+									for (let k = 0; k < obj[propertyNames[j]].length; k++) {
+										let arr2 = obj[propertyNames[j]][k].split('$');
+										obj[propertyNames[j]][k] = arr2;
+									}
+								} else {
+									obj[propertyNames[j]] = arr;
+								}
+							} else { //不分段
+								obj[propertyNames[j]] = topicMsg[i][propertyNames[j]];
+							}
+						}
+						//console.log(obj)
+						if (obj.aiQuestionId == 1) {
+							//根据上次做题时间判断选择哪一套
+							if (obj.aiScoreMethodName[1][0] == '第二套') {
+								scaleData[obj.aiQuestionId] = obj
+							} else {
+
+							}
+						} else {
+							scaleData[obj.aiQuestionId] = obj
+						}
+
+						// n.push(obj);
+					}
+					// let scaleQIdNames = Object.getOwnPropertyNames(scaleData);
+					//初始化线索
+					{
+						let desNames = Object.getOwnPropertyNames(clueData.contentNames);
+
+						let t = scaleData['2'].aiQuestionAnswerDescribe;
+
+						clueData.title = t[0][0];
+
+						for (let i = 1; i < t.length; i++) {
+							let obj = {
+								content: {}
+							};
+							obj.level = t[i][0];
+							for (let j = 1; j < t[i].length; j++) {
+								let x = desNames.indexOf(t[i][j].slice(0, 3)),
+									y = desNames.indexOf(t[i][j].slice(0, 2)),
+									z = desNames.indexOf(t[i][j].slice(0, 1));
+
+								if (x > -1) {
+									//console.log(desNames[x]);
+									obj.content[desNames[x]] = 0;
+								} else if (y > -1) {
+									//console.log(desNames[y]);
+									obj.content[desNames[y]] = 0;
+								} else if (z > -1) {
+									//console.log(desNames[z]);
+									obj.content[desNames[z]] = 0;
+								}
+								//console.log(ind,'***')
+							}
+							clueData.content.push(obj);
+						}
+					}
+					console.log(clueData)
+					// for(let i=0;i<scaleQIdNames.length;i++){
+					// 	console.log(scaleQIdNames[i])
+					// }
+
+					//aiQuestionId
 				},
-				error:function(e){
+				error: function(e) {
 					console.log('后台获取出错')
 				}
 			})
-			
+
 		});
+
+
+		const storage = new Storage();
 		//题目信息数据包
-		
-		const topicData = {
-			first:{
-				
+		const scaleData = {
+			index: {
+				aiScaleId: '',
+				aiScaleName: '',
+				aiScaleOverview: [],
+				aiScaleNotice: []
 			},
-			second:{
-				
+			'1': {
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			third:{
-				
+			2: {
+				aiQuestionAnswerDescribe: '',
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			fourth:{
-				
+			3: {
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			fifth:{
-				
+			4: {
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			sixth:{
-				
+			5: {
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			seventh:{
-				
+			6: {
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			ninth:{
-				
+			7: {
+				aiQuestionAnswerDescribe: '',
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			tenth:{
-				
+			8: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			eleventh:{
-				
+			9: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			},
-			twentieth:{
-				
+			10: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			11: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			12: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
 			}
 		};
-		
+		//物品线索
+		const clueData = {
+			title: '',
+			content: [
+
+			],
+
+			contentNames: {
+				'花': '',
+				'沙发': '',
+				'哨子': '',
+				'铅笔': '',
+				'毽子': '',
+				'假面具': '',
+				'剪刀': '',
+				'梳子': '',
+				'钱包': '',
+				'口琴': '',
+				'听诊器': '',
+				'夹子': ''
+			}
+		};
 		//vue控制器
 		const vue = new Vue({
 			el: '.vue',
 			data: {
 				data: [1, 2, 3, 4, 5, 6, 7],
-				isShow: true
+				isShow: false,
+				scaleData,
+				checkBoxIndex_1: [], //复选框索引
+				pos: [0], //手指位置
+				wordTouch: [], //已经被点击过的单词
+				clueData
+			},
+			methods: {
+				checkBox: function(e, index) {
+					if (this.wordTouch.length < this.scaleData['1'].aiQuestionContent[0].length) {
+						alert('请先完成读词!');
+						return
+					}
+
+					let arr = this.checkBoxIndex_1.indexOf(index);
+					if (arr > -1) {
+						this.checkBoxIndex_1.splice(arr, 1);
+					} else {
+						this.checkBoxIndex_1.push(index);
+					}
+					console.log(this.pos.length)
+				},
+				wordClick: function(e, index) {
+					if (index == this.wordTouch[this.wordTouch.length - 1] + 1)
+						this.wordTouch.push(index);
+					if (this.wordTouch.length == 0 && index == 0)
+						this.wordTouch.push(index);
+
+					let arr = this.checkBoxIndex_1.indexOf(index);
+					if (this.pos.length > 0) {
+						if (index == this.pos[0]) {
+							this.pos.pop();
+							this.pos.push(index + 1)
+						}
+					} else {
+						this.pos.push(index + 1);
+					}
+				},
+				toNextGroup_1: function() {
+					if (this.wordTouch.length < this.scaleData['1'].aiQuestionContent[0].length) {
+						alert('请先完成读词!');
+						return
+					}
+					let a = scaleData['1'].aiQuestionContent[1];
+					//进入下一组后要进行初始化
+					//this.scaleData['1'].aiQuestionContent[1].pop();//删掉第一组
+					scaleData['1'].aiQuestionContent.splice(0, 1)
+					this.checkBoxIndex_1 = []; //初始化复选框
+					this.pos = [0]; //初始化手指位置
+					this.wordTouch = []; //清空点击过的单词
+					if (scaleData['1'].aiQuestionContent.length == 0) {
+						alert('进入下一题')
+					}
+				},
+				showPic_2(it, index) {
+
+
+					this.isShow = true;
+					//console.log(it[0], index)
+				},
+				closeDialog() {
+
+
+					this.isShow = false;
+				}
 			}
 		});
-		
-		
+
+		//获取量表基本信息
+		var scales = storage.getItem("scaleRest");
+		for (let i = 0; i < scales.items.length; i++) {
+			if (scales.items[i].aiScaleId == 5) {
+				scaleData.index.aiScaleId = scales.items[i].aiScaleId;
+				scaleData.index.aiScaleName = scales.items[i].aiScaleName;
+				let notice = scales.items[i].aiScaleNotice.split('&');
+				let overView = scales.items[i].aiScaleOverview.split('&');
+				scaleData.index.aiScaleNotice = (notice);
+				scaleData.index.aiScaleOverview = (overView);
+			}
+		}
 	</script>
 </html>
