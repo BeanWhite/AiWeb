@@ -23,21 +23,62 @@
 		</div>
 		<div id="content">
 			<div class="scale scale-Title vue">
-				<div id="title">量表名称：{{scaleData.index.aiScaleName}}-认知</div>
+				<div id="title">
+					<span>量表名称：{{scaleData.index.aiScaleName}}-认知</span>
+					<div class="change-page">
+						<span class="back-page" v-on:click="backPage()">返回上一题</span>
+						<span class="into-page" v-on:click="intoPage()">进入下一题</span>
+					</div>
+				</div>
 				<div class="dialog-back" v-bind:class="[isShow?'dialog-on':'dialog-off']"></div>
 				<div class="dialog-content" v-bind:class="[isShow?'dialog-on':'dialog-off']">
-					<!-- <img src="../img/cdt-7.png"> -->
-					<ul class="clue-1">
-						<li class="clue-1-list" v-for="(it,index) in scaleData['2'].aiQuestionAnswerDescribe">
-							<span class="clue-title">{{it[0]}}</span>
-							<ul class="clue-2">
-								<li class="clue-2-list" v-for="i in it.slice(1)">{{i}}</li>
-							</ul>
-						</li>
-					</ul>
-					<button type="button" v-on:click="closeDialog()">close</button>
+					<div class="dialog-title">
+						单词{{clueData.ind[1]+1}}
+					</div>
+					<div class="img-name">
+						{{clueData.ind[0]}}
+					</div>
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('花')>-1?'on':'off']" src="../img/5/flower.jpg" alt="花">
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('钱包')>-1?'on':'off']" src="../img/5/billfold.jpg" alt="钱包" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('梳子')>-1?'on':'off']" src="../img/5/comb.jpg" alt="梳子" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('听诊器')>-1?'on':'off']" src="../img/5/echometer.jpg" alt="听诊器" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('食指')>-1?'on':'off']" src="../img/5/index_finger.jpg"
+					 alt="食指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('小手指')>-1?'on':'off']" src="../img/5/little_finger.jpg"
+					 alt="小手指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('假面具')>-1?'on':'off']" src="../img/5/mask.jpg" alt="假面具" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('中指')>-1?'on':'off']" src="../img/5/middle_finger.jpg"
+					 alt="中指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('口琴')>-1?'on':'off']" src="../img/5/organ.jpg" alt="口琴" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('铅笔')>-1?'on':'off']" src="../img/5/pen.jpg" alt="铅笔" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('夹子')>-1?'on':'off']" src="../img/5/pliers.jpg" alt="夹子" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('剪刀')>-1?'on':'off']" src="../img/5/scissor.jpg" alt="剪刀" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('毽子')>-1?'on':'off']" src="../img/5/shuttlecock.jpg" alt="毽子" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('沙发')>-1?'on':'off']" src="../img/5/sofa.jpg" alt="沙发" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('无名指')>-1?'on':'off']" src="../img/5/the_ring_finger.jpg"
+					 alt="无名指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('拇指')>-1?'on':'off']" src="../img/5/thumb.jpg" alt="拇指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('哨子')>-1?'on':'off']" src="../img/5/whistle.jpg" alt="哨子" />
+					<div class="dialog-b">
+						<div class="clue-1">
+							{{clueData.title}}
+						</div>
+						<span>{{clueData.level}}&nbsp;&nbsp;&nbsp;{{clueData.des}}</span>
+					</div>
+					<div class="two-button">
+						<div class="tb-items">
+							<div class="tb-true" v-on:click="wordTrue_2(clueData.ind[1])" v-bind:class="[wordSelect_2.indexOf(clueData.ind[1])>-1?'show-bgc':'']">正确</div>
+						</div>
+						<div class="tb-items">
+							<div class="tb-false" v-on:click="wordFalse_2(clueData.ind[1])" v-bind:class="[wordCancle_2.indexOf(clueData.ind[1])>-1?'show-bgc':'']">错误</div>
+						</div>
+						<div class="tb-items">
+							<span v-on:click="closeDialog()" class="tb-cancle">X</span>
+						</div>
+					</div>
+
 				</div>
-				<div id="first" class="page-content toHidden">
+				<div id="first" class="page-content" v-bind:class="[pagePos==0?'toShow':'toHidden']">
 					<div class="scale-left">
 						<div class="content-title">
 							指导语
@@ -58,7 +99,7 @@
 						</ul>
 					</div>
 				</div>
-				<div id="second" class="page-content toHidden">
+				<div id="second" class="page-content" v-bind:class="[pagePos==1?'toShow':'toHidden']">
 					<div class="scale-left">
 						<div class="content-title">
 							1.单词回忆任务
@@ -68,11 +109,11 @@
 							操作:{{scaleData['1'].aiQuestionNotice}}
 						</div>
 						<div class="content-title-size">
-							第一组
+							{{groupId_1[0]}}({{groupId_1[1]}})
 						</div>
 						<ul class="scale-topic">
-							<li class="toNext" v-on:click="toNextGroup_1()">进入下一组</li>
-							<li v-for="(it,index) in scaleData['1'].aiQuestionContent[0]" class="word-group">
+							<li class="toNext" v-on:click="toNextGroup_1()" style="cursor: pointer;">进入下一组>></li>
+							<li v-for="(it,index) in scaleData['1'].aiQuestionContent[0]" class="word-group   last-list-2">
 								<div class="word" v-on:click="wordClick(it,index)" v-bind:class="[wordTouch.indexOf(index)>-1?'word-bgc':'']">
 									<div v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" class="pointer-content">点击并朗读</div>
 									<img v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/pointer.svg" class="pointer">
@@ -85,9 +126,10 @@
 									<img class="checkBox-svg" v-bind:class="[checkBoxIndex_1.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/checkBox_on.svg">
 								</div>
 							</li>
-							<li style="border-right: solid 1px darkgray;height: 100%;"></li>
-
 						</ul>
+						<div id="" style="width: 100%;height: 40px;text-align: center;color: red;">
+							(请在回忆起的单词下方打勾，没回忆起的不做任何操作)
+						</div>
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
@@ -96,44 +138,52 @@
 						<ul class="judege">
 							<li class="judege-list">
 								<div style="text-align: left;width: 100%;">
-									第一组
+									<span class="title-style">
+										第一组
+									</span>
+									
 								</div>
-								<div style="width: 100%;display: flex;justify-content: space-between;">
+								<div class="title-content-b">
 									<span>未能回忆的单词数:</span>
-									<span>9</span>
+									<span>{{wordCancle_1[0]}}</span>
 								</div>
 								<div class="line"></div>
 							</li>
 							<li class="judege-list">
 								<div style="text-align: left;width: 100%;">
-									第二组
+									<span class="title-style">
+										第二组
+									</span>
 								</div>
-								<div style="width: 100%;display: flex;justify-content: space-between;">
+								<div class="title-content-b">
 									<span>未能回忆的单词数:</span>
-									<span>9</span>
+									<span>{{wordCancle_1[1]}}</span>
 								</div>
 								<div class="line"></div>
 							</li>
 							<li class="judege-list">
 								<div style="text-align: left;width: 100%;">
-									第三组
+									<span class="title-style">
+										第三组
+									</span>
 								</div>
-								<div style="width: 100%;display: flex;justify-content: space-between;">
+								<div class="title-content-b" >
 									<span>未能回忆的单词数:</span>
-									<span>9</span>
+									<span>{{wordCancle_1[2]}}</span>
 								</div>
 								<div class="line"></div>
 							</li>
 							<li class="judege-list">
-								<div style="width: 100%;display: flex;justify-content: flex-start;">
-									<span>评判得分:</span>
-									<span>9</span>
+								<div style="width: 100%;display: flex;justify-content: flex-start;white-space: nowrap;">
+									<span class="title-style">评判得分:</span>
+									<span  class="title-content-b" >{{(wordCancle_1[2]+wordCancle_1[1]+wordCancle_1[0])/3}}</span>
 								</div>
 							</li>
 						</ul>
+						
 					</div>
 				</div>
-				<div id="third" class="page-content toShow">
+				<div id="third" class="page-content" v-bind:class="[pagePos==2?'toShow':'toHidden']">
 					<div class="scale-left">
 						<div class="content-title">
 							2.命名物体或手指
@@ -143,73 +193,56 @@
 							操作:{{scaleData['2'].aiQuestionNotice}}
 						</div>
 						<ul class="scale-topic" style="justify-content: flex-start;">
-							<li v-for="(it,index) in scaleData['2'].aiQuestionContent" class="word-group word-group-wrap word-max"
-							 v-on:click="showPic_2(it,index)">{{it[0]}}</li>
+							<li v-for="(it,index) in scaleData['2'].aiQuestionContent" class="word-group word-group-wrap word-max radius"
+							 v-on:click="showPic_2(it,index)" v-bind:class="[clueData.ind.indexOf(index)>-1?'show-bgc':'']">{{it[0]}}</li>
 						</ul>
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
 							评判
 						</div>
-						<ul class="scale-topic">
-							<li v-for="" class="word-group word-group-wrap">
-								<div class="word-group-content">
-									<img class="word-select" src="" style="width: 20px;height: 20px;background-color: #000000;">
+						<ul class="scale-topic " style="justify-content: space-between;height: 100%;">
+							<li v-for="(it,index) in scaleData['2'].aiQuestionContent" class="word-group word-wrap-s word-judge-2 word-p radius">
+								<div style="width: 100%;height: 100%;position: relative;">
+									<img v-bind:class="[wordSelect_2.indexOf(index)>-1?'on':'off']" class="word-select" src="../svg/checkBox_on_green.svg">
+									<img v-bind:class="[wordCancle_2.indexOf(index)>-1?'on':'off']" class="word-select" src="../svg/must.svg">
+									{{it[0]}}
 								</div>
 							</li>
-							<li v-for="" class="word-group word-group-wrap">
-								<div class="word-group-content"></div>
-							</li>
-							<li v-for="" class="word-group word-group-wrap">
-								<div class="word-group-content"></div>
-							</li>
+							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li>
+							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li>
+							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li>
 						</ul>
 						<div class="score">
 							<div class="score-content">
-								<span>评判得分:{}</span>
+								<span>评判得分:{{performence['2']}}</span>
 							</div>
 						</div>
 
 					</div>
 				</div>
-				<div id="fourth" class="page-content toHidden">
+				<div id="fourth" class="page-content" v-bind:class="[pagePos==3?'toShow':'toHidden']">
 					<div class="scale-left">
 						<div class="content-title">
-							3.命令
+							3.指令
 						</div>
 						<div class="third-content">
-							指导语:{{}}<br>
-							操作:{{}}
+							指导语:{{scaleData['3'].aiQuestionGuid}}<br>
+							操作:{{scaleData['3'].aiQuestionNotice}}
 						</div>
 						<div class="line">
 
 						</div>
 						<ul class="list">
-							<li class="list-items">
+							<li class="list-items" v-for="(it,index) in scaleData['3'].aiQuestionContent" >
 								<div class="list-items-left">
-									8
+									{{it[0]}}
 								</div>
 								<div class="list-items-right">
-									5
+									<img src="../svg/false_black.svg" >
+									<img src="../svg/true_black.svg" >
 								</div>
 							</li>
-							<li class="list-items">
-								<div class="list-items-left">
-									8
-								</div>
-								<div class="list-items-right">
-									5
-								</div>
-							</li>
-							<li class="list-items">
-								<div class="list-items-left">
-									8
-								</div>
-								<div class="list-items-right">
-									5
-								</div>
-							</li>
-
 						</ul>
 					</div>
 					<div class="scale-right">
@@ -271,7 +304,7 @@
 						//console.log(obj)
 						if (obj.aiQuestionId == 1) {
 							//根据上次做题时间判断选择哪一套
-							if (obj.aiScoreMethodName[1][0] == '第二套') {
+							if (obj.aiScoreMethodName[1][0] == '第一套') {
 								scaleData[obj.aiQuestionId] = obj
 							} else {
 
@@ -302,26 +335,23 @@
 									z = desNames.indexOf(t[i][j].slice(0, 1));
 
 								if (x > -1) {
-									//console.log(desNames[x]);
-									obj.content[desNames[x]] = 0;
+									obj.content[desNames[x]] = t[i][j];
 								} else if (y > -1) {
-									//console.log(desNames[y]);
-									obj.content[desNames[y]] = 0;
+									obj.content[desNames[y]] = t[i][j];
 								} else if (z > -1) {
-									//console.log(desNames[z]);
-									obj.content[desNames[z]] = 0;
+									obj.content[desNames[z]] = t[i][j];
 								}
-								//console.log(ind,'***')
 							}
 							clueData.content.push(obj);
 						}
 					}
-					console.log(clueData)
-					// for(let i=0;i<scaleQIdNames.length;i++){
-					// 	console.log(scaleQIdNames[i])
-					// }
-
-					//aiQuestionId
+					console.log(scaleData)
+					//初始化第一题没有被选中的单词
+					vue.wordCancle_1.push(scaleData['1'].aiQuestionContent[0].length);
+					vue.wordCancle_1.push(scaleData['1'].aiQuestionContent[1].length);
+					vue.wordCancle_1.push(scaleData['1'].aiQuestionContent[2].length);
+					vue.performence['1'] = vue.wordCancle_1[2]+vue.wordCancle_1[1]+vue.wordCancle_1[0];
+					
 				},
 				error: function(e) {
 					console.log('后台获取出错')
@@ -466,10 +496,10 @@
 		//物品线索
 		const clueData = {
 			title: '',
-			content: [
-
-			],
-
+			content: [],
+			level: '',
+			des: '',
+			ind: [],
 			contentNames: {
 				'花': '',
 				'沙发': '',
@@ -482,23 +512,68 @@
 				'钱包': '',
 				'口琴': '',
 				'听诊器': '',
-				'夹子': ''
+				'夹子': '',
+				'拇指': '',
+				'小手指': '',
+				'食指': '',
+				'中指': '',
+				'无名指': ''
 			}
 		};
+
+
+
 		//vue控制器
 		const vue = new Vue({
 			el: '.vue',
 			data: {
-				data: [1, 2, 3, 4, 5, 6, 7],
+				pagePos:0,//当前页面页号
 				isShow: false,
 				scaleData,
+				groupId_1: ['第一组','第一套',0],//第三个参数表示组号
 				checkBoxIndex_1: [], //复选框索引
 				pos: [0], //手指位置
 				wordTouch: [], //已经被点击过的单词
-				clueData
+				wordCancle_1:[],//记录每一组单词中哪些单词未被选中,默认全部未选中
+				clueData,
+				wordSelect_2: [], //记录哪些单词是正确的
+				wordCancle_2: [], //记录哪些单词是错误的		
+				performence:{	//得分信息记录
+					1:null,
+					2:null,
+					3:null,
+					4:null,
+					5:null,
+					6:null,
+					7:null,
+					8:null,
+					9:null,
+					10:null,
+					11:null,
+					12:null,
+				},
 			},
 			methods: {
+				backPage:function(){
+					this.pagePos--;
+					if(this.pagePos<0)
+					this.pagePos = 0;
+				},
+				intoPage:function(){
+					if(this.pagePos>0){
+						if(this.performence[this.pagePos]==null)
+						{
+							alert('题目还没有完成!');
+							console.log(this.performence)
+							return;
+						}
+					}
+					this.pagePos++;
+					if(this.pagePos>12)
+					this.pagePos=12;
+				},
 				checkBox: function(e, index) {
+					let pos = this.groupId_1[2];
 					if (this.wordTouch.length < this.scaleData['1'].aiQuestionContent[0].length) {
 						alert('请先完成读词!');
 						return
@@ -510,9 +585,12 @@
 					} else {
 						this.checkBoxIndex_1.push(index);
 					}
-					console.log(this.pos.length)
+					
+					this.wordCancle_1[pos] = this.checkBoxIndex_1.length;
+					this.performence['1'] = this.wordCancle_1[2]+this.wordCancle_1[1]+this.wordCancle_1[0];
 				},
 				wordClick: function(e, index) {
+					
 					if (index == this.wordTouch[this.wordTouch.length - 1] + 1)
 						this.wordTouch.push(index);
 					if (this.wordTouch.length == 0 && index == 0)
@@ -527,34 +605,110 @@
 					} else {
 						this.pos.push(index + 1);
 					}
+
 				},
 				toNextGroup_1: function() {
 					if (this.wordTouch.length < this.scaleData['1'].aiQuestionContent[0].length) {
 						alert('请先完成读词!');
 						return
 					}
-					let a = scaleData['1'].aiQuestionContent[1];
+					let pos = this.groupId_1[2];//当前组号
+					let size = scaleData['1'].aiQuestionContent.length;//组的大小
+					if(pos==size-1){
+						alert('您已完成所有组,请进入下一题!');
+						return;
+					}
+					let name = scaleData['1'].aiScoreMethodName[1][0]; //套名
 					//进入下一组后要进行初始化
-					//this.scaleData['1'].aiQuestionContent[1].pop();//删掉第一组
-					scaleData['1'].aiQuestionContent.splice(0, 1)
+					//将第一组移动到最后一组。
+					//如果需要重做，要在重做函数里面将当前第一组移到最后，然后重置pos为0,重置groupId_1[0]为第一组
+					let p = scaleData['1'].aiQuestionContent.splice(0, 1);
+					scaleData['1'].aiQuestionContent.splice(size-1,0,p[0]);
+					
+					console.log(scaleData['1'].aiQuestionContent);
 					this.checkBoxIndex_1 = []; //初始化复选框
 					this.pos = [0]; //初始化手指位置
 					this.wordTouch = []; //清空点击过的单词
-					if (scaleData['1'].aiQuestionContent.length == 0) {
-						alert('进入下一题')
+					
+					if (pos == 0) {
+						this.groupId_1[0] = '第二组';
+					} else if (pos == 1) {
+						this.groupId_1[0] = '第三组'
+					}
+					pos++;
+					if(pos>=size)
+					pos=size-1;
+					this.groupId_1[2] = pos;
+				},
+				showPic_2:function(it, index) {
+					let ind = it[0];
+					clueData.ind.splice(0)
+					clueData.ind.push(ind);
+					clueData.ind.push(index)
+					clueData.level = '';
+					clueData.des = '';
+					for (let i = 0; i < clueData.content.length; i++) {
+						let p = clueData.content[i].content[ind];
+						if (p) {
+							clueData.level = clueData.content[i].level;
+							clueData.des = p;
+
+						}
+
+					}
+					if (clueData.level == '' || clueData.des == '')
+						clueData.title = '';
+					else clueData.title = '物品线索:'
+					this.isShow = true;
+					console.log(it[0], index)
+				},
+				closeDialog:function() {
+					this.isShow = false;
+				},
+				wordTrue_2:function(i) {
+					if (this.wordSelect_2.indexOf(i) < 0) {
+						this.wordSelect_2.push(i);
+						if(this.wordCancle_2.indexOf(i)>-1)
+							this.wordCancle_2.splice(this.wordCancle_2.indexOf(i), 1)
+					}
+					let len = this.wordCancle_2.length;
+					if(len>=0&&len<=2){
+						this.performence['2'] = 0;
+					}else if(len>=3&&len<=5){
+						this.performence['2'] = 1;
+					}else if(len>=6&&len<=8){
+						this.performence['2'] = 2;
+					}else if(len>=9&&len<11){
+						this.performence['2'] = 3;
+					}else if(len>=12&&len<14){
+						this.performence['2'] = 4;
+					}else if(len>=15){
+						this.performence['2'] = 5;
 					}
 				},
-				showPic_2(it, index) {
-
-
-					this.isShow = true;
-					//console.log(it[0], index)
-				},
-				closeDialog() {
-
-
-					this.isShow = false;
+				wordFalse_2:function(i) {
+					if (this.wordCancle_2.indexOf(i) < 0) {
+						if(this.wordSelect_2.indexOf(i)>-1)
+						this.wordSelect_2.splice(this.wordSelect_2.indexOf(i), 1)
+						this.wordCancle_2.push(i);	
+					}
+					let len = this.wordCancle_2.length;
+					if(len>=0&&len<=2){
+						this.performence['2'] = 0;
+					}else if(len>=3&&len<=5){
+						this.performence['2'] = 1;
+					}else if(len>=6&&len<=8){
+						this.performence['2'] = 2;
+					}else if(len>=9&&len<11){
+						this.performence['2'] = 3;
+					}else if(len>=12&&len<14){
+						this.performence['2'] = 4;
+					}else if(len>=15){
+						this.performence['2'] = 5;
+					}
+					console.log(this.performence['2'],len)
 				}
+
 			}
 		});
 
