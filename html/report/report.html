@@ -313,14 +313,28 @@
 				<span>总结论:</span>
 				<div class="line-top"></div>
 			</div>
-			<div class="all-result" style="align-self: flex-start;" >
+			<div class="all-result" style="align-self: flex-start;">
 				{{scale_1.allResult[0]}}
 			</div>
 		</div>
 		<div class="bottom bc"></div>
+		<!-- <img src="../../img/5/organ.jpg" /> -->
 
 	</body>
 	<script>
+		let txt = $.ajax({
+			url: '../../img/cacheImg/test.txt',
+			async: false
+		}).responseText;
+		let txt2 = $.ajax({
+			url: '../../img/cacheImg/test2.txt',
+			async: false
+		}).responseText;
+
+		let txt3 = $.ajax({
+			url: '../../img/cacheImg/test3.txt',
+			async: false
+		}).responseText;
 		let obj = $.ajax({
 			url: '../../JSON/report.json',
 			async: false
@@ -354,12 +368,12 @@
 				}
 			})
 		};
-		function getBase64Image(img) {
-			//return dataURL.replace("data:image/png;base64,", ""); 
-		};
-		getImg64_src('../../img/5/the_ring_finger.jpg');
+		//getImg64_src('../../img/5/organ.jpg');
 
-		function getImg64_src(src, name) {
+		function getImg64_src(src) {
+
+
+
 			//var img = document.getElementById(id);
 
 			let img = document.createElement('img');
@@ -371,12 +385,55 @@
 				let ctx = canvas.getContext("2d");
 				ctx.drawImage(img, 0, 0, img.width, img.height);
 				let dataURL = canvas.toDataURL("image/webp", 0.1);
-				vue.img[name] = dataURL;
+				//vue.img[name] = dataURL;
+				//console.log(dataURL)
 				return
 			}
 		};
 	</script>
 	<script>
+		// var images = {
+			
+		
+		// 	}
+			
+		var images = {
+			url:"jjjj",
+			name:"11",
+			path:"777" 
+		}
+		
+		var o ={
+			images:[{
+				url: txt, //图片url
+				name: "11", //图片名字
+				path: "" //图片保存路径
+			}, {
+				url: txt2, //图片url
+				name: "22", //图片名字
+				path: "" //图片保存路径
+			}, {
+				url: txt3, //图片url
+				name: "33", //图片名字
+				path: "" //图片保存路径
+			}]
+		}
+
+		var a = "fadfadsfa";
+		console.log(JSON.stringify(o))
+		$.ajax({
+			type: "POST",
+			url: 'http://localhost:80/pdf/saveImg',
+			contentType: "application/json;charset=UTF-8",
+			data:JSON.stringify(o),
+			success: function(e) {
+				console.log(222)
+			},
+			error: function(e) {
+				console.log(912)
+			}
+
+		})
 		const imgBase = 'D://AixlProject//AiWeb//'
 		const vue = new Vue({
 			el: '.vue',
