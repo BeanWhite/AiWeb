@@ -1,0 +1,32 @@
+
+
+@media screen {
+	body {
+		min-width: 1800px;
+		min-height: 1;
+	}
+
+	.bc {
+		width: 50%;
+		margin: 0 auto;
+	}
+
+	.top {
+		height: 100px;
+		background-color: #A6B7D0;
+	}
+
+	.bottom {
+		height: 100px;
+		background-color: #5F9EA0;
+	}
+
+	#divFooter {
+		display: none;
+	}
+
+	#divHeader {
+		display: none;
+	}
+
+}

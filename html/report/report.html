@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="report.css" />
+		<script src="../../js/jquery-3.4.1.js"></script>
+		<script type="text/javascript" src="../../js/vue.min.js"></script>
+		<title></title>
+
+	</head>
+	<style>
+		@media print {
+			@page {
+				size: A4 portrait;
+				margin: 2.5cm 1cm 4.5cm 1cm;
+				padding: 0;
+
+				@top-center {
+					width: 100%;
+					height: 100%;
+					content: element(divHeader);
+
+				}
+
+				@bottom-center {
+					width: 100%;
+					height: 100%;
+					content: element(divFooter);
+				}
+
+			}
+
+			/**
+			 * 自定义分页
+			 */
+			.break-before {
+				page-break-before: always;
+			}
+
+			.break-after {
+				page-break-after: always;
+			}
+
+			/* 第一个h1标题不需要分页 */
+			.first-h1 {
+				page-break-before: avoid;
+			}
+
+			/* 所有h1标题需要分页 */
+			h1 {
+				page-break-before: always;
+			}
+
+			h1,
+			h2,
+			h3,
+			h4,
+			h5,
+			h6,
+			p {
+				margin: 0;
+				padding: 0;
+			}
+
+			#header-fix {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+				background-color: rosybrown;
+				content: counter(page);
+			}
+
+			#footer-fix {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+			}
+
+			#footer-box {
+				height: 100%;
+				width: 100%;
+			}
+
+			#report-date {}
+
+			#office {}
+
+			.line-top {
+				display: flex;
+				justify-content: space-between;
+				border-bottom: 1px solid black;
+			}
+
+			.line-center {
+				margin-top: 2px;
+				border-top: 3px solid black;
+			}
+
+			.line-bottom {
+				margin-top: 3px;
+				border-bottom: 1px solid black;
+			}
+
+			#page-num {
+				width: 100%;
+				text-align: center;
+				content: "(第"counter(page)"页/共"counter(pages)"页)";
+			}
+
+			button {
+				display: none;
+			}
+
+			#divHeader {
+
+
+				position: running(divHeader);
+				prince-flow: static(divHeader, start) width: 100%;
+				height: 100px;
+				/* background-color: green; */
+			}
+
+			#divFooter {
+				position: running(divFooter);
+				width: 100%;
+				/* background-color: red; */
+				height: 100%;
+			}
+
+			.bc {
+				width: 100%;
+			}
+
+			.top {
+				display: none;
+			}
+
+			.bottom {
+				display: none;
+			}
+
+		}
+	</style>
+	<style type="text/css">
+		html {
+			width: 100%;
+		}
+
+		body {
+			overflow: auto;
+			margin: 0;
+			padding: 0;
+		}
+
+		ul,
+		li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+
+		.page {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: center;
+			border: none;
+			height: 100%;
+			background-color: #DEB887;
+		}
+
+		.line-top {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			border-bottom: 1px solid black;
+		}
+
+		.line-center {
+			width: 100%;
+			margin-top: 2px;
+			border-top: 3px solid black;
+		}
+
+		.line-bottom {
+			width: 100%;
+			margin-top: 3px;
+			border-bottom: 1px solid black;
+		}
+
+		.msg {
+			margin-top: 20px;
+			width: 100%;
+			height: auto;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		.msg-item {
+			display: inline-block;
+			margin: 5px 0 5px 0;
+			width: 24%;
+			height: 40px;
+			line-height: 40px;
+			background-color: #0096E1;
+		}
+
+		.tab-items {
+			width: 100%;
+			height: auto;
+			display: flex;
+			justify-content: center;
+		}
+
+		.msg-item-a {
+			margin-left: 20px;
+		}
+
+		.report-img {
+			position: relative;
+			width: 100%;
+			height: 300px;
+			background-color: #008B8B;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.report-img-item {
+			width: 200px;
+			height: 200px;
+		}
+
+		.top-left-corner {
+			position: absolute;
+			top: 20px;
+			left: 30px;
+		}
+
+		.use-time {
+			width: 100%;
+			height: auto;
+		}
+	</style>
+	<body>
+
+		<!-- 用于打印显示的页眉页脚 -->
+		<div id="divHeader">
+			<div id="header-fix">
+
+			</div>
+		</div>
+		<div id="divFooter">
+			<div id="footer-fix">
+				<div id="footer-box">
+					<div class="line-top">
+						<p id="report-date">1</p>
+						<p id="office">2</p>
+					</div>
+					<div class="line-center"></div>
+					<div class="line-bottom"></div>
+					<div id="page-num">
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 正文部分 -->
+		<div class="top bc">
+			<div id="header-fix">
+			</div>
+		</div>
+		<div class="page bc vue">
+			<button type="button" onclick="printPDF()" style="position: absolute;top: 300px;margin: 300px auto;z-index: 100;">666</button>
+			<h1>心理健康测评报告</h1>
+			<div class="line-top"></div>
+			<div class="line-center"></div>
+			<div class="line-bottom"></div>
+			<ul class="msg">
+				<li class="msg-item" v-for="it in scale_1.msgObject"><span class="msg-item-a">{{it.msg_a}}</span><span class="msg-item-b">{{it.msg_b}}</span></li>
+			</ul>
+			<div class="line-top"></div>
+			<h2>画钟测验</h2>
+			<div class="line-top"></div>
+			<div class="line-bottom"></div>
+			<ul class="msg">
+				<li class="tab-items" v-for="it in scale_1.rTableObject">
+					<span class="msg-item ">{{it[0]}}</span>
+					<span class="msg-item ">{{it[1]}}</span>
+					<span class="msg-item ">{{it[2]}}</span>
+					<span class="msg-item ">{{it[3]}}</span>
+				</li>
+			</ul>
+			<div class="line-top"></div>
+			<div class="line-bottom"></div>
+			<div class="report-img break-before">
+				<div class="top-left-corner">患者作答</div>
+				<!-- <img src="../../img/5/flower.jpg" class="report-img-item">
+				<img src="../../img/5/flower.jpg" class="report-img-item"> -->
+				<img :src="img.img_1[0]" class="report-img-item" style="margin-right: 100px;">
+				<img :src="img.img_2[0]" class="report-img-item">
+			</div>
+			<div class="report-img">
+				<div class="top-left-corner">标准作答</div>
+				<img :src="img.img_1[0]" class="report-img-item" style="margin-right: 100px;">
+				<img :src="img.img_2[0]" class="report-img-item">
+			</div>
+			<div class="use-time"><span>作答时长:</span>{{scale_1.useTime[0]}}</div>
+			<div style="text-decoration: underline;align-self: flex-start;">
+				<span>总结论:</span>
+				<div class="line-top"></div>
+			</div>
+			<div class="all-result" style="align-self: flex-start;" >
+				{{scale_1.allResult[0]}}
+			</div>
+		</div>
+		<div class="bottom bc"></div>
+
+	</body>
+	<script>
+		let obj = $.ajax({
+			url: '../../JSON/report.json',
+			async: false
+		}).responseJSON;
+		const msgObject = $.ajax({
+			url: '../../JSON/report.json',
+			async: false
+		}).responseJSON.msg;
+		console.log(msgObject)
+		console.log(obj)
+
+		function printPDF() {
+			var k = document.documentElement.outerHTML;
+			var pdf = 'test.pdf';
+			$.ajax({
+				type: "POST",
+				url: 'http://localhost:80/pdf/p',
+				data: {
+					s: k,
+					name: pdf
+				},
+				// processData: false, // 告诉jQuery不要去处理发送的数据
+				// contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+				success: function(data) {
+					console.log(data)
+					if (data.object == true)
+						window.open('../../js/pdf.js/web/viewer.html?../' + pdf, 'PDF');
+				},
+				error: function() {
+					console.log(555)
+				}
+			})
+		};
+		function getBase64Image(img) {
+			//return dataURL.replace("data:image/png;base64,", ""); 
+		};
+		getImg64_src('../../img/5/the_ring_finger.jpg');
+
+		function getImg64_src(src, name) {
+			//var img = document.getElementById(id);
+
+			let img = document.createElement('img');
+			img.src = src;
+			img.onload = function() {
+				let canvas = document.createElement("canvas");
+				canvas.width = img.width;
+				canvas.height = img.height;
+				let ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0, img.width, img.height);
+				let dataURL = canvas.toDataURL("image/webp", 0.1);
+				vue.img[name] = dataURL;
+				return
+			}
+		};
+	</script>
+	<script>
+		const imgBase = 'D://AixlProject//AiWeb//'
+		const vue = new Vue({
+			el: '.vue',
+			data: {
+				scale_1: {
+					msgObject,
+					rTableObject: obj.projects,
+					useTime: obj.useTime,
+					allResult: obj.allResult
+				},
+				img: {
+					img_1: [imgBase + 'img//5//flower.jpg'],
+					img_2: [imgBase + 'img//5//shuttlecock.jpg'],
+				}
+			},
+			methods: {
+
+			}
+		})
+	</script>
+
+</html>

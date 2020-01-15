@@ -98,7 +98,7 @@
 
 				#divHeader {
 
-
+					
 					position: running(divHeader);
 					prince-flow: static(divHeader, start) width: 100%;
 					height: 100px;
@@ -117,29 +117,27 @@
 
 	</head>
 	<style type="text/css">
-		body {
-			margin: 0;
-			padding: 0;
-			height: 100%;
-		}
+		@media screen {
+			body {
+				margin: 0;
+				padding: 0;
+				height: 100%;
+			}
 
-		#ot {
-			background-color: red;
-		}
+			#ot {
+				background-color: red;
+			}
 
-		.page {
-			border: none;
-			height: 100%;
-		}
-
-
-		button {
-			margin-top: 100px;
+			.page {
+				border: none;
+				height: 100%;
+			}
+			button {
+				margin-top: 100px;
+			}
 		}
 	</style>
 	<body style="height: 100%;">
-
-
 
 		<div id="divHeader">
 			<div id="header-fix">
@@ -163,7 +161,8 @@
 		</div>
 		<div class="page">
 			<span id="">
-				<img src="http://i1.sinaimg.cn/ent/d/2008-06-04/U105P28T3D2048907F326DT20080604225106.jpg" style="width: 100px;">888
+				<img src="svg/true_black.svg" >
+				<!-- <img src="http://i1.sinaimg.cn/ent/d/2008-06-04/U105P28T3D2048907F326DT20080604225106.jpg" style="width: 100px;">888 -->
 			</span>
 			<button type="button" onclick="print_PDF()" id="ot">ok</button>
 			<input type="file" name="" id="file" />
@@ -189,19 +188,23 @@
 			<p>dafaf</p>
 			<p>dafaf</p>
 			<p>dafaf</p>
-			
+
 		</div>
 
 
 	</body>
 	<script src="html/config/urlConfig.js"></script>
 	<script>
-		var pdf = '../' + '1.pdf';
+		var pdf ='2.pdf';
 		// window.href = 'js/pdf.js/web/viewer.html?' + pdf;
 		//window.open('js/pdf.js/web/viewer.html?' + pdf, 'PDF');
 
 		// window.location.href = 'html/doc.html'
-		var p = document.documentElement.outerHTML;
+		var k = document.documentElement.outerHTML;
+		var p = "";
+		for (let i = 0; i < 10; i++) {
+			p = p + k;
+		}
 		var array = new ArrayBuffer(1024);
 		var longInt8View = new Uint8Array(array);
 		var fi = document.getElementById('file');
@@ -228,22 +231,22 @@
 		// var request = new XMLHttpRequest();
 		// request.open("POST","http://localhost:80/pdf/p1");
 		// request.send(formData);
-		$.ajax({
-			type: "POST",
-			url: config.url + '/pdf/p1',
-			data: {
-				b: formData
-			},
-			processData: false, // 告诉jQuery不要去处理发送的数据
-			contentType: false, // 告诉jQuery不要去设置Content-Type请求头
-			success: function(data) {
-				console.log(data, "gygu")
+		// $.ajax({
+		// 	type: "POST",
+		// 	url: config.url + '/pdf/p1',
+		// 	data: {
+		// 		b: formData
+		// 	},
+		// 	processData: false, // 告诉jQuery不要去处理发送的数据
+		// 	contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+		// 	success: function(data) {
+		// 		console.log(data, "gygu")
 
-			},
-			error: function() {
-				console.log(555)
-			}
-		})
+		// 	},
+		// 	error: function() {
+		// 		console.log(555)
+		// 	}
+		// })
 
 		function print_PDF() {
 			//window.open('js/pdf.js/web/viewer.html?' + pdf, 'PDF');
@@ -251,14 +254,18 @@
 				type: "POST",
 				url: config.url + '/pdf/p',
 				data: {
-					s: p
+					s: p,
+					name:pdf
 				},
 				// processData: false, // 告诉jQuery不要去处理发送的数据
 				// contentType: false, // 告诉jQuery不要去设置Content-Type请求头
 				success: function(data) {
-					if (data.object == true)
-						window.open('js/pdf.js/web/viewer.html?' + pdf, 'PDF');
-
+					console.log(data)
+					if (data.object == true){
+						
+						window.open("js/pdf.js/web/viewer.html?../" + pdf, 'PDF');
+					}
+						
 				},
 				error: function() {
 					console.log(555)

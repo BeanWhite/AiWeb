@@ -21,6 +21,7 @@
  */
 
 
+console.log( window.location.search)
 const DEFAULT_URL = window.location.search.split('?')[1].split(0,1).join("");
 console.log(DEFAULT_URL);
 /******/

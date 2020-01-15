@@ -3,13 +3,17 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>{$webtitlename}</title>
+		<script type="text/javascript" src="js/jquery-3.4.1.js">
 
-		<script src="{:C('web_static')}/Public/frontaxl/lib/jquery-1.11.1.min.js"></script>
-		<script type="text/javascript" src="{:C('web_static')}/Public/pcxjt/js/jquery.jqprint-0.3.js"></script>
-		<script type="text/javascript" src="{:C('web_static')}/Public/pcxjt/js/jquery-migrate-1.0.0.js"></script>
+		</script>
+
+		<!-- <script src="{:C('web_static')}/Public/frontaxl/lib/jquery-1.11.1.min.js"></script> -->
+		<!-- <script type="text/javascript" src="{:C('web_static')}/Public/pcxjt/js/jquery.jqprint-0.3.js"></script> -->
+		<!-- <script type="text/javascript" src="{:C('web_static')}/Public/pcxjt/js/jquery-migrate-1.0.0.js"></script> -->
 	</head>
 
 	<body style="height: 100%;">
+		<button type="button" onclick="printPDF()">9999</button>
 		<include file="Public:celan" />
 		<section class="backgroundset">
 
@@ -27,19 +31,6 @@
 
 					<section id="printbody" style="width: 210mm;background: transparent;margin:0 auto;font-size: 12px;">
 						<style>
-							@page {
-								size: auto;
-								/* auto is the initial value */
-								margin: 0mm 10mm 0mm 10mm;
-								/* this affects the margin in the printer settings 最关键的还是这个*/
-							}
-
-							.clearfix::after {
-								content: '';
-								display: block;
-								clear: both;
-							}
-
 							.link_btn {
 								border: none;
 								border-radius: 5px;
@@ -498,6 +489,41 @@
 				printContainer: true, //表示如果原来选择的对象必须被纳入打印（注意：设置为false可能会打破你的CSS规则）。
 				operaSupport: true //表示如果插件也必须支持歌opera浏览器，在这种情况下，它提供了建立一个临时的打印选项卡。默认是true
 			});
+		}
+
+
+		function printPDF() {
+			var pdf ='pdf.pdf';
+			var k = document.documentElement.outerHTML;
+			$.ajax({
+				type: "POST",
+				//url: 'http://localhost:80/pdf/p',
+				url: 'http://192.168.62.61:80/pdf/p',
+				data: {
+					s: k,
+					name: pdf
+				},
+				// processData: false, // 告诉jQuery不要去处理发送的数据
+				// contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+				success: function(data) {
+					console.log(data)
+					if (data.object == true) {
+						try {
+							//window.open('js/pdf.js/web/viewer.html?../' + pdf, 'PDF');
+						} catch (e) {
+							alert('错误')
+						}
+						try {
+							window.open('http://192.168.62.61:8848/AiWeb/js/pdf.js/web/viewer.html?../' + pdf, 'PDF');
+						} catch (e) {
+							alert('错误')
+						}
+					}
+				},
+				error: function() {
+					console.log(555)
+				}
+			})
 		}
 
 		function Print() {
