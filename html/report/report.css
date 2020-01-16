@@ -3,7 +3,7 @@
 @media screen {
 	body {
 		min-width: 1800px;
-		min-height: 1;
+		min-height: 1300px;
 	}
 
 	.bc {
@@ -13,11 +13,13 @@
 
 	.top {
 		height: 100px;
+		height: 100%;
 		background-color: #A6B7D0;
 	}
 
 	.bottom {
 		height: 100px;
+		height: 100%;
 		background-color: #5F9EA0;
 	}
 

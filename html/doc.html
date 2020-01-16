@@ -21,10 +21,10 @@
 	<body>
 
 		<!-- 背景图 -->
-		<!-- <div class="satic-area">
+		<div class="satic-area">
 			<div class="dynamic-area1"></div>
 			<div class="dynamic-area2"></div>
-		</div> -->
+		</div>
 		<div id="content" class="print-link no-print">
 			<!-- 模块菜单 -->
 			<div class="doc-pane" style="display: none;">
@@ -72,7 +72,7 @@
 
 					<div class="scale-right-basMsg">
 						<div style="display: none;">
-							姓名：<input type="" name="" id="userId" value="" />
+							<input type="" name="" id="userId" value="" />
 						</div>
 						<div class="scale-right-basMsg-div">
 							姓名：<input type="" name="" id="userName" value="" />
@@ -133,7 +133,7 @@
 				}
 			})
 		});
-		var storage = new Storage();
+	
 		//量表合集
 		var scale = {
 			items: []
@@ -252,6 +252,11 @@
 					url: config.url + '/users/msgForDoc/' + a,
 					success: function(e) {
 						var data = e.object[0];
+						
+						
+						
+						
+					
 						if (e.object.length == 0) {
 							$('#userId').val("");
 							$('#userName').val("");
@@ -263,6 +268,7 @@
 							$('#userEdu').val("");
 							$('#userMarr').val("");
 						} else {
+							data.aiUserId = a;
 							$('#userId').val(data.aiUserId);
 							$('#userName').val(data.aiUserName);
 							$('#userAge').val(data.aiUserAge);
@@ -272,10 +278,11 @@
 							$('#userFrom').val(data.aiUserFrom);
 							$('#userEdu').val(data.aiUserEduBg);
 							$('#userMarr').val(data.aiUserMarriage);
+							//将用户信息存入session中
+							console.log(data)
+							sstorage.setItem("userMsg",data);
 						}
 						console.log(e.object.length)
-
-
 					},
 					error: function(e) {
 						console.log('连接出错')
@@ -307,14 +314,14 @@
 				//先清空之前的缓存
 				storage.removeItem("scale");
 				storage.removeItem("scaleRest");
-
 				//本地存放所有量表
 				storage.setItem("scale", scale_result_list, 5 * 24 * 60 * 60 * 1000);
-
 				//本地存放所有未做的量表，初始为所有量表(发布测评中的量表)
 				storage.setItem("scaleRest", scale_result_list, 5 * 24 * 60 * 60 * 1000);
-
-
+				sstorage.setItem("scale",scale_result_list);
+				sstorage.setItem("scaleRest",scale_result_list)
+				
+				
 				//将测评量表发送至用户
 				var obj = {
 					target: $('#userId').val(),

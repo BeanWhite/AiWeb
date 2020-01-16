@@ -1,45 +1,52 @@
 {
-	"msg":[
-		{
-			"msg_a":"门诊号",
-			"msg_b":"8558"
+	"msg": [{
+			"name": "aiUserId",
+			"msg_a": "门诊号:",
+			"msg_b": ""
 		},
 		{
-			"msg_a":"姓名",
-			"msg_b":"8558"
+			"name": "aiUserName",
+			"msg_a": "姓名:",
+			"msg_b": ""
 		},
 		{
-			"msg_a":"性别",
-			"msg_b":"8558"
+			"name": "aiUserSex",
+			"msg_a": "性别:",
+			"msg_b": ""
 		},
 		{
-			"msg_a":"年龄",
-			"msg_b":"8558"
+			"name": "aiUserAge",
+			"msg_a": "年龄:",
+			"msg_b": ""
 		},
 		{
-			"msg_a":"来源",
-			"msg_b":"8558"
+			"name": "aiUserFrom",
+			"msg_a": "来源:",
+			"msg_b": ""
 		},
 		{
-			"msg_a":"职业",
-			"msg_b":"8558"
+			"name": "aiUserProfession",
+			"msg_a": "职业:",
+			"msg_b": ""
 		},
 		{
-			"msg_a":"婚姻",
-			"msg_b":"8558"
+			"name": "aiUserMarriage",
+			"msg_a": "婚姻:",
+			"msg_b": ""
 		},
 		{
-			"msg_a":"教育",
-			"msg_b":"8558"
+			"name": "aiUserEduBg",
+			"msg_a": "教育:",
+			"msg_b": ""
 		}
 	],
-	"projects":[
-		["项目","得分","结论参考","结论"],
-		["CDT-3",22,0,"执行能力下降"],
-		["CDT-4",22,0,"执行能力下降"],
-		["CDT-5",22,0,"执行能力下降"]		
+	"projects": [
+		["项目", "得分", "结论参考", "结论"]
 	],
-	"useTime":["100min30s"],
-	"allResult":["厚大法dafdasf师","莱卡的佛ih那都是你发"]
-	
+	"useTime": [],
+	"allResult": [],
+	"bottomMsg":[],
+	"office":[],
+	"date":[]
+
 }

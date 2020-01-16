@@ -11,7 +11,7 @@ class Storage {
 		let obj = {
 			key: key,
 			value: value,
-			expires: expires, //过期时间
+			expires: expires, //过期时间,毫秒级
 			startTime: new Date().getTime() //记录缓存存入时间，毫秒级
 		};
 		let options = {};
@@ -66,3 +66,41 @@ class Storage {
 		localStorage.clear();
 	}
 }
+
+class seStorage {
+
+	constructor(arg) {
+		this.name = "sessionStorage";
+	}
+	setItem(key, value) {
+		let obj = {
+			key: key,
+			value: value,
+		};
+		let options = {};
+		//对象合并
+		Object.assign(options, obj);
+		//获取value的对象类型
+		let type = Object.prototype.toString.call(options.value);
+		//如果是对象或者数组需要转为JSON字符串
+		if (type == '[object Object]')
+			options.value = JSON.stringify(options.value);
+		if (type == '[object Array]')
+			options.value = JSON.stringify(options.value);
+
+		sessionStorage.setItem(options.key, options.value);
+
+	}
+	getItem(key) {
+		var item = sessionStorage.getItem(key);
+		try {
+			item = JSON.parse(item); //如果是JSON类型就转变为对象,一般用于封装存储
+		} catch (e) {
+			item = item; //如果不是JSON类型就直接返回值，没有封装存储
+		}
+		return item;
+	}
+}
+
+var storage = new Storage();
+var sstorage = new seStorage();
