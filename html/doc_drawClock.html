@@ -12,7 +12,7 @@
 		<!-- 导入vue.js -->
 		<script type="text/javascript" src="../js/vue.js"></script>
 
-<script type="text/javascript" src="./config/urlConfig.js"></script>
+		<script type="text/javascript" src="./config/urlConfig.js"></script>
 		<!-- 引入jQuery.js -->
 		<script src="../js/jquery/jquery.min.js"></script>
 	</head>
@@ -27,7 +27,7 @@
 				<div id="next-scale">
 					<button type="button" onclick="stopTest()">完成测试</button>
 					<button type="button" onclick="next_scale()">下一个</button>
-					
+
 				</div>
 				<div class="cdt-menu">
 					<span class="cdt">CDT-3</span>
@@ -47,9 +47,9 @@
 						</div>
 						<p class="question-title toH">图例:</p>
 						<div class="question-img">
-							<img src="../img/clock.png" id="question-img"/>
+							<img src="../img/clock.png" id="question-img" />
 						</div>
-						
+
 					</div>
 
 					<div class="scale-right-content  content2">
@@ -103,18 +103,17 @@
 	<script src="utils/Storage.js"></script>
 	<script src="../js/toJump.js"></script>
 	<script>
-	
 		//let USER_ID = window.location.search.split('?')[1].split(0,1).join("");
 		let USER_ID = 22;
-		let RESULT_DATA= {
-			'CDT-3':'',
-			'CDT-4':'',
-			'CDT-5':'',
-			'CDT-7':'',
-			'CDT-10':'',
-			'CDT-30':'',
-			
-		};//准备提交给服务器的报告数据
+		let RESULT_DATA = {
+			'CDT-3': '',
+			'CDT-4': '',
+			'CDT-5': '',
+			'CDT-7': '',
+			'CDT-10': '',
+			'CDT-30': '',
+
+		}; //准备提交给服务器的报告数据
 		// {//用于将数据传递给打印页面显示部分
 		// 		name:"",//题目名称
 		// 		time:"",//完成时间
@@ -123,25 +122,28 @@
 		// }
 
 		let START_TIME = ""; //计时开始时间
-		let isInsert =false;	//是否加入新的成绩数据，false时不加入，只更新
-		let isFirstLine = 0;	//判断是否为接受图片的第一笔,0表示等待接受，1表示正在绘图
+		let isInsert = false; //是否加入新的成绩数据，false时不加入，只更新
+		let isFirstLine = 0; //判断是否为接受图片的第一笔,0表示等待接受，1表示正在绘图
 		//获取评分方式信息，用于生成最后结果
-		let theEnd=JSON.parse($.ajax({url:'../JSON/clock.json',async:false}).responseText)
+		let theEnd = JSON.parse($.ajax({
+			url: '../JSON/clock.json',
+			async: false
+		}).responseText)
 		$(document).ready(function() {
 
 			$.ajax({
 				type: 'GET',
-				url: config.url+'/scales/testMsg/' + 11,
+				url: config.url + '/scales/testMsg/' + 11,
 				success: function(e) {
 					console.log(e.object)
 					all_test = e.object.slice(0, e.object.length);
 					//初始化引导语
-					for(let i=0;i<all_test.length;i++)
-					if(all_test[i].aiScoreMethodName =="CDT-3"){
-						scale_name.guid =  all_test[i].aiQuestionGuid;
-						break
-					}
-					
+					for (let i = 0; i < all_test.length; i++)
+						if (all_test[i].aiScoreMethodName == "CDT-3") {
+							scale_name.guid = all_test[i].aiQuestionGuid;
+							break
+						}
+
 				},
 				error: function() {
 
@@ -210,33 +212,33 @@
 
 			for (let i = 0; i < cdt.length; i++)
 				cdt[i].onclick = function() {
-					for(let r=0;r<cdt.length;r++){
+					for (let r = 0; r < cdt.length; r++) {
 						cdt[r].style.backgroundColor = "burlywood"
 					}
 					this.style.backgroundColor = "rosybrown"
-					
+
 					//量表说明
 					let obj = {};
 					obj.value = "本次测量采用" + cdt[i].innerText + "评分法";
 					scale_explain.pop();
 					scale_explain.push(obj);
 					scale_name.name = cdt[i].innerText;
-					
+
 					//配置图片
-					if(cdt[i].innerText=="CDT-7"){
-						document.getElementById('question-img').src="../img/cdt-7.png";
-					}else{
-						document.getElementById('question-img').src="../img/clock.png";
-						
+					if (cdt[i].innerText == "CDT-7") {
+						document.getElementById('question-img').src = "../img/cdt-7.png";
+					} else {
+						document.getElementById('question-img').src = "../img/clock.png";
+
 					}
-					
+
 					//配置引导语
-					for(let n=0;n<all_test.length;n++)
-					if(all_test[n].aiScoreMethodName ==cdt[i].innerText){
-						scale_name.guid =  all_test[n].aiQuestionGuid;
-						break
-					}
-					
+					for (let n = 0; n < all_test.length; n++)
+						if (all_test[n].aiScoreMethodName == cdt[i].innerText) {
+							scale_name.guid = all_test[n].aiQuestionGuid;
+							break
+						}
+
 
 					for (let k = 0; k < all_test.length; k++) {
 
@@ -284,14 +286,14 @@
 							break;
 						}
 					}
-					
+
 				}
 
-			if(!scale)
-			alert("系统错误");
+			if (!scale)
+				alert("系统错误");
 
 		});
-		
+
 		//从本地读出的量表信息
 		let s;
 
@@ -306,14 +308,14 @@
 		//题目选项数据包
 		var scale_test_package = [];
 
-		var do_time=new Vue({
+		var do_time = new Vue({
 			el: '#do-time',
 			data: {
 				data: 0
 			}
 		});
 
-		var do_score=new Vue({
+		var do_score = new Vue({
 			el: '#do-score',
 			data: {
 				data: 0
@@ -330,7 +332,7 @@
 			el: '#scale-right',
 			data: {
 				name: 'CDT-3',
-				guid:""
+				guid: ""
 			}
 		});
 		var scale_test = new Vue({
@@ -356,58 +358,60 @@
 				}
 			}
 		});
-		
+
 		/**
 		 * 测试完成停止计时
 		 */
-		function stopTest(){
-			let img_url =document.getElementById('re-img');
-			let EndTime = new Date();//完成时的时间
+		function stopTest() {
+			let img_url = document.getElementById('re-img');
+			let EndTime = new Date(); //完成时的时间
 			let obj = {
-				name:scale_name.name,//题目名称
-				time:do_time.data,//完成时间
-				score:do_score.data,//最终得分
-				img:img_url.src,//结果图片url
-				doc:"",	//施测人
-				date:""		//完成量表时间
-				des:''	//最终测试结果
+				name: scale_name.name, //题目名称
+				time: do_time.data, //完成时间
+				score: do_score.data, //最终得分
+				img: img_url.src, //结果图片url
+				doc: "", //施测人
+				date: "", //完成量表时间
+				des: '' //最终测试结果
 			}
-			for(let i=0 ;i<theEnd.methods.length;i++){
-				if(theEnd.methods[i].topicName ==scale_name.name){
-					if(do_score.data>=theEnd.methods[i].min
-					&&do_score.data<=theEnd.methods[i].max){
+			console.log(theEnd)
+			console.log(do_score.data)
+			for (let i = 0; i < theEnd.methods.length; i++) {
+				if (theEnd.methods[i].topicName == scale_name.name) {
+					if (do_score.data >= theEnd.methods[i].min &&
+						do_score.data <= theEnd.methods[i].max) {
 						obj.des = theEnd.methods[i];
 					}
 				}
 			}
 			RESULT_DATA[scale_name.name] = obj;
-			storage.setItem('&11',RESULT_DATA,1000*1000*100*1000);//设置过期时间为10毫秒，以便能立即删除
-			sstorage.setItem('&11',RESULT_DATA);
+			storage.setItem('&11', RESULT_DATA, 1000 * 1000 * 100 * 1000); //设置过期时间为10毫秒，以便能立即删除
+			sstorage.setItem('&11', RESULT_DATA);
 			console.log(RESULT_DATA)
 		}
-		
+
 		/**
 		 * 页面跳转
 		 */
-		function next_scale(){
-	
+		function next_scale() {
+
 			let c = confirm('您是否测试完题目?')
-			if(c==true){
+			if (c == true) {
 				let ind;
 				console.log(s);
-				for(let i=0;i<s.items.length;i++){
-					if(s.items[i].aiScaleId == 11)
-					ind = i;
+				for (let i = 0; i < s.items.length; i++) {
+					if (s.items[i].aiScaleId == 11)
+						ind = i;
 				}
-				
-				if(ind+1 == s.items.length){
+
+				if (ind + 1 == s.items.length) {
 					window.location.href = 'finish.html'
-				}else{
-					toJump(s.items[ind+1].aiScaleId)
+				} else {
+					toJump(s.items[ind + 1].aiScaleId)
 				}
-				
+
 				alert('页面跳转')
-			}else{
+			} else {
 				//nothing
 			}
 		}
@@ -444,14 +448,14 @@
 		function createReport() {
 			//需要先将结果数据提交给服务器
 			//告诉打印页面应该处理哪一项测验，多个测验用&隔开
-			window.open("report/report.html?"+11)
+			window.open("report/report.html?" + 11)
 		}
 
 		/**
 		 * websocket连接
 		 */
 		var websocket = null;
-		websocket = new WebSocket(config.wsURL+'/websocket/' + USER_ID)
+		websocket = new WebSocket(config.wsURL + '/websocket/' + USER_ID)
 		websocket.onopen = function(e) {
 			console.log('建立连接')
 		}
@@ -466,18 +470,18 @@
 		websocket.onmessage = function(e) {
 			let o = JSON.parse(e.data);
 			//console.log(o)
-			if(o.incise==true){
-				if(o.endIncise==true){
-					src+=o.data;
+			if (o.incise == true) {
+				if (o.endIncise == true) {
+					src += o.data;
 					document.getElementById('re-img').src = src;
 					src = '';
-				}else{
-					src+=o.data;
+				} else {
+					src += o.data;
 				}
-			}else{
+			} else {
 				src = o.data;
 			}
-			if(isFirstLine == 0){
+			if (isFirstLine == 0) {
 				isFirstLine = 1;
 				/**
 				 * 计时开始
@@ -497,7 +501,5 @@
 		window.onbeforeunload = function() {
 			websocket.close();
 		}
-
-		
 	</script>
 </html>
