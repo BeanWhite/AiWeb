@@ -112,7 +112,6 @@
 			'CDT-7': '',
 			'CDT-10': '',
 			'CDT-30': '',
-
 		}; //准备提交给服务器的报告数据
 		// {//用于将数据传递给打印页面显示部分
 		// 		name:"",//题目名称
@@ -363,13 +362,23 @@
 		 * 测试完成停止计时
 		 */
 		function stopTest() {
-			let img_url = document.getElementById('re-img');
+			
+			let img = document.getElementById('re-img');
+			let canvas = document.createElement("canvas");
+			canvas.width = img.width;
+			canvas.height = img.height;
+			let ctx = canvas.getContext("2d");
+			ctx.drawImage(img, 0, 0, img.width, img.height);
+			//let dataURL = canvas.toDataURL('image/png');
+			
+			
+			
 			let EndTime = new Date(); //完成时的时间
 			let obj = {
 				name: scale_name.name, //题目名称
 				time: do_time.data, //完成时间
 				score: do_score.data, //最终得分
-				img: img_url.src, //结果图片url
+				img: canvas.toDataURL('image/png'), //结果图片url
 				doc: "", //施测人
 				date: "", //完成量表时间
 				des: '' //最终测试结果

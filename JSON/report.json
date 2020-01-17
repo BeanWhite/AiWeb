@@ -1,52 +1,59 @@
 {
-	"msg": [{
-			"name": "aiUserId",
-			"msg_a": "门诊号:",
-			"msg_b": ""
-		},
-		{
-			"name": "aiUserName",
-			"msg_a": "姓名:",
-			"msg_b": ""
-		},
-		{
-			"name": "aiUserSex",
-			"msg_a": "性别:",
-			"msg_b": ""
-		},
-		{
-			"name": "aiUserAge",
-			"msg_a": "年龄:",
-			"msg_b": ""
-		},
-		{
-			"name": "aiUserFrom",
-			"msg_a": "来源:",
-			"msg_b": ""
-		},
-		{
-			"name": "aiUserProfession",
-			"msg_a": "职业:",
-			"msg_b": ""
-		},
-		{
-			"name": "aiUserMarriage",
-			"msg_a": "婚姻:",
-			"msg_b": ""
-		},
-		{
-			"name": "aiUserEduBg",
-			"msg_a": "教育:",
-			"msg_b": ""
-		}
-	],
-	"projects": [
-		["项目", "得分", "结论参考", "结论"]
-	],
-	"useTime": [],
-	"allResult": [],
-	"bottomMsg":[],
-	"office":[],
-	"date":[]
-
+	"11": {
+		"msg": [{
+				"name": "aiUserId",
+				"msg_a": "门诊号:",
+				"msg_b": ""
+			},
+			{
+				"name": "aiUserName",
+				"msg_a": "姓名:",
+				"msg_b": ""
+			},
+			{
+				"name": "aiUserSex",
+				"msg_a": "性别:",
+				"msg_b": ""
+			},
+			{
+				"name": "aiUserAge",
+				"msg_a": "年龄:",
+				"msg_b": ""
+			},
+			{
+				"name": "aiUserFrom",
+				"msg_a": "来源:",
+				"msg_b": ""
+			},
+			{
+				"name": "aiUserProfession",
+				"msg_a": "职业:",
+				"msg_b": ""
+			},
+			{
+				"name": "aiUserMarriage",
+				"msg_a": "婚姻:",
+				"msg_b": ""
+			},
+			{
+				"name": "aiUserEduBg",
+				"msg_a": "教育:",
+				"msg_b": ""
+			}
+		],
+		"projectsTitle":["","","",""],
+		"projects": [
+			["项目", "得分", "结论参考", "结论"]
+		],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"20":{
+		
+	}
 }

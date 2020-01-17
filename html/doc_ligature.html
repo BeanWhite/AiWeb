@@ -24,6 +24,7 @@
 		<div id="content">
 			<div class="scale">
 				<div id="next-scale">
+					<button type="button" onclick="stopTest()">完成</button>
 					<button type="button" onclick="next_scale()">下一个</button>
 				</div>
 				<div class="cdt-menu">
@@ -103,9 +104,9 @@
 							<span id="do-score">
 								连接错误数:{{error_con}}
 							</span>
-							<span id="do-score">
+							<!-- <span id="do-score">
 								忽略错误数:{{ignore_con}}
-							</span>
+							</span> -->
 						</div>
 
 					</div>
@@ -322,6 +323,51 @@
 			}
 		});
 		
+		
+		
+		/**
+		 * 完成该部分测验，保存数据
+		 */
+		function stopTest(){
+			
+			/**
+			 * 获取患者画的图片
+			 */
+			let img = document.getElementById('re-img');
+			let canvas = document.createElement("canvas");
+			canvas.width = img.width;
+			canvas.height = img.height;
+			let ctx = canvas.getContext("2d");
+			ctx.drawImage(img, 0, 0, img.width, img.height);
+			
+			
+			
+			let EndTime = new Date(); //完成时的时间
+			let obj = {
+				name: scale_name.name, //题目名称
+				time: do_time.time, //完成时间
+				score: do_score.data, //最终得分
+				img: canvas.toDataURL('image/png'), //结果图片url
+				doc: "", //施测人（不填）
+				date: "", //完成量表日期
+				des:  //最终测试结果
+			}
+			console.log(theEnd)
+			console.log(do_score.data)
+			for (let i = 0; i < theEnd.methods.length; i++) {
+				if (theEnd.methods[i].topicName == scale_name.name) {
+					if (do_score.data >= theEnd.methods[i].min &&
+						do_score.data <= theEnd.methods[i].max) {
+						obj.des = theEnd.methods[i];
+					}
+				}
+			}
+			RESULT_DATA[scale_name.name] = obj;
+			storage.setItem('&11', RESULT_DATA, 1000 * 1000 * 100 * 1000); //设置过期时间为10毫秒，以便能立即删除
+			sstorage.setItem('&11', RESULT_DATA);
+			console.log(RESULT_DATA)
+		}
+		
 		function next_scale(){
 			if(Pos>=3){
 				let ind;
@@ -440,34 +486,6 @@
 		}
 		window.onbeforeunload = function() {
 			websocket.close();
-		}
-
-		/**
-		 * 将byte数据变为字符串
-		 * @param {Object} arr 	
-		 */
-		function byteToString(arr) {
-			if (typeof arr === 'string') {
-				return arr;
-			}
-			var str = '',
-				_arr = arr;
-			for (var i = 0; i < _arr.length; i++) {
-				var one = _arr[i].toString(2),
-					v = one.match(/^1+?(?=0)/);
-				if (v && one.length == 8) {
-					var bytesLength = v[0].length;
-					var store = _arr[i].toString(2).slice(7 - bytesLength);
-					for (var st = 1; st < bytesLength; st++) {
-						store += _arr[st + i].toString(2).slice(2);
-					}
-					str += String.fromCharCode(parseInt(store, 2));
-					i += bytesLength - 1;
-				} else {
-					str += String.fromCharCode(_arr[i]);
-				}
-			}
-			return str;
 		}
 	</script>
 </html>

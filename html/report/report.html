@@ -4,7 +4,11 @@
 		<meta charset="utf-8">
 		<link rel="stylesheet" type="text/css" href="report.css" />
 		<script src="../../js/jquery-3.4.1.js"></script>
+
+
 		<script type="text/javascript" src="../../js/vue.min.js"></script>
+
+
 		<title></title>
 
 	</head>
@@ -12,7 +16,7 @@
 		@media print {
 			@page {
 				size: A4 portrait;
-				margin: 2.5cm 1cm 4.5cm 1cm;
+				margin: 2.5cm 2cm 3.5cm 2cm;
 				padding: 0;
 
 				@top-center {
@@ -29,6 +33,28 @@
 				}
 
 			}
+			@page:first{
+				size: A4 portrait;
+				margin: 3cm 2cm 3.5cm 2cm;
+				padding: 0;
+				@top-center {
+					width: 100%;
+					height: 100%;
+					content: element(firstPageHead);
+				
+				}
+				
+				@bottom-center {
+					width: 100%;
+					height: 100%;
+					content: element(divFooter);
+				}
+				
+			}
+			
+			.ti{
+				display: none;
+			}
 
 			/**
 			 * 自定义分页
@@ -44,23 +70,22 @@
 			/* 第一个h1标题不需要分页 */
 			.first-h1 {
 				page-break-before: avoid;
+				margin: 0;
 			}
 
 			/* 所有h1标题需要分页 */
 			h1 {
 				page-break-before: always;
+				width: 100%;
+				text-align: center;
 			}
 
-			h1,
-			h2,
-			h3,
-			h4,
-			h5,
-			h6,
-			p {
-				margin: 0;
-				padding: 0;
+			.text-center {
+				width: 100%;
+				text-align: center;
 			}
+
+
 
 
 			/* fix相当于body,需要在fix中重新布局 */
@@ -68,6 +93,10 @@
 				position: absolute;
 				height: 100%;
 				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: center;
 			}
 
 			.footer-fix {
@@ -110,10 +139,17 @@
 			button {
 				display: none;
 			}
-
+			
+			#firstPageHead{
+				font-size: 12px;
+				position: running(firstPageHead);
+				prince-flow: static(firstPageHead, start) width: 100%;
+				height: 100px;
+			}
+			
 			#divHeader {
 
-
+				font-size: 12px;
 				position: running(divHeader);
 				prince-flow: static(divHeader, start) width: 100%;
 				height: 100px;
@@ -121,6 +157,7 @@
 			}
 
 			#divFooter {
+				font-size: 12px;
 				position: running(divFooter);
 				width: 100%;
 				/* background-color: red; */
@@ -139,6 +176,24 @@
 				display: none;
 			}
 
+			.pr {
+				display: initial;
+				margin: 20px;
+			}
+			.ot {
+				display: none;
+			}
+			.header-content {
+				font-size: 12px;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				padding-top: 20px;
+			}
+			
+
 		}
 	</style>
 	<style type="text/css">
@@ -146,10 +201,26 @@
 			width: 100%;
 		}
 
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		p {
+			margin: 0;
+			padding: 0;
+		}
+
 		body {
 			overflow: auto;
 			margin: 0;
 			padding: 0;
+		}
+
+		h1 {
+			width: 100%;
+			text-align: center;
 		}
 
 		ul,
@@ -159,16 +230,13 @@
 			padding: 0;
 		}
 
+		.font-12 {
+			font-size: 12px;
+		}
 
-		.page {
-			position: relative;
-			display: flex;
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: center;
-			border: none;
-			height: 100%;
-			background-color: #DEB887;
+		.pdf {
+			visibility: hidden;
+			opacity: 0;
 		}
 
 		.line-top {
@@ -180,18 +248,22 @@
 
 		.line-center {
 			width: 100%;
-			margin-top: 2px;
+			margin-top: 1px;
 			border-top: 3px solid black;
 		}
 
 		.line-bottom {
 			width: 100%;
-			margin-top: 3px;
+			margin-top: 1px;
 			border-bottom: 1px solid black;
 		}
 
+		.line-bottom-darkgray {
+			width: 100%;
+			border-bottom: 1px solid #BBBBBB;
+		}
+
 		.msg {
-			margin-top: 20px;
 			width: 100%;
 			height: auto;
 			display: flex;
@@ -202,12 +274,12 @@
 
 		.msg-item {
 			display: inline-block;
-			margin: 5px 0 5px 0;
+			font-size: 12px;
 			width: 24%;
-			height: 40px;
-			line-height: 40px;
+			height: 24px;
+			line-height: 24px;
 			text-align: center;
-			background-color: #0096E1;
+			/* background-color: #0096E1; */
 		}
 
 		.tab-items {
@@ -222,17 +294,25 @@
 		}
 
 		.report-img {
-			position: relative;
 			width: 100%;
-			height: 300px;
-			background-color: #008B8B;
+			height: 100%;
+			/* background-color: #008B8B; */
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			flex-direction: column;
+		}
+
+		.report-img-list {
+			position: relative;
+			width: 100%;
+			height: auto;
+			display: flex;
+			justify-content: center;
 		}
 
 		.report-img-item {
-			width: 200px;
+			width: 400px;
 			height: 200px;
 		}
 
@@ -247,26 +327,56 @@
 			height: auto;
 		}
 
-		.header-content {
-			width: 100%;
-			height: 80%;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-
+		
 		.footer-content {
+			font-size: 12px;
 			width: 100%;
 			height: 100%;
 		}
+
+		.on {
+			display: none;
+		}
+
+		.off {
+			display: initial;
+		}
+
+		.header-left-content {
+			height: 40px;
+			line-height: 40px;
+			position: relative;
+			padding-left: 45px;
+			font-family: kartika;
+		}
+
+		.header-right-content {
+			color: #2c9cdc;
+			text-align: right;
+		}
 	</style>
 	<body>
+		<style type="text/css">
+			.back-pic {
+				position: fixed;
+				top: 0;
+				z-index: -100;
+				width: 100%;
+				height: 100%;
+				background: url(../../img/poster-about.jpg) no-repeat center;
+				background-size: cover;
+			}
+		</style>
 
-		<!-- 用于打印显示的页眉页脚 -->
-		<div id="divHeader">
+		<button onclick="printPDF()" style="position: fixed; top: 50px;left: 50px;">666666</button>
+		<div class="back-pic">
+			<!-- 背景 -->
+		</div>
+		
+		<div id="firstPageHead">
 			<div class="header-fix">
 				<div class="header-content">
-					<div style="height: 40px;line-height: 40px;position: relative;padding-left: 45px;">
+					<div class="header-left-content">
 						<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-plus-circle" viewBox="64 64 896 896" width="24"
 						 height="24" style="fill: rgba(34, 130, 34, 0.99); position: absolute;left: 10px;top: 0;
 						 bottom: 0; margin: auto 0;">
@@ -275,21 +385,50 @@
 						</svg>
 						重庆市精神卫生中心
 					</div>
-					<div style="text-align: right;">
+					<div class="header-right-content">
 						<p>测评结果反映被测人最新状态</p>
 						<p>仅用于专业诊断参考</p>
 					</div>
 				</div>
-				<div class="line-bottom">
+				<div style="width: 100%;">
+					<h1 class="first-h1">心理健康测评报告</h1>
+				<div class="line-top"></div>
+				<div class="line-center"></div>
+				<div class="line-bottom"></div>
 				</div>
+				
+			</div>
+		</div>
+		
+		<!-- 用于打印显示的页眉页脚 -->
+		<div id="divHeader">
+			<div class="header-fix">
+				<div class="header-content">
+					<div class="header-left-content">
+						<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-plus-circle" viewBox="64 64 896 896" width="24"
+						 height="24" style="fill: rgba(34, 130, 34, 0.99); position: absolute;left: 10px;top: 0;
+						 bottom: 0; margin: auto 0;">
+							<path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
+							<path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+						</svg>
+						重庆市精神卫生中心
+					</div>
+					<div class="header-right-content">
+						<p>测评结果反映被测人最新状态</p>
+						<p>仅用于专业诊断参考</p>
+					</div>
+				</div>
+				<div class="line-top"></div>
+				<div class="line-center"></div>
+				<div class="line-bottom"></div>
 			</div>
 		</div>
 		<div id="divFooter">
 			<div class="footer-fix">
 				<div class="footer-content">
 					<div style="width: 100%;display: flex;justify-content: space-between;">
-						<span style="text-align: left;">报告日期:{2020-01-02}&nbsp;&nbsp;{14:30}</span>
-						<span style="text-align: right;">科室:{北碚精卫中心}</span>
+						<span style="text-align: left;">报告日期:{{scale_11.date[0]}}</span>
+						<span style="text-align: right;">科室:{{scale_11.office[0]}}</span>
 					</div>
 					<div class="line-top"></div>
 					<div class="line-center"></div>
@@ -297,9 +436,9 @@
 					<div id="page-num"></div>
 					<div style="width: 100%;display: flex;justify-content: space-between;">
 						<ul>
-							<li>{{重庆市北碚区精神卫生中心</li>
-							<li>地址:{{重庆市北碚区</li>
-							<li>电话{{123456,48484848</li>
+							<li>重庆市北碚区精神卫生中心</li>
+							<li>地址:重庆市北碚区</li>
+							<li>电话:123456,48484848</li>
 						</ul>
 						<ul style="text-align: center;">
 							<li>
@@ -313,11 +452,11 @@
 				</div>
 			</div>
 		</div>
-		<!-- 正文部分 -->
-		<div class="top bc" id="top-web">
+		<!-- 正文页眉 -->
+		<div class="top bc top-web">
 			<div class="header-fix">
 				<div class="header-content">
-					<div style="height: 40px;line-height: 40px;position: relative;padding-left: 45px;">
+					<div class="header-left-content">
 						<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-plus-circle" viewBox="64 64 896 896" width="24"
 						 height="24" style="fill: rgba(34, 130, 34, 0.99); position: absolute;left: 10px;top: 0;
 						 bottom: 0; margin: auto 0;">
@@ -326,98 +465,113 @@
 						</svg>
 						重庆市精神卫生中心
 					</div>
-					<div style="text-align: right;">
+					<div class="header-right-content">
 						<p>测评结果反映被测人最新状态</p>
 						<p>仅用于专业诊断参考</p>
 					</div>
 				</div>
 			</div>
 		</div>
+
+		<!--  打印页面-->
+		<!-- 多报告渲染方式，需要在li上加上判断是否还有下一个额li，方便分页， -->
+		<!-- 	<ul class="page bc vue">
+			<li class="test" class="page-min"></li>
+			<li class="test" class="page-min"></li>
+		</ul> -->
 		<div class="page bc vue">
-			<button type="button" onclick="printPDF()" style="position: absolute;top: 300px;margin: 300px auto;z-index: 100;">666</button>
-			<h1>心理健康测评报告</h1>
-			<div class="line-top"></div>
-			<div class="line-center"></div>
-			<div class="line-bottom"></div>
+			<h1 class="ot">心理健康测评报告</h1>
+			<div class="line-top ot"></div>
+			<div class="line-center ot"></div>
+			<div class="line-bottom ot"></div>
 			<ul class="msg">
 				<li class="msg-item" v-for="it in scale_11.msgObject"><span class="msg-item-a">{{it.msg_a}}</span><span class="msg-item-b">{{it.msg_b}}</span></li>
+			</ul>
+			<div class="line-top"></div>
+			<h2 class="text-center">画钟测验</h2>
+			<div class="line-top"></div>
+			<div class="line-bottom"></div>
+			<ul class="msg">
+				<li class="tab-items" v-for="(it,index) in scale_11.rTableObject" v-bind:class="[index+1>=scale_11.rTableObject.length?'':'line-bottom-darkgray']">
+					<span class="msg-item ">{{it[0]}}</span>
+					<span class="msg-item ">{{it[1]}}</span>
+					<span class="msg-item ">{{it[2]}}</span>
+					<span class="msg-item ">{{it[3]}}</span>
+				</li>
+			</ul>
+			<div class="line-top"></div>
+			<div class="line-bottom"></div>
+			<!-- 在图片上方添加分页符 -->
+			<h3 class="text-center">患者结果图</h3>
+
+			<ul class="report-img">
+				<li v-for="(it,index) in scale_11.img" class="report-img-list">
+					<div class="top-left-corner">{{it.title}}</div>
+					<img :src="it.localURL" class="report-img-item pr">
+					<img :src="it.proURL" class="report-img-item  ot">
+				</li>
+			</ul>
+			<div class="use-time">
+				<span>作答时长:</span><span>{{scale_11.useTime[0]}}</span>
+			</div>
+			<div style="text-decoration: underline;align-self: flex-start;">
+				<span class="line-bottom">总结论:</span>
+
+			</div>
+			<div class="all-result" style="align-self: flex-start;">
+				{{scale_11.allResult[0]}}
+			</div>
+			<div style="width: 90%;text-align: right;">
+				施测人:
+			</div>
+		</div>
+
+
+
+
+		<!-- 正文页脚 -->
+		<div class="bottom bc bottom-web">
+			<div class="footer-fix">
+				<div class="footer-content" id="l">
+					<div style="width: 100%;display: flex;justify-content: space-between;">
+						<span style="text-align: left;">报告日期:{{scale_11.date[0]}}</span>
+						<span style="text-align: right;margin-right: 50px;">科室:{{scale_11.office[0]}}</span>
+					</div>
+					<div class="line-top"></div>
+					<div class="line-center"></div>
+					<div class="line-bottom"></div>
+					<div style="width: 100%;display: flex;justify-content: space-between;">
+						<ul>
+							<li>重庆市北碚区精神卫生中心</li>
+							<li>地址:重庆市北碚区</li>
+							<li>电话123456,48484848</li>
 						</ul>
-						<div class="line-top"></div>
-						<h2>画钟测验</h2>
-						<div class="line-top"></div>
-						<div class="line-bottom"></div>
-						<ul class="msg">
-							<li class="tab-items" v-for="it in scale_11.rTableObject">
-								<span class="msg-item ">{{it[0]}}</span>
-								<span class="msg-item ">{{it[1]}}</span>
-								<span class="msg-item ">{{it[2]}}</span>
-								<span class="msg-item ">{{it[3]}}</span>
+						<ul style="text-align: center;">
+							<li>
+								<img style="width: 40px;height: 40px;background-color: #008B8B;">
+							</li>
+							<li>
+								测评二维码
 							</li>
 						</ul>
-						<div class="line-top"></div>
-						<div class="line-bottom"></div>
-						<div class="report-img break-before">
-							<div class="top-left-corner">患者作答{{CDT-3</div>
-				<!-- <img src="../../img/5/flower.jpg" class="report-img-item">
-				<img src="../../img/5/flower.jpg" class="report-img-item"> -->
-				<img :src="img.img_1[0]" class="report-img-item" style="margin-right: 100px;">
-				<img :src="img.img_2[0]" class="report-img-item">
-			</div>
-			<div class="report-img">
-				<div class="top-left-corner">标准作答{{CDT-3</div>
-				<img :src="img.img_1[0]" class="report-img-item" style="margin-right: 100px;">
-				<img :src="img.img_2[0]" class="report-img-item">
-			</div>
-			
-				<div class="use-time"><span>作答时长:</span>{{scale_11.useTime[0]}}</div>
-							<div style="text-decoration: underline;align-self: flex-start;">
-								<span>总结论:</span>
-								<div class="line-top"></div>
-							</div>
-							<div class="all-result" style="align-self: flex-start;">
-								{{scale_11.allResult[0]}}
-							</div>
-							<div style="width: 100%;text-align: right;padding-right: 300px;">
-								施测人:
-							</div>
-				
-
-		</div>
-					<div class="bottom bc" id="bottom-web">
-						<div class="footer-fix">
-							<div class="footer-content" id="l">
-								<div style="width: 100%;display: flex;justify-content: space-between;">
-									<span style="text-align: left;">报告日期:{{scale_11.date[0]}}</span>
-									<span style="text-align: right;margin-right: 50px;">科室:{{scale_11.office[0]}}</span>
-								</div>
-								<div class="line-top"></div>
-								<div class="line-center"></div>
-								<div class="line-bottom"></div>
-								<div style="width: 100%;display: flex;justify-content: space-between;">
-									<ul>
-										<li>重庆市北碚区精神卫生中心</li>
-										<li>地址:重庆市北碚区</li>
-										<li>电话123456,48484848</li>
-									</ul>
-									<ul style="text-align: center;">
-										<li>
-											<img style="width: 40px;height: 40px;background-color: #008B8B;">
-										</li>
-										<li>
-											测评二维码
-										</li>
-									</ul>
-								</div>
-							</div>
-						</div>
-
 					</div>
-					<!-- <img src="../../img/5/organ.jpg" /> -->
-
+				</div>
+			</div>
+		</div>
+		<!-- <img src="" /> -->
 	</body>
 	<script src="../utils/Storage.js"></script>
 	<script>
 		//	let S = window.location.search.split('?')[1].split('&');//可能会有多个量表，所以用数组来表示
+		var q = $.ajax({
+			url: '11.html',
+			async: false
+		}).responseText;
+		// document.getElementsByClassName('test')[0].innerHTML = q;
+		// document.getElementsByClassName('test')[1].innerHTML = q;
+		//console.log(q)
+		const imgBase = 'D://AixlProject//AiWeb//'
+		const endName = '.png' //图片后缀名
 		let S = ['11'];
 		const userMsg = sstorage.getItem("userMsg");
 		console.log(userMsg);
@@ -448,50 +602,108 @@
 		const msgObject = $.ajax({
 			url: '../../JSON/report.json', //基本信息获取
 			async: false
-		}).responseJSON.msg;
+		}).responseJSON['11'].msg;
 		const RESULT_DATA = {}; //所有量表的结论信息
 		const imgBaseURL = 'D:/AixlProject/AiWeb/'; //设置打印图片的基本目录
 		const patientID = 222; //获取病人账号信息，用于图片保存
 		for (let i = 0; i < S.length; i++) {
 			RESULT_DATA[S[i]] = storage.getItem("&" + S[i]);
 		}
-		console.log(RESULT_DATA)
+		console.log(RESULT_DATA, '结果信息，包括所画图片url')
 
 		console.log(msgObject, 'a')
 		console.log(obj, 'b')
 
 		$(document).ready(function() {
 			//开始渲染数据,并将图片信息保存到服务器
-
 			for (let i = 0; i < msgObject.length; i++) {
 				msgObject[i].msg_b = userMsg[msgObject[i].name]; //渲染基础信息
 			}
-
 			for (let i = 0; i < S.length; i++) {
+				console.log(obj[S[i]])
 				// 根据需要生成报告的量表id初始化结论,显示的信息存在obj对象中，获取的数据在RESULT_DATA中
 				let a = RESULT_DATA[S[i]];
-				console.log(a)
+				console.log(a, 'RESULT_DATA')
+				let isCDT7 = 0;
+				let isCDT = 0;
 				for (let key in a) {
+					if (a[key] == "")
+						continue
 					//初始化项目内容
-					obj.projects.push([a[key].name, a[key].score, a[key].des.des + ':' + a[key].des.min + '——' + a[key].des.max, a[
-						key].des.des]);
+					obj[S[i]].projects.push([a[key].name, a[key].score, a[key].des.des + ':' + a[key].des.min + '—' + a[key].des.max,
+						a[key].des.des
+					]);
 					//设置完成时间
-					obj.useTime.push(a[key].time);
+					obj[S[i]].useTime.push(a[key].time);
 					//设置总结论
-					obj.allResult.push(a[key].des.tzms)
+					obj[S[i]].allResult.push(a[key].des.tzms)
+					obj[S[i]].images.push({
+						url: a[key].img, //图片url
+						name: a[key].name + "_" + userMsg.aiUserId, //图片文件名
+						scaleName: '画钟=' + userMsg.aiUserId, //redis中的key
+						path: "" //可以不用写
+					});
 
+					if (isCDT == 0 && a[key].name != 'CDT-7')
+						isCDT = 1;
+					if (isCDT7 == 0 && a[key].name == 'CDT-7')
+						isCDT7 = 1;
+					let p = {
+						localURL: imgBase + 'img//cacheImg//' + a[key].name + "_" + userMsg.aiUserId + endName, //用于打印pdf时的本地url
+						proURL: '../../img/cacheImg/' + a[key].name + "_" + userMsg.aiUserId + endName, //在项目中url
+						title: '患者作答:' + a[key].name //图片标题名称
+					}
+					obj[S[i]].serviceImg.push(p);
+				}
+				console.log(obj[S[i]].allResult, 'allResult')
+				if (isCDT == 1) {
+					let p = {
+						localURL: imgBase + 'img//clock.png', //用于打印pdf时的本地url
+						proURL: '../../img/clock.png', //在项目中url
+						title: '标准作答' //图片标题名称
+					}
+					obj[S[i]].serviceImg.unshift(p);
 
 				}
+				if (isCDT7 == 1) {
+					let p = {
+						localURL: imgBase + 'img//cdt-7.png', //用于打印pdf时的本地url
+						proURL: '../../img/cdt-7.png', //在项目中url
+						title: '标准作答(CDT-7)' //图片标题名称
+					}
+					obj[S[i]].serviceImg.unshift(p);
+				}
 				//设置科室
-				obj.office.push(userMsg.office);
+				obj[S[i]].office.push(userMsg.aiUserOffice);
 				//设置打印报告时间
-
-				obj.date.push(new Date().toLocaleString('chinese', {
+				obj[S[i]].date.push(new Date().toLocaleString('chinese', {
 					hour12: false
 				}))
-			}
-			//console.log(a,'**************')
-			//obj.projects
+				/**
+				 * 
+				 *向后太发送图片信息并保存到本地 
+				 */
+				let o = {
+					images: obj[S[i]].images
+				}
+				if (o.images.length > 0) {
+					$.ajax({
+						type: "POST",
+						url: 'http://localhost:80/pdf/Img',
+						contentType: "application/json;charset=UTF-8",
+						data: JSON.stringify(o),
+						success: function(e) {
+							console.log('*********/////')
+						},
+						error: function(e) {
+							console.log(912)
+						}
+					})
+					console.log(obj, '|||||')
+				} else {
+					console.log('没有需要保存的图片');
+				}
+			};
 
 
 		})
@@ -537,60 +749,26 @@
 		};
 	</script>
 	<script>
-		/**
-		 * 打印需要的内容发送到服务器保存（仅患者画的图片需要url）
-		 */
-
-		var o = {
-			images: [{
-				url: txt, //图片url
-				name: "11", //图片名字
-				path: "", //图片保存路径
-				scaleName: "画钟=userId"
-			}, {
-				url: txt2, //图片url
-				name: "22", //图片名字
-				path: "", //图片保存路径
-				scaleName: '画钟=userId'
-			}, {
-				url: txt3, //图片url
-				name: "33", //图片名字
-				path: "", //图片保存路径
-				scaleName: "画钟=userId"
-			}]
-		};
-		$.ajax({
-			type: "POST",
-			url: 'http://localhost:80/pdf/Img',
-			contentType: "application/json;charset=UTF-8",
-			data: JSON.stringify(o),
-			success: function(e) {
-				console.log(222)
-			},
-			error: function(e) {
-				console.log(912)
-			}
-
-		})
-		const imgBase = 'D://AixlProject//AiWeb//'
-
 		const bottom_w = new Vue({
-			el: '#bottom-web',
+			el: '.bottom-web',
 			data: {
 				scale_11: {
-					office: obj.office, //科室
-					date: obj.date //完成日期
+					office: obj["11"].office, //科室
+					date: obj['11'].date //完成日期
 				}
 			}
 		});
 		const divF = new Vue({
 			el: '#divFooter',
 			data: {
-
+				scale_11: {
+					office: obj['11'].office, //科室
+					date: obj['11'].date //完成日期
+				}
 			}
 		});
 		const top_w = new Vue({
-			el: '#top-web',
+			el: '.top-web',
 			data: {
 
 			}
@@ -602,19 +780,28 @@
 			}
 		});
 
-
-
-
-
 		const vue = new Vue({
 			el: '.vue',
 			data: {
 				scale_11: {
-					msgObject, //基本信息
-					rTableObject: obj.projects, //项目内容
-					useTime: obj.useTime, //花费时间
-					allResult: obj.allResult, //量表测量结果信息
+					msgObject, //基本信息,因为是一个人的一份或多份报告，一份信息就够了
+					rTableObject: obj['11'].projects, //项目内容，报告结论
+					useTime: obj['11'].useTime, //花费时间
+					allResult: obj['11'].allResult, //量表测量结果信息(总结论)
+					img: obj['11'].serviceImg, //服务器保存的图片信息，方便pdf打印图片，用户答题图片
+					// [{
+					// 	localURL:'',	//用于打印pdf时的本地url
+					// 	proURL:'',		//在项目中url
+					// 	title:''		//图片标题名称
+					// }]
 
+				},
+				scale_20: {
+					msgObject,
+					rTableObject: obj['20'].projects,
+					useTime: obj['20'].useTime,
+					allResult: obj['20'].allResult,
+					img: obj['20'].serviceImg
 				},
 				img: {
 					img_1: [imgBase + 'img//5//flower.jpg'],
@@ -625,6 +812,30 @@
 
 			}
 		})
+
+		//getImg64_src("../../img/5/shuttlecock.jpg");
+
+		function getImg64_src(src) {
+			//var img = document.getElementById(id);
+			let img = document.createElement('img');
+			img.src = src;
+			console.log(img, '0000000')
+			img.onload = function() {
+				let canvas = document.createElement("canvas");
+				canvas.width = img.width;
+				canvas.height = img.height;
+				let ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0, img.width, img.height);
+				let dataURL = canvas.toDataURL('image/png');
+				let o = {
+					images: [{
+						url: dataURL,
+						name: 'ppp'
+					}],
+				}
+				return
+			}
+		};
 	</script>
 
 </html>
