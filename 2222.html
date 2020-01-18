@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html lang="zh">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title></title>
-</head>
-<body>
-<ul style="
-display: flex;justify-content: center;align-items: center;
-list-style: none;width: 100%;
-">
-	<li style="width: 30px;background-color: #0096E1;">1</li>
-	<li>2</li>
-	<li>3</li>
-	<li>4</li>
-	<li>5</li>
-</ul>	
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title></title>
+	</head>
+	<body>
+		<div id="" style="width: 30px;height: 500px; background-color: #008B8B; border: 20px;">
+
+
+		</div>
+		<div id="" style="width: 30px;height: 500px; background-color: #008B8B; border: 20px;">
+
+
+		</div>
+
+		<div id="" style="width: 30px;height: 500px; background-color: #008B8B; border: 20px;">
+
+
+		</div>
+		<script src="js/jquery/jquery.min.js"></script>
+		<script type="text/javascript">
+			 var b= $.ajax({
+				 url:'img/cdt-7.png',
+				 async:false
+			 });
+			 console.log(b)
+			let a = [1, 2];
+			console.log(Object.prototype.toString.call(a))
+			console.log(Object.prototype.toString.call(a) == '[object Array]')
+		</script>
+	</body>
 </html>

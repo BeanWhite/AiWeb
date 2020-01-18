@@ -19,11 +19,11 @@
 				margin: 2.5cm 2cm 3.5cm 2cm;
 				padding: 0;
 
+
 				@top-center {
 					width: 100%;
 					height: 100%;
 					content: element(divHeader);
-
 				}
 
 				@bottom-center {
@@ -33,26 +33,20 @@
 				}
 
 			}
-			@page:first{
+
+			@page:first {
 				size: A4 portrait;
-				margin: 3cm 2cm 3.5cm 2cm;
+				margin: 3.5cm 2cm 3.5cm 2cm;
 				padding: 0;
+
 				@top-center {
 					width: 100%;
 					height: 100%;
 					content: element(firstPageHead);
-				
 				}
-				
-				@bottom-center {
-					width: 100%;
-					height: 100%;
-					content: element(divFooter);
-				}
-				
 			}
-			
-			.ti{
+
+			.ti {
 				display: none;
 			}
 
@@ -70,7 +64,6 @@
 			/* 第一个h1标题不需要分页 */
 			.first-h1 {
 				page-break-before: avoid;
-				margin: 0;
 			}
 
 			/* 所有h1标题需要分页 */
@@ -139,14 +132,14 @@
 			button {
 				display: none;
 			}
-			
-			#firstPageHead{
+
+			#firstPageHead {
 				font-size: 12px;
 				position: running(firstPageHead);
 				prince-flow: static(firstPageHead, start) width: 100%;
-				height: 100px;
+				height: 100%;
 			}
-			
+
 			#divHeader {
 
 				font-size: 12px;
@@ -180,9 +173,11 @@
 				display: initial;
 				margin: 20px;
 			}
+
 			.ot {
 				display: none;
 			}
+
 			.header-content {
 				font-size: 12px;
 				width: 100%;
@@ -192,7 +187,7 @@
 				align-items: flex-start;
 				padding-top: 20px;
 			}
-			
+
 
 		}
 	</style>
@@ -327,7 +322,7 @@
 			height: auto;
 		}
 
-		
+
 		.footer-content {
 			font-size: 12px;
 			width: 100%;
@@ -372,7 +367,7 @@
 		<div class="back-pic">
 			<!-- 背景 -->
 		</div>
-		
+
 		<div id="firstPageHead">
 			<div class="header-fix">
 				<div class="header-content">
@@ -392,14 +387,13 @@
 				</div>
 				<div style="width: 100%;">
 					<h1 class="first-h1">心理健康测评报告</h1>
-				<div class="line-top"></div>
-				<div class="line-center"></div>
-				<div class="line-bottom"></div>
+					<div class="line-top"></div>
+					<div class="line-center"></div>
+					<div class="line-bottom"></div>
 				</div>
-				
 			</div>
 		</div>
-		
+
 		<!-- 用于打印显示的页眉页脚 -->
 		<div id="divHeader">
 			<div class="header-fix">
@@ -418,6 +412,7 @@
 						<p>仅用于专业诊断参考</p>
 					</div>
 				</div>
+				<h1></h1>
 				<div class="line-top"></div>
 				<div class="line-center"></div>
 				<div class="line-bottom"></div>
@@ -485,14 +480,14 @@
 			<div class="line-center ot"></div>
 			<div class="line-bottom ot"></div>
 			<ul class="msg">
-				<li class="msg-item" v-for="it in scale_11.msgObject"><span class="msg-item-a">{{it.msg_a}}</span><span class="msg-item-b">{{it.msg_b}}</span></li>
+				<li class="msg-item" v-for="it in msgObject"><span class="msg-item-a">{{it.msg_a}}</span><span class="msg-item-b">{{it.msg_b}}</span></li>
 			</ul>
 			<div class="line-top"></div>
-			<h2 class="text-center">画钟测验</h2>
+			<h2 class="text-center">连线测验</h2>
 			<div class="line-top"></div>
 			<div class="line-bottom"></div>
 			<ul class="msg">
-				<li class="tab-items" v-for="(it,index) in scale_11.rTableObject" v-bind:class="[index+1>=scale_11.rTableObject.length?'':'line-bottom-darkgray']">
+				<li class="tab-items" v-for="(it,index) in scale_20.rTableObject" v-bind:class="[index+1>=scale_11.rTableObject.length?'':'line-bottom-darkgray']">
 					<span class="msg-item ">{{it[0]}}</span>
 					<span class="msg-item ">{{it[1]}}</span>
 					<span class="msg-item ">{{it[2]}}</span>
@@ -505,29 +500,25 @@
 			<h3 class="text-center">患者结果图</h3>
 
 			<ul class="report-img">
-				<li v-for="(it,index) in scale_11.img" class="report-img-list">
+				<li v-for="(it,index) in scale_20.img" class="report-img-list">
 					<div class="top-left-corner">{{it.title}}</div>
 					<img :src="it.localURL" class="report-img-item pr">
 					<img :src="it.proURL" class="report-img-item  ot">
 				</li>
 			</ul>
 			<div class="use-time">
-				<span>作答时长:</span><span>{{scale_11.useTime[0]}}</span>
+				<span>作答时长:</span><span>{{scale_20.useTime[0]}}</span>
 			</div>
 			<div style="text-decoration: underline;align-self: flex-start;">
 				<span class="line-bottom">总结论:</span>
-
 			</div>
 			<div class="all-result" style="align-self: flex-start;">
-				{{scale_11.allResult[0]}}
+				{{scale_20.allResult[0]}}
 			</div>
 			<div style="width: 90%;text-align: right;">
 				施测人:
 			</div>
 		</div>
-
-
-
 
 		<!-- 正文页脚 -->
 		<div class="bottom bc bottom-web">
@@ -572,14 +563,13 @@
 		//console.log(q)
 		const imgBase = 'D://AixlProject//AiWeb//'
 		const endName = '.png' //图片后缀名
-		let S = ['11'];
+		let S = ['11', '20'];
 		const userMsg = sstorage.getItem("userMsg");
-		console.log(userMsg);
-		const PicURL = JSON.parse($.ajax({
-			url: '../../JSON/clock.json',
-			async: false
-		}).responseText).picURL; //需要发送到服务器的图片信息
-		console.log(PicURL);
+
+		if (userMsg == null) {
+			console.log('没有用户信息');
+		}
+
 
 		let txt = $.ajax({
 			url: '../../img/cacheImg/test.txt',
@@ -602,12 +592,12 @@
 		const msgObject = $.ajax({
 			url: '../../JSON/report.json', //基本信息获取
 			async: false
-		}).responseJSON['11'].msg;
+		}).responseJSON.msg;
 		const RESULT_DATA = {}; //所有量表的结论信息
 		const imgBaseURL = 'D:/AixlProject/AiWeb/'; //设置打印图片的基本目录
 		const patientID = 222; //获取病人账号信息，用于图片保存
 		for (let i = 0; i < S.length; i++) {
-			RESULT_DATA[S[i]] = storage.getItem("&" + S[i]);
+			RESULT_DATA[S[i]] = sstorage.getItem("&" + S[i]);
 		}
 		console.log(RESULT_DATA, '结果信息，包括所画图片url')
 
@@ -620,31 +610,53 @@
 				msgObject[i].msg_b = userMsg[msgObject[i].name]; //渲染基础信息
 			}
 			for (let i = 0; i < S.length; i++) {
-				console.log(obj[S[i]])
+				console.log(obj[S[i]], 'SSS[i]')
 				// 根据需要生成报告的量表id初始化结论,显示的信息存在obj对象中，获取的数据在RESULT_DATA中
 				let a = RESULT_DATA[S[i]];
 				console.log(a, 'RESULT_DATA')
+
+				//画钟专用
 				let isCDT7 = 0;
 				let isCDT = 0;
 				for (let key in a) {
 					if (a[key] == "")
 						continue
-					//初始化项目内容
-					obj[S[i]].projects.push([a[key].name, a[key].score, a[key].des.des + ':' + a[key].des.min + '—' + a[key].des.max,
-						a[key].des.des
-					]);
+
+					let fields = obj[S[i]].projectsTitle; //获取项目内容字段信息
+					let arr = [];
+					for (let k = 0; k < fields.length; k++) {
+						if (isArray(fields[k])) {
+							let p = fields[k];
+							for (let m = 1; m < fields[k].length; m++) {
+								arr.push(a[key][p[0]][p[m]]);
+							}
+						} else {
+							arr.push(a[key][fields[k]]);
+						}
+					}
+					//初始化项目内容(在report.json中配置项目字段属性，如果字段为数组，数组第一个元素为一级标题，后面的元素为一级标题下面的子元素)
+					obj[S[i]].projects.push(arr);
+					console.log(arr, 'arr')
+					// obj[S[i]].projects.push([a[key].name, a[key].score, a[key].des.des + ':' + a[key].des.min + '—' + a[key].des.max,
+					// 	a[key].des.des
+					// ]);
 					//设置完成时间
 					obj[S[i]].useTime.push(a[key].time);
 					//设置总结论
 					obj[S[i]].allResult.push(a[key].des.tzms)
+
+					//发送到服务器保存的图片格式
 					obj[S[i]].images.push({
 						url: a[key].img, //图片url
 						name: a[key].name + "_" + userMsg.aiUserId, //图片文件名
-						scaleName: '画钟=' + userMsg.aiUserId, //redis中的key
+						scaleName: S[i] + '=' + userMsg.aiUserId, //redis中的key
 						path: "" //可以不用写
 					});
 
-					if (isCDT == 0 && a[key].name != 'CDT-7')
+					if (isCDT == 0 && a[key].name != 'CDT-7' && (
+							a[key].name == 'CDT-3' || a[key].name == 'CDT-4' ||
+							a[key].name == 'CDT-5' || a[key].name == 'CDT-10' ||
+							a[key].name == 'CDT-30'))
 						isCDT = 1;
 					if (isCDT7 == 0 && a[key].name == 'CDT-7')
 						isCDT7 = 1;
@@ -681,7 +693,7 @@
 				}))
 				/**
 				 * 
-				 *向后太发送图片信息并保存到本地 
+				 *向后台发送图片信息并保存到本地 
 				 */
 				let o = {
 					images: obj[S[i]].images
@@ -703,8 +715,9 @@
 				} else {
 					console.log('没有需要保存的图片');
 				}
-			};
 
+			};
+			console.log(obj, '初始化完后的所有数据')
 
 		})
 
@@ -731,6 +744,13 @@
 			})
 		};
 
+		function isArray(arr) {
+			if (Object.prototype.toString.call(arr) == '[object Array]')
+				return true
+			else
+				return false
+		}
+
 		function getImg64_src(src) {
 			//var img = document.getElementById(id);
 			let img = document.createElement('img');
@@ -753,7 +773,7 @@
 			el: '.bottom-web',
 			data: {
 				scale_11: {
-					office: obj["11"].office, //科室
+					office: obj['11'].office, //科室
 					date: obj['11'].date //完成日期
 				}
 			}
@@ -783,6 +803,7 @@
 		const vue = new Vue({
 			el: '.vue',
 			data: {
+				msgObject,
 				scale_11: {
 					msgObject, //基本信息,因为是一个人的一份或多份报告，一份信息就够了
 					rTableObject: obj['11'].projects, //项目内容，报告结论
@@ -813,7 +834,6 @@
 			}
 		})
 
-		//getImg64_src("../../img/5/shuttlecock.jpg");
 
 		function getImg64_src(src) {
 			//var img = document.getElementById(id);

@@ -119,12 +119,22 @@
 	<script src="utils/Storage.js"></script>
 	<script src="../js/toJump.js"></script>
 	<script>
-	let USER_ID = window.location.search.split('?')[1].split(0,1).join("");
-		
+		let USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
+		let RESULT_DATA = { //	项目结论存储的信息
+			'A部分练习': '',
+			'A部分测试': '',
+			'B部分练习': '',
+			'B部分测试': ''
+		};
+		let theEnd = JSON.parse($.ajax({
+			url: '../JSON/report_config.json',
+			async: false
+		}).responseText).scale_20;
+
 		$(document).ready(function() {
 			$.ajax({
 				type: 'GET',
-				url: config.url+'/scales/testMsg/' + 20,
+				url: config.url + '/scales/testMsg/' + 20,
 				success: function(e) {
 					console.log(e.object)
 					all_test = e.object.slice(0, e.object.length);
@@ -155,7 +165,7 @@
 				}
 			})
 
-			
+
 			let scale;
 			//检测内容是否发送过来
 			try {
@@ -170,7 +180,7 @@
 				console.log('出错了')
 				return
 			}
-			
+
 			let p = [];
 			let f = "";
 			let f2 = "";
@@ -200,7 +210,6 @@
 				console.log('出错')
 				//TODO handle the exception
 			}
-
 			p.push(f);
 			p2.push(f2)
 			//添加量表说明
@@ -218,15 +227,14 @@
 			//顶部按钮点击事件
 			for (let i = 0; i < cdt.length; i++)
 				cdt[i].onclick = function() {
-					if (i > Pos+1)
+					if (i > Pos + 1)
 						alert('请先完成前面的测试')
 					else {
-						if(i>Pos)
+						if (i > Pos)
 							Pos++;
-						if(Pos>3)
-						Pos = 3;
+						if (Pos > 3)
+							Pos = 3;
 						this.style.backgroundColor = "rosybrown";
-
 						notice.splice(0, notice.length);
 						//加载注意事项和指导语
 						for (let k = 0; k < all_test.length; k++)
@@ -240,12 +248,12 @@
 								scale_name.name = this.innerText;
 								break;
 							}
-						
+
 						let obj = {};
 						obj.target = 111;
 						obj.from_who = 123;
 						obj.status = 0;
-						obj.data = i+1;
+						obj.data = i + 1;
 						sendMSG(obj);
 					}
 
@@ -258,7 +266,7 @@
 
 		//从本地读取的量表信息
 		let s;
-		
+
 		var storage = new Storage();
 
 
@@ -289,7 +297,7 @@
 		// 		methods
 		// 	}
 		// })
-		
+
 		new Vue({
 			el: '.options',
 			data: {
@@ -322,14 +330,14 @@
 				methods
 			}
 		});
-		
-		
-		
+
+
+
 		/**
 		 * 完成该部分测验，保存数据
 		 */
-		function stopTest(){
-			
+		function stopTest() {
+
 			/**
 			 * 获取患者画的图片
 			 */
@@ -339,50 +347,41 @@
 			canvas.height = img.height;
 			let ctx = canvas.getContext("2d");
 			ctx.drawImage(img, 0, 0, img.width, img.height);
-			
-			
-			
+
+			let date = new Date().toLocaleString('chinese', {
+				hour12: false
+			});
+
 			let EndTime = new Date(); //完成时的时间
 			let obj = {
 				name: scale_name.name, //题目名称
 				time: do_time.time, //完成时间
-				score: do_score.data, //最终得分
+				score: do_time.error_con, //最终得分
 				img: canvas.toDataURL('image/png'), //结果图片url
 				doc: "", //施测人（不填）
-				date: "", //完成量表日期
-				des:  //最终测试结果
-			}
-			console.log(theEnd)
-			console.log(do_score.data)
-			for (let i = 0; i < theEnd.methods.length; i++) {
-				if (theEnd.methods[i].topicName == scale_name.name) {
-					if (do_score.data >= theEnd.methods[i].min &&
-						do_score.data <= theEnd.methods[i].max) {
-						obj.des = theEnd.methods[i];
-					}
-				}
+				date: date, //完成量表日期()
+				des: "" //最终测试结果
 			}
 			RESULT_DATA[scale_name.name] = obj;
-			storage.setItem('&11', RESULT_DATA, 1000 * 1000 * 100 * 1000); //设置过期时间为10毫秒，以便能立即删除
-			sstorage.setItem('&11', RESULT_DATA);
+			sstorage.setItem('&20', RESULT_DATA);
 			console.log(RESULT_DATA)
 		}
-		
-		function next_scale(){
-			if(Pos>=3){
+
+		function next_scale() {
+			if (Pos >= 3) {
 				let ind;
 				console.log(s);
-				for(let i=0;i<s.items.length;i++){
-					if(s.items[i].aiScaleId == 20)
-					ind = i;
+				for (let i = 0; i < s.items.length; i++) {
+					if (s.items[i].aiScaleId == 20)
+						ind = i;
 				}
-				if(ind+1 == s.items.length){
+				if (ind + 1 == s.items.length) {
 					window.location.href = 'finish.html'
-				}else{
-					toJump(s.items[ind+1].aiScaleId)
+				} else {
+					toJump(s.items[ind + 1].aiScaleId)
 				}
 				alert('可以跳转');
-			}else{
+			} else {
 				alert('您还有未完成的内容');
 			}
 		}
@@ -391,7 +390,7 @@
 		/**
 		 * 为选项列表添加事件
 		 */
-		function sendValue(t){
+		function sendValue(t) {
 			let targetId = 111;
 			let docId = 456;
 			obj = {};
@@ -435,19 +434,23 @@
 		 * 打印报告
 		 */
 		function createReport() {
-			window.open("paintReport.html")
+			
+			
+			//需要先将结果数据提交给服务器
+			//告诉打印页面应该处理哪一项测验，多个测验用&隔开
+			window.open("report/report.html?" + 20)
 		}
 
 		/**
 		 * websocket连接
 		 */
 		var websocket = null;
-		if('WebSocket' in window){
-			
-		}else{
-			
+		if ('WebSocket' in window) {
+
+		} else {
+
 		}
-		websocket = new WebSocket(config.wsURL+'/websocket/' + USER_ID)
+		websocket = new WebSocket(config.wsURL + '/websocket/' + USER_ID)
 		websocket.onopen = function(e) {
 			console.log('建立连接')
 		}
@@ -460,21 +463,21 @@
 		var flag = false;
 		var src = '';
 		websocket.onmessage = function(e) {
-			try{
+			try {
 				let data = JSON.parse(e.data);
 				//console.log(e.data)
-				if(data.endIncise){
-					src +=data.data;
+				if (data.endIncise) {
+					src += data.data;
 					document.getElementById('re-img').src = src;
 					//console.log(src);
 					src = "";
-				}else if(data.data!='undefined'){
-					src +=data.data;
+				} else if (data.data != 'undefined') {
+					src += data.data;
 				}
-			}catch(e){
+			} catch (e) {
 				//TODO handle the exception
 			}
-			
+
 		}
 
 		function sendMSG(obj) {

@@ -311,15 +311,25 @@
 			) {
 				alert("请填写完基础信息");
 			} else {
-				//先清空之前的缓存
-				storage.removeItem("scale");
-				storage.removeItem("scaleRest");
-				//本地存放所有量表
-				storage.setItem("scale", scale_result_list, 5 * 24 * 60 * 60 * 1000);
+			
+				
 				//本地存放所有未做的量表，初始为所有量表(发布测评中的量表)
-				storage.setItem("scaleRest", scale_result_list, 5 * 24 * 60 * 60 * 1000);
 				sstorage.setItem("scale",scale_result_list);
 				sstorage.setItem("scaleRest",scale_result_list)
+				//保存选中的用户信息
+				let o = {};
+				o.aiUserId=$('#userId').val();
+				o.aiUserName=	$('#userName').val();
+				o.aiUserAge=$('#userAge').val();
+				o.aiUserOffice=$('#userOffice').val();
+				o.aiUserSex=$('#userSex').val();
+				o.aiUserProfession=$('#userPro').val();
+				o.aiUserFrom=$('#userFrom').val();
+				o.aiUserEduBg=$('#userEdu').val();
+				o.aiUserMarriage=$('#userMarr').val();
+				//将用户信息存入session中
+				console.log(o)
+				sstorage.setItem("userMsg",o);
 				
 				
 				//将测评量表发送至用户
