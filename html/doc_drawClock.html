@@ -471,7 +471,7 @@
 		var src = '';
 		websocket.onmessage = function(e) {
 			let o = JSON.parse(e.data);
-			//console.log(o)
+			console.log(o)
 			if (o.incise == true) {
 				if (o.endIncise == true) {
 					src += o.data;

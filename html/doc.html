@@ -338,15 +338,28 @@
 					from_who: USER_ID,
 					data: scale_result_list.items,
 					isCache: true,//将信息发送至服务器缓存
-					status: 0,
+					status: 5,
 					dataType: "scale",
 					dataName: '量表信息'
 				};
 				//量表信息发送给用户
 				sendMSG(obj);
 				console.log(scale_result_list.items[0].aiScaleId)
+				
+				
+				
+				
+				
 				//按选择量表顺序第一个跳转跳转页面
 				toJump(scale_result_list.items[0].aiScaleId);
+				
+				
+				
+				
+				
+				
+				
+				
 				//window.location.href  = "iframe/scales.html?"+USER_ID;
 				//需要根据scale_result_list转到相应的页面
 				//window.location.href = "doc_ligature.html?"+USER_ID;
