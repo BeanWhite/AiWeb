@@ -120,6 +120,7 @@
 	<script src="../js/toJump.js"></script>
 	<script>
 		let USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
+		let _targetID = 222;
 		let RESULT_DATA = { //	项目结论存储的信息
 			'A部分练习': '',
 			'A部分测试': '',
@@ -250,8 +251,8 @@
 							}
 
 						let obj = {};
-						obj.target = 111;
-						obj.from_who = 123;
+						obj.target = _targetID;
+						obj.from_who = USER_ID;
 						obj.status = 0;
 						obj.data = i + 1;
 						sendMSG(obj);
@@ -388,11 +389,11 @@
 
 
 		/**
-		 * 为选项列表添加事件
+		 * 为选项列表添加事件,在画板上高亮显示圆
 		 */
 		function sendValue(t) {
-			let targetId = 111;
-			let docId = 456;
+			let targetId = _targetID;
+			let docId = USER_ID;
 			obj = {};
 			obj.target = targetId;
 			obj.from_who = docId;
