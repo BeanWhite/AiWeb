@@ -101,7 +101,7 @@
 .scale-list-box {
 	height: 100%;
 	width: 100%;
-	overflow: auto;
+	font-size: 20px;
 }
 #ind{
 	padding-bottom: 80px;
@@ -220,7 +220,7 @@
 #scale-add {
 	font-family: SourceHanSansSC;
 	font-weight: 400;
-	font-size: 30px;
+	font-size: 22px;
 	color: rgb(16, 16, 16);
 	font-style: normal;
 	cursor: default;

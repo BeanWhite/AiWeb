@@ -37,12 +37,15 @@ html {
 }
 
 body {
+	font-family: SourceHanSansSC;
 	margin: 0;
 	min-width: 1800px;
 	min-height: 860px;
 	/* height: 100%; */
 	width: 100%;
 	user-select:none;
+	text-align: justify;
+	text-justify:inter-ideograph;/*ie*/
 }
 
 a:focus {
@@ -235,6 +238,7 @@ li{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	position: relative;
 }
 
 .scale {
@@ -257,4 +261,37 @@ li{
 }
 .scale-Title{
 	padding-top: 80px;
+}
+
+
+/**
+ * 临时id
+ */
+#next-scale{
+	z-index: 20;
+	position: absolute;
+	bottom: 40px;
+	right: 40px;
+}
+
+/**
+ * 滚动条
+ */
+.scrollbar{
+	overflow-y: overlay;
+	padding-right: 4px;
+}
+.scrollbar::-webkit-scrollbar{
+	padding-left: 10px;
+	width: 3px;
+	background-color: white;
+}
+.scrollbar::-webkit-scrollbar-button{
+	display: none;
+}
+.scrollbar::-webkit-scrollbar-thumb{
+	background-color: darkgray;
+}
+.scrollbar::-webkit-scrollbar-corner{
+	
 }

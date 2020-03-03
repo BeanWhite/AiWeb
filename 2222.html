@@ -4,30 +4,147 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<script src="js/vue.js"></script>
+		
 		<title></title>
 	</head>
 	<body>
-		<div id="" style="width: 30px;height: 500px; background-color: #008B8B; border: 20px;">
-
-
-		</div>
-		<div id="" style="width: 30px;height: 500px; background-color: #008B8B; border: 20px;">
-
-
-		</div>
-
-		<div id="" style="width: 30px;height: 500px; background-color: #008B8B; border: 20px;">
-
-
-		</div>
-		<script src="js/jquery/jquery.min.js"></script>
-		<script type="text/javascript">
 		
+		<input type="datetime-local" />
 		
-			let a = [1, 2];
-			let b =a.slice(0)
-			a[0]=9
-			console.log(b)
-		</script>
+<button type="button" onclick="ppp()">999</button>
 	</body>
+	<script src="html/utils/Storage.js">
+	
+	</script>
+	<script src="js/jquery/jquery.min.js"></script>
+	<script type="text/javascript">
+		function ppp(){
+			var ak = document.getElementById('kk');
+			console.log(ak)
+		}
+		
+		// speak("good")
+		// let n = Math.random()*10
+		// console.log(n,Math.round(n),Math.round(Math.random()*10)%9)
+		// let o ={
+		// 		aiUserId:222,
+		// 		aiUserName:9,
+		// 		aiUserAge:9,
+		// 		aiUserOffice:9,
+		// 		aiUserSex:9,
+		// 		aiUserProfession:9,
+		// 		aiUserFrom:9,
+		// 		aiUserEduBg:9,
+		// 		aiUserMarriage:9
+		// 	};
+		// 	let p = {
+		// 		aiUserId:119,
+		// 		aiUserPwd:99
+		// 	};
+			
+		var s = '今天是星期一，明天是星期二,后天17（注意：1+1=2）'
+		var t ='在心理测评系统中，医生需要根据不同的被测人选用不同的测试，以便更加准确的测出评测对象的心理问题，为此，对评测结果进行统计分析后由医生确认并生成评测报告。本课题的目的是设计和实现一个基于神经心理认知的测评系统，对不同年龄段，不同教育程度的对象进行一个合理的心理分析，解决评测对象的心理困惑。'
+		s= s+t;
+		s+=s;
+		s+=s;
+		
+		var m = '在心理测评系统中，医生需要根据不同的被测人选用不同的测试，以便更加准确的测出评测对象的心理问题，为此'
+		
+		// $.ajax({
+		// 	url:'http://localhost:80/t/t',
+		// 	type:'POST',
+		// 	data:{
+		// 		a:1,
+		// 		c:3
+		// 	},
+		// 	dataType:'JSON',
+		// 	success:function(){
+		// 		console.log(11)
+		// 	},
+		// 	error:function(){
+		// 		console.log(99)
+		// 	}
+			
+		//  })
+		 let o1= {
+			 "testResult": {
+			 	"aiUserId": "1",
+			 	"aiScaleId": "1",
+			 	"aiTestName":"999"
+			 },
+			 "testImgs": [{
+			 	"aiImgId": "1",
+			 	"aiReportTime": "2020-02-18 15:01:04",
+			 	"aiImgSrc": "6666",
+			 	"aiImgContent": "555",
+			 	"aiScaleId":"1"
+			 }],
+			 "testHtml": {
+			 	"aiReportTextTime": "2020-02-18 15:01:04",
+			 	"aiReportTextId": "1",
+			 	"aiDocId": "afdf",
+			 	"aiDocName": "afdf",
+			 	"aiReportTextHtml": "dfadf",
+			 	"aiScaleId":"1"
+			 }
+		 }
+		// $.ajax({
+		// 	type:'POST',
+		// 	url:'http://localhost:80/report/html/'+JSON.stringify(o1),
+		// 	dateType:'JSON',
+		// 	success:function(){
+		// 		console.log(4)
+		// 	},
+		// 	error:function(){
+		// 		console.log(0)
+		// 	}
+			
+		// })
+		let o = {
+			"testDate": {
+				"aiUserId": "1",
+				"aiTestDate": "2020-02-18 15:01:04",
+				"aiScaleId":"5"
+			},
+			"testResult": {
+				"aiUserId": "1",
+				"aiScaleId": "1",
+				"aiTestName": "dfsd",
+				"aiScaleId":"5"
+			},
+			"testImg": {
+				"aiImgId": "1",
+				"aiReportTime": "2020-02-18 15:01:09",
+				"aiImgSrc": "dfsdgad",
+				"aiImgContent": "dafdfadfsdfa",
+				"aiScaleId":"5"
+			},
+			"testHtml": {
+				"aiReportTextTime": "2020-02-18 15:01:03",
+				"aiReportTextId": "1",
+				"aiDocId": "1",
+				"aiDocName": "2",
+				"aiReportTextHtml": "fadfd",
+				"aiScaleId":"5"
+			}
+		}
+		let a = new Date()
+		console.log(a)
+		var currentPage = 5;
+		var pageSize = 3;
+		// $.ajax({
+		// 	type:"GET",
+		// 	url:'http://localhost:80/report/html/'+currentPage+'/'+pageSize+'/'+1,
+		// 	success:function(e){
+		// 		console.log(e)
+		// 	},
+		// 	error:function(){
+		// 		console.log('***********')
+		// 	}
+		// })
+		var aa ='88?pp';
+		console.log(aa.split('?').join('/'))
+		console.log(0==null)
+	</script>
 </html>

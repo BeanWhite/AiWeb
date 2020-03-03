@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<!-- 背景动画 以及初始化样式 -->
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="../css/demo.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css">
+		<!-- 页面样式 -->
+		<link href="../css/doc_cwt.css" rel="stylesheet" type="text/css" />
+		<link href="../css/layoutStyle.css" rel="stylesheet" type="text/css" />
+		<!-- 导入vue.js -->
+		<script src="../js/vue.js"></script>
+		<!-- <script src="../js/vue.min.js"></script> -->
+		<!-- <script type="text/javascript" src="../js/vue.min.js"></script> -->
+		<!-- 引入jQuery.js -->
+		<script src="../js/jquery/jquery.min.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<!-- 背景 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+
+		<div id="content" class=" vue">
+
+			<div class="scale scale-Title">
+				<!-- 临时使用 -->
+				<div id="next-scale">
+					<button type="button" onclick="stopTest()">完成</button>
+					<button type="button" onclick="next_scale()">下一个</button>
+				</div>
+
+				<div id="title">
+					<span>量表名称：{{titleName.aiScaleName}}</span>
+
+				</div>
+				<div class="scale-left flex-layout-aligin" style="width: 70%;justify-content: flex-start;align-items: flex-start;">
+					<div class="content-title" style="height: auto;">
+						指导语
+					</div>
+					<div class="g-content">
+						<span class="little-title-content">
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{scaleMsg.aiQuestionGuid[status]}}
+						</span>
+					</div>
+					<div class="little-title cardTitle">
+						{{cardTitle[status]}}
+					</div>
+					<table border="1" cellpadding="5" class="little-title-darkgray">
+						<tr class="table-line" v-for="(it,index) in RandomTest">
+							<td  v-on:click="itemsClick(index,index_2)" class="table-line-item" v-for="(i,index_2) in it" :style="{color:(status==2?i.colorGroup[setColor[index][index_2]]:'')}">
+								{{
+										status == 0 ?i.value:(status == 1?'':i.value)
+								}}
+								<!-- {{Math.round(Math.random()*10)%4+1}} -->
+								<div class="circle" :style="{display:(status==1?'flex':'none'),backgroundColor:i.color}"></div>
+								<img src="../svg/true_green.svg" class="item-icon"
+								 :style="{display:
+								 (status>0?(trueItems[status-1][index].indexOf(index_2)>-1?'flex':''):'')
+								 }">
+							</td>
+						</tr>
+					</table>
+					<div class="cGroup little-title-green">
+						<span v-on:click="back()" class="cursorPointer" style="display: inline-block;margin-right: 30px;">{{status == 0 ? '':'上一组'}}</span>
+						<span v-on:click="next()" class="cursorPointer">{{status == 2 ?(finishStatus==1?'':'查看得分'):'下一组'}}</span>
+					</div>
+	<!-- 				als==1?(finishStatus==0?'flex':''):(status>0?(finishStatus==0?'flex':''):'none')
+					status>0?(finishStatus==0?'flex':''):'none' -->
+					<div class="myResult" :style="{display:(status>0?(finishStatus==0?'flex':''):'none')}">
+						<span class="little-title-red">已用时间：{{timerData}}</span>
+						<div class="">
+							<span class="cursorPointer" v-on:click="timerListener(0)" v-bind:class="[timerStatus[status-1]==0?'little-title-green':'',timerStatus[status-1]==1?'little-title-red':'',timerStatus[status-1]>=2?'little-title-green':'']">
+								{{timerContent[timerStatus[status-1]]}}
+							</span>
+							<span v-on:click="timerListener(1)" style="margin-left: 15px;" class="cursorPointer little-title-green" :style="{color:(timerStatus[status-1]==3?'darkgray':'')}">
+								{{timerStatus[status-1] > 0 ? '停止':'&nbsp;'}}
+							</span>
+						</div>
+
+					</div>
+					<div class="myResult" :style="{display:(status>0?(finishStatus==1?'flex':''):'none')}">
+						<span class="little-title-red">SIE&nbsp;耗时数：{{SIETimer}}秒</span>
+						<span class="little-title-red">SIE&nbsp;标准数：{{SIENum}}个</span>
+					</div>
+				</div>
+				<div class="scale-right flex-layout-aligin" style="width: 30%;">
+					<div class="content-title">
+						量表说明
+					</div>
+					<div class="little-title-content" style="width: 100%;height: 100%;overflow-y: overlay;">
+						<div v-for="(it,index) in titleName.aiScaleOverview">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{it}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script src="../js/toJump.js"></script>
+	<script src="utils/Storage.js"></script>
+	<script src="config/urlConfig.js"></script>
+	<script>
+		//const USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
+		const USER_ID = 222;
+		let reg_1 = /&/;
+		let reg_2 = /\$/;
+		let reg_3 = /split;/;
+		let scaleData = {
+			aiScaleId: '',
+			aiScaleName: '',
+			aiScaleOverview: [],
+			aiScaleNotice: []
+		};
+		let scaleMsg = {
+			aiQuestionAnswerDescribe: '',
+			aiQuestionContent: [
+				[
+					[]
+				],
+				[
+					[]
+				]
+			],
+			aiQuestionGuid: '',
+			aiQuestionId: '',
+			aiQuestionNotice: '',
+			aiQuestionOption: [
+				[],
+				[]
+			],
+			aiQuestionType: '',
+			aiScaleId: '',
+			aiScoreMethodName: '',
+		};
+		let colorObj = {
+			1: '绿',
+			2: '红',
+			3: '黄',
+			4: '蓝'
+		};
+		let colorValueObj = {
+			1: 'green',
+			2: 'red',
+			3: 'yellow',
+			4: 'blue'
+		};
+		let setColor = []
+		RandomTest = [];
+
+		/**
+		 * 数据初始化
+		 */
+		for (let i = 0; i < 5; i++) {
+			let arr = [];
+			setColor[i] = [];
+			for (let j = 0; j < 10; j++) {
+
+				setColor[i].push(Math.round(Math.random() * 10) % 3)
+				let o = {};
+				let key = Math.round(Math.random() * 10) % 4 + 1;
+				o.key = key;
+				o.value = colorObj[key];
+				o.color = colorValueObj[key]; {
+					let arr = [];
+					for (let t = 1; t < 5; t++) {
+						if (key != t) {
+							arr.push(colorValueObj[t]);
+						}
+					}
+					o.colorGroup = arr;
+				}
+				arr.push(o)
+			}
+			RandomTest.push(arr);
+		}
+		console.log(setColor)
+		console.log(RandomTest, 'RandomTest');
+		let vue = new Vue({
+			el: '.vue',
+			data: {
+				als:0,//答题状态
+				RandomTest: RandomTest,
+				titleName: scaleData,
+				status: 0,
+				cardTitle: ['卡片A', '卡片B', '卡片C'],
+				timerContent: ['开始', '暂停', '继续', '重置'],
+				scaleMsg: scaleMsg,
+				pos: 0, //当前符号，默认0
+				setColor: setColor,
+				timer: null,
+				timerObj: [{
+					minutes: 0,
+					seconds: 0,
+					p: 0
+				}, {
+					minutes: 0,
+					seconds: 0,
+					p: 0
+				}, ],
+				trueItems: [
+					[
+						[],
+						[],
+						[],
+						[],
+						[]
+					],
+					[
+						[],
+						[],
+						[],
+						[],
+						[]
+					],
+				],
+				finishCard: [], //完成的卡片
+				timerStatus: [0, 0], //计时器状态
+				finishStatus: 0,//量表是否完成，默认0
+				isFinish: 0, 
+			},
+			computed: {
+				timerData: function() {
+					if (this.status == 0)
+						return
+					let m = this.timerObj[this.status - 1].minutes;
+					let s = this.timerObj[this.status - 1].seconds;
+					let p = this.timerObj[this.status - 1].p;
+					if (m < 10)
+						m = '0' + m;
+					if (s < 10)
+						s = '0' + s;
+					if (p < 10)
+						p = '0' + p;
+					return m + ':' + s + ":" + p;
+				},
+				SIETimer: function() {
+					let a = this.timerObj[0].seconds + this.timerObj[0].minutes * 60;
+					let b = this.timerObj[1].seconds + this.timerObj[1].minutes * 60;
+					let c = b - a;
+					return c;
+				},
+				SIENum: function() {
+					let c=0;
+					let b=0;
+					for(let i=0;i<this.trueItems[1].length;i++){
+						c+=this.trueItems[1][i].length;
+					}
+					for(let i=0;i<this.trueItems[0].length;i++){
+						b+=this.trueItems[0][i].length;
+					}
+					return c-b;
+				}
+			},
+			methods: {
+				back: function() {
+					if (this.status - 1 < 0)
+						return
+					this.status--;
+				},
+				next: function() {
+					if (this.status > 0) {
+						if (this.finishCard.indexOf(this.status) < 0)
+							return;
+					}
+					if (this.status + 1 > 2) {
+						this.finishStatus = 1;
+						return
+					}
+					this.status++;
+				},
+				itemsClick: function(index,index_2) {
+					if (this.status == 0)
+						return
+					let i = this.trueItems[this.status - 1][index].indexOf(index_2)
+					if (i > -1) {
+						this.trueItems[this.status - 1][index].splice(i, 1);
+					} else {
+						this.trueItems[this.status - 1][index].push(index_2)
+					}
+				},
+				timerListener: function(a, b) {
+					let w = this.timerStatus[this.status - 1];
+					if (a == 0) {
+						if (w == 2) {
+							this.timerStatus.splice(this.status - 1, 1, 1);
+							this.timer.goOn()
+						} else if (w == 3) {
+							this.timerStatus.splice(this.status - 1, 1, 0)
+						} else {
+							this.timerStatus.splice(this.status - 1, 1, this.timerStatus[this.status - 1] + 1);
+							if (w == 0) {
+								if(this.als==0)
+									this.als=1;
+								this.timer = new Timer(this.timerObj[this.status - 1]);
+								this.timer.setMinute(0);
+								this.timer.setSeconds(60);
+								this.timer.setP(0);
+								this.timer.startTimer()
+							} else if (w == 1) {
+								this.timer.pause()
+							}
+						}
+
+					} else if (a == 1) {
+						if (this.timerStatus[this.status - 1] == 3)
+							return
+						this.timer.stop();
+						this.timer = null;
+						if (this.finishCard.indexOf(this.status) < 0) {
+							this.finishCard.push(this.status);
+						}
+						this.timerStatus.splice(this.status - 1, 1, 3)
+					}
+
+				}
+			}
+		});
+		//获取量表基本信息(首页)
+		var scales = sstorage.getItem("scaleRest");
+		console.log(scales, 'scales')
+		if (scales)
+			for (let i = 0; i < scales.items.length; i++) {
+				if (scales.items[i].aiScaleId == 15) {
+					scaleData.aiScaleId = scales.items[i].aiScaleId;
+					scaleData.aiScaleName = scales.items[i].aiScaleName;
+					let notice, overView;
+					if (scales.items[i].aiScaleNotice)
+						notice = scales.items[i].aiScaleNotice.split('&');
+					if (scales.items[i].aiScaleOverview)
+						overView = scales.items[i].aiScaleOverview.split('&');
+					//scaleData.index.aiScaleNotice = (notice);
+					scaleData.aiScaleOverview = (overView);
+				}
+			}
+
+		function next_scale() {
+			console.log(scales)
+			if (vue.finishStatus != 0) {
+				let ind = -1;
+				for (let i = 0; i < scales.items.length; i++) {
+					if (scales.items[i].aiScaleId == 15)
+						ind = i;
+				}
+				if (ind + 1 == scales.items.length) {
+					window.location.href = 'finish.html'
+				} else {
+					toJump(scales.items[ind + 1].aiScaleId)
+				}
+				alert('可以跳转');
+			} else {
+				alert('您还有未完成的内容');
+			}
+		}
+		console.log(scaleData, 'scaleData')
+		/**
+		 * 数据初始化
+		 */
+		$(document).ready(function() {
+			$.ajax({
+				url: config.url + '/scales/testMsg/' + 15,
+				type: 'GET',
+				success: function(e) {
+					let m = e.object[0];
+					console.log(m, 'm')
+					let o = {};
+					for (i in m) {
+						o[i] = m[i];
+						if (reg_1.test(m[i])) {
+							o[i] = m[i].slice(0).split('&');
+							if (reg_2.test(m[i])) {
+								for (let n = 0; n < o[i].length; n++) {
+									o[i][n] = o[i][n].slice(0).split('$');
+									for (let j = 0; j < o[i][n].length; j++) {
+										if (reg_3.test(m[i])) {
+											o[i][n][j] = o[i][n][j].slice(0).split('split;')
+										}
+									}
+								}
+							}
+						} else o[i] = m[i];
+
+					}
+					vue.scaleMsg = o;
+					console.log(o, 'ooo')
+				},
+				error: function() {
+					console.log('连接服务器超时');
+				}
+			})
+		});
+	</script>
+</html>

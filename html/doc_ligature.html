@@ -49,7 +49,7 @@
 						<div class="content-title">患者绘图结果展示</div>
 						<!-- 动态展示用户画板 -->
 						<div class="re-img">
-							<img id="re-img" />
+							<img id="re-img" src="" />
 						</div>
 
 					</div>
@@ -86,16 +86,16 @@
 						<div class="option-content" style="	width: 100%;padding-top: 15px;">
 							<table border="0" cellspacing="3" cellpadding="10" style="width: 100%;text-align: center;">
 								<tr>
-									<td class="option-child" onclick="sendValue(this)"><span class="" style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">1</span></td>
-									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">2</span></td>
-									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">3</span></td>
-									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">4</span></td>
+									<td class="option-child" ><span onclick="sendValue(this)">1</span></td>
+									<td class="option-child" ><span onclick="sendValue(this)">2</span></td>
+									<td class="option-child" ><span onclick="sendValue(this)">3</span></td>
+									<td class="option-child" ><span onclick="sendValue(this)">4</span></td>
 								</tr>
 								<tr>
-									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">A</span></td>
-									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">B</span></td>
-									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">C</span></td>
-									<td class="option-child" onclick="sendValue(this)"><span style="display: inline-block;background-color: green;width: 50%;height: 30px;line-height: 30px;">D</span></td>
+									<td class="option-child" ><span onclick="sendValue(this)">A</span></td>
+									<td class="option-child" ><span onclick="sendValue(this)">B</span></td>
+									<td class="option-child" ><span onclick="sendValue(this)">C</span></td>
+									<td class="option-child" ><span onclick="sendValue(this)">D</span></td>
 								</tr>
 							</table>
 						</div>
@@ -120,6 +120,7 @@
 	<script src="../js/toJump.js"></script>
 	<script>
 		let USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
+		console.log(USER_ID)
 		let _targetID = 222;
 		let RESULT_DATA = { //	项目结论存储的信息
 			'A部分练习': '',
@@ -170,7 +171,7 @@
 			let scale;
 			//检测内容是否发送过来
 			try {
-				s = storage.getItem("scaleRest");
+				s = sstorage.getItem("scaleRest");
 				for (let i = 0; i < s.items.length; i++)
 					if (s.items[i].aiScaleId == 20) {
 						scale = s.items[i];
@@ -267,9 +268,6 @@
 
 		//从本地读取的量表信息
 		let s;
-
-		var storage = new Storage();
-
 
 		var cdt = document.getElementsByClassName('cdt');
 
@@ -392,16 +390,21 @@
 		 * 为选项列表添加事件,在画板上高亮显示圆
 		 */
 		function sendValue(t) {
+			t.style.backgroundColor =" rgb(16, 112, 193)";
 			let targetId = _targetID;
 			let docId = USER_ID;
 			obj = {};
 			obj.target = targetId;
 			obj.from_who = docId;
 			obj.status = 1;
-			obj.data = t.childNodes[0].innerHTML;
+			obj.data = t.innerHTML;
+			//obj.data = t.childNodes[0].innerHTML;
 			obj.incise = false;
 			obj.isLongData = false;
 			sendMSG(obj);
+			setTimeout(function(){
+				t.style.backgroundColor = 'white';
+			},500);
 		}
 
 		/**
@@ -464,6 +467,7 @@
 		var flag = false;
 		var src = '';
 		websocket.onmessage = function(e) {
+			console.log(e)
 			try {
 				let data = JSON.parse(e.data);
 				//console.log(e.data)

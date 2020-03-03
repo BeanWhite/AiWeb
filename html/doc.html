@@ -46,8 +46,8 @@
 						<p>选择测评量表</p>
 					</span>
 					<div class="scale-list">
-						<input type="search" class="search" id="search" oninput="inputsearch()" />
-						<div class="scale-list-box">
+						<input type="search" class="search" id="search" oninput="inputsearch()" onfocus="inputsearch()"/>
+						<div class="scale-list-box scrollbar">
 							<ul id="scale-add">
 								<li v-for="it in items" :key="it.aiScaleId" v-on:click="greet(it)">{{it.aiScaleName}}&nbsp;<img src="../svg/add.svg"
 									 style="margin-top: 10px ;"></li>
@@ -115,7 +115,8 @@
 	</body>
 	<script src="utils/Storage.js"></script>
 	<script>
-		let USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
+		//let USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
+		let USER_ID = 22;
 		console.log(USER_ID);
 		$(document).ready(function() {
 			$.ajax({
@@ -233,6 +234,7 @@
 		 * 搜索用户
 		 */
 		function searchUser() {
+		
 			let a = $('#searchUser').val().replace(/\s*/g, "");
 			if (a == "") {
 				$('#userId').val("");
@@ -244,20 +246,16 @@
 				$('#userFrom').val("");
 				$('#userEdu').val("");
 				$('#userMarr').val("");
-
 				return
 			} else {
 				$.ajax({
 					type: 'GET',
 					url: config.url + '/users/msgForDoc/' + a,
 					success: function(e) {
-						var data = e.object[0];
-						
-						
-						
-						
-					
-						if (e.object.length == 0) {
+						console.log(e)
+						var data = e.object;
+						if(data){
+							if (e.object.length == 0) {
 							$('#userId').val("");
 							$('#userName').val("");
 							$('#userAge').val("");
@@ -268,7 +266,6 @@
 							$('#userEdu').val("");
 							$('#userMarr').val("");
 						} else {
-							data.aiUserId = a;
 							$('#userId').val(data.aiUserId);
 							$('#userName').val(data.aiUserName);
 							$('#userAge').val(data.aiUserAge);
@@ -282,7 +279,9 @@
 							console.log(data)
 							sstorage.setItem("userMsg",data);
 						}
-						console.log(e.object.length)
+						}
+						
+						
 					},
 					error: function(e) {
 						console.log('连接出错')
@@ -311,15 +310,16 @@
 			) {
 				alert("请填写完基础信息");
 			} else {
-			
-				
 				//本地存放所有未做的量表，初始为所有量表(发布测评中的量表)
 				sstorage.setItem("scale",scale_result_list);
 				sstorage.setItem("scaleRest",scale_result_list)
 				//保存选中的用户信息
+				/**
+				 * 需要与之前的信息进行比较，如有变为修改数据库 
+				 */
 				let o = {};
 				o.aiUserId=$('#userId').val();
-				o.aiUserName=	$('#userName').val();
+				o.aiUserName=$('#userName').val();
 				o.aiUserAge=$('#userAge').val();
 				o.aiUserOffice=$('#userOffice').val();
 				o.aiUserSex=$('#userSex').val();
@@ -346,19 +346,8 @@
 				sendMSG(obj);
 				console.log(scale_result_list.items[0].aiScaleId)
 				
-				
-				
-				
-				
 				//按选择量表顺序第一个跳转跳转页面
 				toJump(scale_result_list.items[0].aiScaleId);
-				
-				
-				
-				
-				
-				
-				
 				
 				//window.location.href  = "iframe/scales.html?"+USER_ID;
 				//需要根据scale_result_list转到相应的页面

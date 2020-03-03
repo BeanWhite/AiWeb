@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<script src="config/urlConfig.js"></script>
+		<script src="../js/vue.js"></script>
+		<script src="../element/element.js"></script>
+		<link rel="stylesheet" href="../element/element.css" />
+		<script type="text/javascript" src="../js/jquery/jquery.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="../css/admin.css" />
+	</head>
+	<body>
+		<!-- <img src="../img/admin.jpeg" class="bgc-img" > -->
+		<el-container id="app">
+			<el-header style="background-color: #008B8B;">header</el-header>
+			<el-container>
+				<el-aside width="300px">
+					<el-col :span="24" class="full-y">
+						<h4 style="width: 100%;text-align: center;">菜单选项</h4>
+						<el-menu :default-active="pagePos" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" @select="handleSelect"
+						 :unique-opened="true">
+							<el-submenu v-for="(it, index) in menu[kev]" :index="index + ''">
+								<template slot="title">
+									<span>{{ it.title }}</span>
+								</template>
+								<el-menu-item-group>
+									<el-menu-item v-for="(it_items, ind) in it.value" :index="index + '-' + ind" v-on:click="openM(index + '-' + ind, it_items)">
+										{{ it_items }}
+									</el-menu-item>
+								</el-menu-item-group>
+							</el-submenu>
+						</el-menu>
+					</el-col>
+				</el-aside>
+				<el-main>
+					<el-tabs type="border-card">
+						<el-tab-pane>
+							<span slot="label">{{ item_pages.length == 0 ? title : item_pages[1] }}</span>
+							<div class="full-y full-x" style="display: flex;justify-content: center;align-items: center;">
+								<el-form :model="formModel" status-icon :rules="docMsgRules" ref="formModel" label-width="100px" class="demo-ruleForm"
+								 style="overflow-x: overlay;">
+									<el-form-item class="off" :style="{ display: isFormSearch.value ? 'flex' : '' }">
+										<el-form :inline="true" class="demo-form-inline">
+											<el-input type="text" v-model="search" class="form-input-stander" :placeholder="placeholder" prefix-icon="el-icon-search"
+											 prop="search"></el-input>
+											<el-form-item>
+												<el-button type="primary" v-on:click="searchFun()">查询</el-button>
+											</el-form-item>
+										</el-form>
+									</el-form-item>
+									<el-form-item v-for="(it, index) in menue_item" :label="it.label" :prop="it.prop">
+										<el-select class="form-input-stander" v-if="it.isSelect" v-model="formModel[it.prop]" placeholder="请选择">
+											<el-option v-for="(item, index) in it.options" :label="item" :value="item"></el-option>
+										</el-select>
+										<el-input v-if="it.type != 'data'&&!it.isSelect" :placeholder="it.placeholder" rows="6" class="form-input-stander"
+										 v-model="formModel[it.prop]" :type="it.type == '' ? 'text' : it.type" :autocomplete="it.autocomplete == '' ? 'off' : it.autocomplete"
+										 :disabled="it.disabled == '' ? false : it.disabled"></el-input>
+										<el-date-picker style="width: 300px;" v-if="it.type=='data'" v-model="formModel[it.prop]" type="date"></el-date-picker>
+									</el-form-item>
+									<!-- :default-sort = "{prop: 'aiUserId', order: 'descending'}" 默认排序方式 -->
+									<el-table style="padding: 0;" :cell-class-name="tableCellClassName" :style="{ display: isTable ? '' : 'none' }"
+									 :data="tableData" border @cell-dblclick="handleCellDbClick">
+										<el-table-column sortable v-for="(it, inddex_t) in formTable" :prop="it.prop" :label="it.label" :width="it.width ? it.width : 180">
+											<!-- <textarea  class="mytextArea off" >{{tableData[inddex_t][it.prop]}}</textarea> -->
+											<template slot-scope="scope">
+												<span v-if="inddex_t == selectCol && scope.$index == selectRow">
+													<textarea id="textArea" v-on:focusout="itemOut(selectCol, selectRow,tableData[scope.$index])" v-model="tableData[scope.$index][it.prop]"
+													 class="mytextArea">{{ scope.row[it.prop] }}</textarea>
+												</span>
+												<span v-else>{{ scope.row[it.prop] }}</span>
+											</template>
+										</el-table-column>
+									</el-table>
+									<el-form-item :style="{ display: isTable ? (isSubmit ? '' : 'none') : '' }">
+										<el-button :type="menuObj.subType ? menuObj.subType : 'primary'" @click="submitForm(isTable & isSubmit ? 'tableData' : 'formModel')">
+											{{ menuObj.subValue ? menuObj.subValue : '提交' }}
+										</el-button>
+										<el-button :type="menuObj.reType ? menuObj.reType : ''" @click="resetForm(isTable & isSubmit ? 'tableData' : 'formModel')">
+											{{ menuObj.reValue ? menuObj.reValue : '重置' }}
+										</el-button>
+									</el-form-item>
+									<el-pagination :style="{ display: isTable ? '' : 'none' }" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+									 :current-page="currentPage" :page-sizes="[5, 10, 15, 20]" :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
+									 :total="total"></el-pagination>
+								</el-form>
+							</div>
+						</el-tab-pane>
+					</el-tabs>
+				</el-main>
+			</el-container>
+		</el-container>
+	</body>
+	<script>
+		var a = 'developer';
+		var b = 'Adminstrator';
+		let vue = new Vue({
+			el: '#app',
+
+			data() {
+				var checkId = (rule, value, callback) => {
+					if (!value) {
+						return callback(new Error('账号不能为空'));
+					}
+				};
+				return {
+					//kev:window.location.search.split('?')[1],
+					kev: b,
+					menu: $.ajax({
+						url: '../JSON/admin.json',
+						async: false
+					}).responseJSON,
+					isCollapse: true,
+					item_pages: [],
+					pagePos: '2-1',
+					ruleForm: {
+						department: '99',
+						id: ''
+					},
+					rules: {
+						id: [{
+							validator: checkId,
+							trigger: 'blur'
+						}]
+					},
+					docMsgForm: {},
+					docMsgRules: {},
+					search: '',
+					input: '',
+					tableData: [],
+					tableDataCopy: [],
+					currentPage: 1,
+					pageSize: 5,
+					basePageSize: 5,
+					total: 0,
+					selectRow: null,
+					selectCol: null,
+
+				};
+			},
+			created: function() {},
+
+			computed: {
+				title: function() {
+					return this.menu[this.kev][0].value[0];
+				},
+				placeholder: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].isSearch.placeholder;
+				},
+				menuObj: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path];
+				},
+				menue_item: function() {
+					//path = '0-1';
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].item;
+				},
+				formModel: function() {
+					let path = this.initPath();
+					///	path = '0-1';
+					return this.menu['menue'][this.kev][path].model;
+				},
+				isFormSearch: function() {
+					let path = this.initPath();
+					//path = '0-1';
+					return this.menu['menue'][this.kev][path].isSearch;
+				},
+				formTable: function() {
+					let path = this.initPath();
+					//path = '0-1';
+					return this.menu['menue'][this.kev][path].tableHead;
+				},
+				isTable: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].isTable;
+				},
+				tableUrl: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].url;
+				},
+				updataUrl: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].updataUrl;
+				},
+				isSearch: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].isSearch.value;
+				},
+				isSubmit: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].isSubmit;
+				},
+				notPage: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].notPage;
+				},
+				isChange: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].isChange;
+				},
+				httpMethod: function() {
+					let path = this.initPath();
+					return this.menu['menue'][this.kev][path].httpType;
+				}
+
+			},
+			methods: {
+				itemOut: function(a, b, c) {
+					this.selectCol = null;
+					this.selectRow = null;
+					//console.log(JSON.stringify(c),'//////')
+					this.setData(JSON.stringify(c))
+				},
+				tableCellClassName: function({
+					row,
+					column,
+					rowIndex,
+					columnIndex
+				}) {
+					row.index = rowIndex;
+					column.index = columnIndex;
+				},
+				handleCellDbClick: function(a, b, c, d) {
+					if (!this.isChange) return;
+					if (b.index < 2)
+						return
+					this.selectRow = a.index;
+					this.selectCol = b.index;
+					setTimeout("$('#textArea').focus()", 1);
+				},
+
+				initPath: function() {
+					let path = '';
+					if (this.item_pages.length == 0) path = '2-1';
+					else path = this.item_pages[0];
+					return path;
+				},
+				initPage: function() {
+					this.search = '';
+					this.currentPage = 1;
+					this.pageSize = this.basePageSize;
+					this.tableDataCopy = [];
+				},
+				searchFun: function() {
+					if (this.search.replace(/\s+/g, '') == '') return;
+					this.getTableData(this.search);
+				},
+
+				getTableData: function(d) {
+					let data = '';
+					let pUrl = '';
+					let that = this;
+					if (d) data = '/' + d;
+					if (/#/.test(d)) {
+						data = data.split('#').join('/');
+					}
+					if (!this.notPage) {
+						pUrl = '/' + this.currentPage + '/' + this.pageSize;
+					}
+					this.tableData.splice(0);
+					if (!this.tableUrl) return;
+					console.log(data)
+					console.log(config.url + that.tableUrl + pUrl + data)
+					$.ajax({
+						type: 'GET',
+						url: config.url + that.tableUrl + pUrl + data,
+						success: function(e) {
+							console.log(e);
+							if (that.menuObj.isModel) {
+								if (!e.object) {
+									alert('没有查找到内容');
+									return;
+								} else {
+									that.resetForm(that.isTable & that.isSubmit ? 'tableData' : 'formModel')
+									for (let i in e.object) that.formModel[i] = e.object[i];
+								}
+							}
+							that.total = e.o;
+							if (!isNaN(e.object) && e.object != null) {
+								let path = that.initPath();
+								if (e.object <= 0) d = '#没有查找到内容#';
+								that.menu['menue'][that.kev][path].model.content = d;
+							}
+
+							if (that.menuObj.optionData) {
+								for (let i = 0; i < that.menuObj.item.length; i++) {
+									let o = that.menuObj.item[i]
+									if (o['isSelect'] == true) {
+										for (let p = 0; p < e.object.length; p++)
+											that.menuObj.item[i].options.push(e.object[p].aiScaleId);
+										break;
+									}
+								}
+							}
+
+							for (let i = 0; i < e.object.length; i++) {
+								that.tableData.push(e.object[i]);
+							}
+							that.tableDataCopy = JSON.parse(JSON.stringify(that.tableData));
+
+						},
+						error: function() {
+							console.log('输入有误');
+							alert('输入有误');
+						}
+					});
+				},
+				setData: function(a, b, c, d, e, f) {
+					if (!this.updataUrl) return;
+					let that = this;
+					if (/#/.test(a)) {
+						a= JSON.parse(a);
+						a = a.content.split("#").join('/')
+					}
+					let data = '';
+					if (a) data += '/' + a;
+					if (b) data += '/' + b;
+					if (c) data += '/' + c;
+					if (d) data += '/' + d;
+					if (e) data += '/' + e;
+					if (f) data += '/' + f;
+					data = data.replace(/split;/g, 'split')
+					console.log(config.url + that.updataUrl + data)
+					$.ajax({
+						type: that.httpMethod ? that.httpMethod : 'PUT',
+						//type:'PUT',
+						url: config.url + that.updataUrl + data,
+						success: function(e) {
+							console.log(e);
+							if (e.object) {
+								if (e.object > 0 && !that.isChange) alert('操作成功');
+							} else alert('输入有误');
+						},
+						error: function() {
+							console.log('设置数据出错');
+						}
+					});
+				},
+				getTableDataByUserId: function(userId) {
+					let that = this;
+					this.tableData.splice(0);
+					$.ajax({
+						type: 'GET',
+						url: config.url + '/report/html/' + this.currentPage + '/' + this.pageSize + '/' + userId,
+						success: function(e) {
+							for (let i = 0; i < e.object.length; i++) {
+								that.tableData.push(e.object[i]);
+							}
+						},
+						error: function() {
+							console.log(888);
+						}
+					});
+				},
+				handleSizeChange(val) {
+					this.pageSize = val;
+					if (this.isSearch)
+						this.getTableData(this.search);
+					else
+						this.getTableData();
+				},
+				handleCurrentChange(val) {
+					this.currentPage = val;
+					if (this.isSearch)
+						this.getTableData(this.search);
+					else
+						this.getTableData();
+				},
+				handleOpen(key, keyPath) {
+					//console.log(key, keyPath);
+				},
+				handleClose(key, keyPath) {
+					//console.log(key, keyPath);
+				},
+				handleSelect(index, indexPath) {},
+				openM: function(key, value) {
+					if (/系统/.test(value)) {} else {
+						let a = this.item_pages.indexOf(key);
+						if (a > -1) {
+							return;
+						} else {
+							this.item_pages.splice(0);
+							this.item_pages.push(key);
+							this.item_pages.push(value);
+						}
+						if (this.isSearch) {
+							this.tableData.splice(0);
+							this.total = 0;
+						} else {
+							this.getTableData();
+						}
+						this.initPage();
+					}
+				},
+				submitForm(formName) {
+					//console.log(formName)
+					if (formName == 'tableData') {
+						console.log(this.tableData);
+					} else {
+						this.$refs[formName].validate(valid => {
+							if (valid) {
+								// console.log(this.$refs[formName].model);
+								// console.log(JSON.stringify(this.$refs[formName].model));
+								console.log(this.$refs[formName].model)
+								this.setData(JSON.stringify(this.$refs[formName].model));
+							} else {
+								console.log('error submit!!');
+								return false;
+							}
+						});
+					}
+				},
+				resetForm(formName) {
+					console.log(this.isTable, this.isSubmit);
+					if (formName == 'tableData') {
+						JSON.parse(JSON.stringify(this.tableDataCopy));
+						this.tableData = JSON.parse(JSON.stringify(this.tableDataCopy));
+					} else this.$refs[formName].resetFields();
+				}
+			}
+		});
+	</script>
+</html>

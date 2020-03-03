@@ -151,13 +151,14 @@ margin: auto 0;
 .options li{
 	
 	text-align: center;
-	border-radius: 20px;
+	border-radius:5px;
 	width: 45%;
 	height: 40px;
 	line-height: 40px;
 	margin: 10px 10px 10px 10px;
 	cursor: default;
 	user-select: none;
+	border: solid 1px darkgray;
 }
 
 .test-data{
@@ -268,15 +269,9 @@ margin: auto 0;
 	height: 100%;
 }
 .on{
-	background: lightpink;
+	background: rgb(16, 112, 193);
 }
 .off{
-	background: cadetblue;
+	background: white;
 }
 
-#next-scale{
-	z-index: 20;
-	position: absolute;
-	bottom: 40px;
-	right: 40px;
-}

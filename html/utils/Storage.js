@@ -101,6 +101,206 @@ class seStorage {
 		return item;
 	}
 }
+/**
+ * 封装的计时器
+ */
+class Timer{
+	constructor(o, hour, min, seconds, p, timerSpeed) {
+		this.status = 0;
+		this.SS  = 0;
+		this.timer = null;
+		this.o = {};
+		this.o = o;
+		this.TimerObj = {
+			hours: 0,
+			minutes: 0,
+			seconds: 0,
+			p: 0
+		}
+		if (hour)
+			this.hours = hour;
+		else
+			this.hours = 0;
+		if (min)
+			this.minutes = min;
+		else
+			this.minutes = 0;
+		if (seconds)
+			this.seconds = seconds;
+		else
+			this.seconds = 0;
+		if (p)
+			this.p = p;
+		else
+			this.p = 0;
+		if (timerSpeed)
+			this.timerSpeed = timerSpeed;
+		else
+			this.timerSpeed = 1000;
+	}
+	__init(){
+		this.TimerObj = {
+			hours: 0,
+			minutes: 0,
+			seconds: 0,
+			p: 0
+		}
+	}
+	setObject(o) {
+		this.o = o;
+		//clearInterval(this.timer);
+	}
+	setHours(h) {
+		this.hours = h;
+		//clearInterval(this.timer);
+	}
+	setMinute(min) {
+		this.minutes = min;
+		//clearInterval(this.timer);
+	}
+	setSeconds(s) {
+		this.seconds = s;
+		//clearInterval(this.timer);
+	}
+	setSpeeds(s){
+		this.timerSpeed = s;
+	}
+	setP(p) {
+		this.p = p;
+		//clearInterval(this.timer);
+	}
+	reSet(o, hour, min, seconds, p, timerSpeed){
+		clearInterval(this.timer)
+		this.o = {};
+		this.o = o;
+		this.TimerObj = {
+			hours: 0,
+			minutes: 0,
+			seconds: 0,
+			p: 0
+		}
+		if (hour)
+			this.hours = hour;
+		else
+			this.hours = 0;
+		if (min)
+			this.minutes = min;
+		else
+			this.minutes = 0;
+		if (seconds)
+			this.seconds = seconds;
+		else
+			this.seconds = 0;
+		if (p)
+			this.p = p;
+		else
+			this.p = 0;
+		if (timerSpeed)
+			this.timerSpeed = timerSpeed/100;
+		else
+			this.timerSpeed = 10;
+	}
+	startTimer() {
+		this.SS = 0;
+		let m;
+		if(this.p>=100){
+			m = this.p;
+			this.p = this.p%100;
+			this.seconds = this.seconds + Math.floor(m/100);
+		}
+		if(this.seconds>=60){
+			m = this.seconds;
+			this.seconds = this.seconds%60;
+			this.minutes = this.minutes + Math.floor(m/60);
+		}
+		if(this.minutes>=60){
+			m = this.minutes;
+			this.minutes = this.minutes%60;
+			this.hour = this.hour + Math.floor(m/60); 
+		}
+		
+		if(this.status==-10)
+			this.status=0;
+		if(this.status==0){
+			this.status=1;
+			let that = this;
+			this.timer = setInterval(function() {
+				that.TimerObj.p++;
+				if (that.TimerObj.p == 100) {
+					that.TimerObj.p = 0;
+					that.TimerObj.seconds++;
+					if (that.TimerObj.seconds == 60) {
+						that.TimerObj.seconds = 0;
+						that.TimerObj.minutes++;
+						if (that.TimerObj.minutes == 60) {
+							that.TimerObj.hours++
+						}
+					}
+				}
+				for(let i in that.TimerObj){
+					that.o[i] = that.TimerObj[i];
+				}
+				that.__stopTimer(1);
+			}, 1);
+		}else return
+	}
+	pause(){
+		clearInterval(this.timer);
+		this.status = -10;
+	}
+	goOn(){
+		if(this.SS ==0){
+			this.startTimer()
+		}else if(this.SS = 1){
+			this.startCutDown()
+		}
+		
+	}
+	stop(){
+		clearInterval(this.timer);
+		this.status = 0;
+	}
+	startCutDown() {
+		this.SS = 1;
+		if(this.status==-10)
+		this.status=0;
+		if(this.status ==0 ){
+			this.status = 1;
+			let that =this;
+			this.timer = setInterval(function(){
+				that.p--;
+				if(that.p<0){
+					that.p=99;
+					that.seconds--;
+					if(that.seconds<0){
+						that.seconds = 59;
+						that.minutes--;
+						if(that.minutes<0){
+							that.minutes =0;
+							that.hours--;
+							if(that.hours<0)
+								that.hours=0;
+						}
+					}
+				}
+				that.o.hours = that.hours;
+				that.o['minutes'] = that.minutes;
+				that.o['seconds'] = that.seconds;
+				that.o['p'] = that.p;
+				that.__stopTimer(2);
+			},1)
+		}	
+	}
+	__stopTimer(a) {
+		
+			if (this.TimerObj.hours == this.hours && this.TimerObj.minutes == this.minutes &&
+			this.TimerObj.seconds == this.seconds && this.TimerObj.p == this.p) {
+				clearInterval(this.timer);
+				this.status = 0;
+				console.log('重置成功');
+			}		
+	}
+}
 
 var storage = new Storage();
 var sstorage = new seStorage();

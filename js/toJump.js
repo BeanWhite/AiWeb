@@ -22,21 +22,21 @@ function toJump(id) {
 			break;
 		case 11:window.location.href = '../html/doc_drawClock.html?'+USER_ID;
 			break;
-		case 12:
+		case 12:window.location.href = '../html/doc_ravlt.html?'+USER_ID;
 			break;
-		case 13:
+		case 13:window.location.href = '../html/doc_DST.html?'+USER_ID;
 			break;
-		case 14:
+		case 14:window.location.href = '../html/doc_sdmt.html?'+USER_ID;
 			break;
-		case 15:
+		case 15:window.location.href = '../html/doc_cwt.html?'+USER_ID;
 			break;
-		case 16:
+		case 16:window.location.href = '../html/doc_fom.html?'+USER_ID;
 			break;
-		case 17:
+		case 17:window.location.href = '../html/doc_bd.html?'+USER_ID;
 			break;
 		case 18:
 			break;
-		case 19:
+		case 19:window.location.href = '../html/doc_vft.html?'+USER_ID;
 			break;
 		case 20:window.location.href = '../html/doc_ligature.html?'+USER_ID;
 			break;

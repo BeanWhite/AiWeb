@@ -15,7 +15,7 @@ CREATE TABLE ai_doc (
 	ai_doc_id VARCHAR ( 11 ),
 	ai_doc_pwd VARCHAR ( 16 ),
 	ai_doc_age INTEGER,
-	ai_doc_sex VARCHAR ( 2 ) CHECK ( ai_doc_sex = '男' OR ai_doc_sex = '女' ),
+	ai_doc_sex VARCHAR ( 2 ),
 	ai_doc_name VARCHAR ( 12 ),
 	ai_doc_unit VARCHAR ( 40 ),
 	ai_doc_department VARCHAR ( 40 ),

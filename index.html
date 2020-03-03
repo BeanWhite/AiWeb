@@ -41,6 +41,7 @@
 			</form>
 		</div>
 		<script src="html/utils/Storage.js"></script>
+		<script src="html/utils/loginCheck.js"></script>
 		<script>
 			
 			function submitForm() {
@@ -63,11 +64,18 @@
 								alert('管理员')
 								//跳转到管理员界面
 							} else if (data.object == "医生" || data.object == 1) {
+								let o = {
+									id: user,
+									pwd: pwd
+								}
+								//将登录信息存入本地
+								sstorage.setItem('logins',o);
 								//跳转到医生界面
 								window.location.href = "html/doc.html?" + user;
 							} else if (data.object == "用户" || data.object == 2) {
+								alert('该账号只限移动端登录')
 								//跳转到用户界面
-								window.location.href = "html/user_menue.html?" + user;
+								//window.location.href = "html/user_menue.html?" + user;
 							} else {
 								//开发界面
 								console.log(data.msg)
@@ -75,8 +83,6 @@
 						}else{
 							alert(data.msg)
 						}
-
-
 					},
 					error: function() {
 						alert('服务器无法连接')
@@ -85,11 +91,5 @@
 				})
 			}
 		</script>
-		<!-- 	<div id="" >
-			<button  type="button" class="exit" onclick="a()">退出系统</button>
-		</div> -->
-
-
-
 	</body>
 </html>

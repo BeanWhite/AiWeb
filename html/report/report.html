@@ -552,6 +552,7 @@
 		<!-- <img src="" /> -->
 	</body>
 	<script src="../utils/Storage.js"></script>
+	<script src="../config/urlConfig.js"></script>
 	<script>
 		//	let S = window.location.search.split('?')[1].split('&');//可能会有多个量表，所以用数组来表示
 		var q = $.ajax({
@@ -726,7 +727,7 @@
 			var pdf = 'test.pdf';
 			$.ajax({
 				type: "POST",
-				url: 'http://localhost:80/pdf/p',
+				url: config.url+'/pdf/p',
 				data: {
 					s: k,
 					name: pdf

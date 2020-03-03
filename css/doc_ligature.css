@@ -1,4 +1,4 @@
-.cdt-menu{
+.cdt-menu {
 	visibility: hidden;
 	white-space: nowrap;
 	width: 700px;
@@ -11,7 +11,8 @@
 	justify-content: center;
 	align-items: center;
 }
-.cdt{
+
+.cdt {
 	text-align: center;
 	display: inline-block;
 	width: auto;
@@ -22,9 +23,10 @@
 	max-width: 110px;
 	padding: 0 5px 0 5px;
 	cursor: default;
-	user-select:none ;
+	user-select: none;
 	margin-right: 20px;
 }
+
 .slid-bar {
 	display: none;
 	position: absolute;
@@ -38,9 +40,11 @@
 	transition: width 0.5s;
 	overflow: hidden;
 }
-.slid-bar:hover{
+
+.slid-bar:hover {
 	width: 200px;
 }
+
 .left-menu {
 	overflow: hidden;
 	height: 100%;
@@ -50,10 +54,10 @@
 
 .menu-bu {
 	position: absolute;
-top: 0;
-bottom: 0;
-left: 0;
-margin: auto 0;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto 0;
 }
 
 .scale-left {
@@ -137,17 +141,18 @@ margin: auto 0;
 	font-size: 28px;
 	color: rgb(16, 112, 193);
 }
-.options{
+
+.options {
 	width: 100%;
 	border-bottom: 2px solid darkgray;
 	height: 100%;
 }
 
-.options li{
+.options li {
 	font-size: 20px;
 }
 
-.test-data{
+.test-data {
 	line-height: 25px;
 	font-family: SourceHanSansSC;
 	font-weight: 600;
@@ -219,8 +224,9 @@ margin: auto 0;
 	right: 10px;
 	overflow: hidden;
 }
-#question-img{
-	width:100% ;
+
+#question-img {
+	width: 100%;
 	height: 100%;
 }
 
@@ -234,6 +240,7 @@ margin: auto 0;
 	color: rgb(16, 112, 193);
 	font-style: normal;
 }
+
 .content1 {
 	/* display: none; */
 }
@@ -251,22 +258,34 @@ margin: auto 0;
 	margin-bottom: 30px;
 	padding-top: 30px;
 }
-#re-img{
-	height: 100%;
+
+#re-img {
 	width: 100%;
+	margin-left: -100px;
+	border-color: white;
 }
 
-.on{
+.on {
 	background: lightpink;
 }
-.off{
+
+.off {
 	background: cadetblue;
 }
 
-#next-scale{
+#next-scale {
 	z-index: 20;
 	position: absolute;
 	bottom: 40px;
 	right: 40px;
 }
 
+.option-child span{
+	display: inline-block;
+	background-color: white;
+	width: 50%;
+	height: 30px;
+	line-height: 30px;
+	border: solid 1px darkgray;
+	border-radius: 5px;
+}
