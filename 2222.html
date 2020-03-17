@@ -9,25 +9,28 @@
 		<title></title>
 	</head>
 	<body>
-		<div id="app">
+
+
+		<!-- 	<object data="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" style="1200px;height: auto;">
 			
-		</div>
-		<iframe src="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" width="1000" height="900" ></iframe>
-		<!-- <iframe src="http://127.0.0.1:8848/AiWeb/11.html" width="1000" height="900" ></iframe> -->
+		</object> -->
+		<iframe src="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" style="width: 700px;"></iframe>
+		<!-- <object data="http://www.baidu.com" width="500" height="500"></object>
+<button type="button" onclick="a()">a</button>
+<button type="button" onclick="b()">b</button> -->
+
 	</body>
 	<script src="html/utils/Storage.js">
-	
+
 	</script>
 	<script src="js/jquery/jquery.min.js"></script>
 	<script type="text/javascript">
-	
-		
 		// setInterval(function(){
 		// },500)
-	
+
 		// Object.defineProperty(a,"a",{
 		// 	get(){
-				
+
 		// 	},
 		// 	set(e){
 		// 		console.log('fuzhi',e)
@@ -35,33 +38,33 @@
 		// })
 
 
-		
-	// let vue ={
-	// 	itemPage:{
-	// 		data:""
-	// 	}
-	// }
-	window.addEventListener('message', (event) => {
-	          const op = event.data
-	         console.log(op);
-	      })
-	
-	 var vm = new Vue({
-		 el:'#app',
-		 data:{
-			 test:null
-		 },
-		 methods:{
-			 child_f:function(params){
-				 console.log(params);
-				this.test=params;
-				console.log(this.test);
-			 },
-			 child_p:function(params){
-			 		console.log(this.test);
-			 }
-		 }
-	 })
+
+		// let vue ={
+		// 	itemPage:{
+		// 		data:""
+		// 	}
+		// }
+		window.addEventListener('message', (event) => {
+			const op = event.data
+			console.log(op);
+		})
+
+		var vm = new Vue({
+			el: '#app',
+			data: {
+				test: null
+			},
+			methods: {
+				child_f: function(params) {
+					console.log(params);
+					this.test = params;
+					console.log(this.test);
+				},
+				child_p: function(params) {
+					console.log(this.test);
+				}
+			}
+		})
 	</script>
-	
+
 </html>

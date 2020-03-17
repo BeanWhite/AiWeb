@@ -9,10 +9,7 @@
 	height: 50px;
 	display: flex;
 	justify-content: space-between;
-
-
 	font-family: SourceHanSansSC;
-
 	font-size: 30px;
 	color: rgb(16, 112, 193);
 }
@@ -139,6 +136,7 @@
 	opacity: 0.4;
 	background-color: black;
 }
+
 
 .dialog-content {
 	overflow: hidden;
@@ -444,7 +442,7 @@
 }
 
 .re-img {
-	height: 100%;
+	margin: 5px;
 	width: 100%;
 }
 

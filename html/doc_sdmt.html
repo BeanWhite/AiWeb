@@ -38,7 +38,10 @@
 
 				<div id="title">
 					<span>量表名称：{{titleName.aiScaleName}}</span>
-
+					<div class="title-right">
+						<span class="little-title-green cursorPointer" @click="refreshB()">刷新平板</span>
+						<span class="little-title-red cursorPointer">进入下一个量表</span>
+					</div>
 				</div>
 				<div class="scale-left flex-layout-aligin" style="width: 70%;justify-content: flex-start;" :style="{display:(status==0?'flex':'none')}">
 					<div class="content-title">
@@ -86,10 +89,10 @@
 					</div>
 					<div class="nextGroup little-title-green">
 						<span class=" cursorPointer" v-on:click="startTest()">{{st.length == 0?'进入测试':'回到测试'}}</span>
-						
+
 					</div>
 				</div>
-				<div class="off scale-left flex-layout-aligin-none" style="width: 70%;justify-content: flex-start;" :style="{display:(status==1?'flex':'none')}">
+				<div class="off scale-left flex-layout-aligin-none " style="width: 70%;justify-content: flex-start;" :style="{display:(status==1?'flex':'none')}">
 					<div class="content-title">
 						指导语
 					</div>
@@ -150,14 +153,15 @@
 						<span v-on:click="toNext()">下一组</span>
 					</div>
 				</div>
-				<div class="scale-right flex-layout-aligin" style="width: 30%;">
-					<div class="content-title">
+				<div class="scale-right flex-layout-aligin " style="width: 30%;">
+					<div class="content-title ">
 						{{status == 0?(st.length == 0?'量表说明':'评分'):'评分'}}
 					</div>
-					<div class="little-title-content" style="width: 100%;height: 100%;overflow-y: scroll;" :style="{display:(status==0?(st.length==0?'':'none'):'none')}">
+					<div class="little-title-content scrollbar" :style="{display:(status==0?(st.length==0?'':'none'):'none')}">
 						<div v-for="(it,index) in titleName.aiScaleOverview">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{it}}</div>
 					</div>
-					<div class="flex-layout-aligin-none" style="align-items: flex-start;line-height: 40px;padding-top: 20px;padding-bottom: 30px;" :style="{display:(st.length==0?'':'flex')}">
+					<div class="flex-layout-aligin-none" style="align-items: flex-start;line-height: 40px;padding-top: 20px;padding-bottom: 30px;"
+					 :style="{display:(st.length==0?'':'flex')}">
 						<span class="little-title">正确个数：{{falseSize == -1 ?'':RandomTest[0].length-falseSize}}个</span>
 						<span class="little-title">错误个数：{{falseSize == -1 ?'':falseSize}}个</span>
 						<span class="little-title">最终得分：{{falseSize == -1 ?'':RandomTest[0].length-falseSize}}分</span>
@@ -180,9 +184,8 @@
 	<script src="utils/Storage.js"></script>
 	<script src="config/urlConfig.js"></script>
 	<script>
-		console.log(NumUtils.getCN(1))
 		//const USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
-		const USER_ID = 222;
+		const USER_ID = 22;
 		let reg_1 = /&/;
 		let reg_2 = /\$/;
 		let reg_3 = /split;/;
@@ -342,8 +345,64 @@
 				},
 				scaleMsg: scaleMsg,
 				pos: 0, //当前符号，默认0
+				websocket: null,
+				userMsg: null,
+			},
+			created() {
+				let that = this;
+				this.userMsg = sstorage.getItem("userMsg");
+				this.websocket = new WebSocket(config.wsURL + "/websocket/" + USER_ID);
+				this.websocket.onmessage = function(e) {
+
+				};
+				this.websocket.onclose = function() {
+					console.log('关闭')
+				}
+				let k = {};
+				let k2 = {};
+				for (let [key, value] of keyData)
+					k[key] = value
+				for (let [key, value] of valueData)
+					k2[key] = value;
+				let o = {
+					target: this.userMsg.aiUserId,
+					status: 0,
+					from_who: USER_ID,
+					data: {
+						keyData: k,
+						valueData: k2,
+						testData: testData,
+						RandomTest: RandomTest
+					}
+				}
+				 this.websocket.addEventListener('open',function(event){
+				       that.sendMsg(o)
+				    });
 			},
 			methods: {
+				sendMsg(o) {
+					this.websocket.send(JSON.stringify(o));
+				},
+				refreshB() { //刷新平板
+					let k = {};
+					let k2 = {};
+					for (let [key, value] of valueData)
+						k2[key] = value;
+					for (let [key, value] of keyData)
+						k[key] = value
+					let o = {
+						target: this.userMsg.aiUserId,
+						status: 0,
+						from_who: USER_ID,
+						data: {
+							keyData: k,
+							valueData: k2,
+							testData: testData,
+							RandomTest: RandomTest
+						}
+					}
+					this.sendMsg(o);
+				},
 				itemChange: function(pos, index, answer, value) {
 					if (answer == '')
 						return
@@ -359,10 +418,10 @@
 				},
 
 				clickItems: function(index, w, s) {
-					if(this.isFinish==1){
+					if (this.isFinish == 1) {
 						return
 					}
-						
+
 					if (w == 0) {
 						let that = this;
 						this.keyItems[s].push(index);
@@ -393,11 +452,20 @@
 
 				},
 				toNext: function() {
-
 					if (this.pos + 1 >= this.RandomTest.length)
 						return
 					this.pos++;
-					this.RandomTest[this.pos][1].answer = this.RandomTest[this.pos][1].value + 1
+					this.RandomTest[this.pos][1].answer = this.RandomTest[this.pos][1].value + 1;
+					if (this.pos == 1) {
+						let o = {
+							target: this.userMsg.aiUserId,
+							data: this.pos,
+							status: 1,
+							from_who: USER_ID
+						};
+						this.sendMsg(o)
+					}
+
 				},
 				toBack: function() {
 					if (this.status1 - 1 < 0)
@@ -408,8 +476,8 @@
 				}
 			},
 			computed: {
-				finishTimer: function(){
-					return this.timerObj.minutes+this.timerObj.seconds+this.timerObj.p;
+				finishTimer: function() {
+					return this.timerObj.minutes + this.timerObj.seconds + this.timerObj.p;
 				}
 			},
 			watch: {
@@ -426,11 +494,11 @@
 					immediate: false
 				},
 				finishTimer: {
-					handler(a,b) {
-						if(a==0)
-							this.isFinish=1;
+					handler(a, b) {
+						if (a == 0)
+							this.isFinish = 1;
 					},
-					immediate:false
+					immediate: false
 				}
 			}
 		});
