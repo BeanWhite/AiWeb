@@ -142,7 +142,6 @@
 							</tr>
 							<tr>
 								<td v-for="(it,index) in RandomTest[pos+1]" class="exam-td" v-bind:class="[resultGroup[pos+1].indexOf(index)>-1?'red-bgc':'']">
-									<!-- <input  class="little-title-content value-item-input" type="text"/> -->
 									{{it.answer == it.value ?it.answer:itemChange(pos+1,index,it.answer,it.value)}}
 								</td>
 							</tr>
@@ -277,15 +276,18 @@
 					console.log(keyData, 'keyData')
 					console.log(testData, 'testData')
 					console.log(o, 'ooo')
+					vue.J = true;
 				},
 				error: function() {
 					console.log('连接服务器超时');
 				}
 			})
+			
 		});
 		let vue = new Vue({
 			el: '.vue',
 			data: {
+				J:false,	//jQuery是否处理完毕
 				titleName: scaleData, //量表基础信息
 				keyData: keyData, //	键值对
 				valueData: valueData, //值键对
@@ -295,7 +297,7 @@
 				isFinish: 0, //定义是否测试完成，默认0
 				pos: 0, //当前正在测试组号
 				st: [], //判断是否进入过答题
-				nPos: 5, //当前正在做的位置
+				nPos: 0, //当前正在做的位置
 				timer: null, //计时器
 				falseSize: -1, //统计错误的个数
 				resultGroup: {
@@ -349,38 +351,27 @@
 				userMsg: null,
 			},
 			created() {
+				console.log(this.RandomTest)
 				let that = this;
 				this.userMsg = sstorage.getItem("userMsg");
 				this.websocket = new WebSocket(config.wsURL + "/websocket/" + USER_ID);
 				this.websocket.onmessage = function(e) {
-
+					let data = JSON.parse(e.data)
+					if(data.status==1){
+						/**
+						 * 处理即时数据
+						 */
+						that.RandomTest[data.data.x][data.data.y].answer = data.data.value;
+					
+					}
 				};
 				this.websocket.onclose = function() {
 					console.log('关闭')
 				}
-				let k = {};
-				let k2 = {};
-				for (let [key, value] of keyData)
-					k[key] = value
-				for (let [key, value] of valueData)
-					k2[key] = value;
-				let o = {
-					target: this.userMsg.aiUserId,
-					status: 0,
-					from_who: USER_ID,
-					data: {
-						keyData: k,
-						valueData: k2,
-						testData: testData,
-						RandomTest: RandomTest
-					}
-				}
-				 this.websocket.addEventListener('open',function(event){
-				       that.sendMsg(o)
-				    });
 			},
 			methods: {
 				sendMsg(o) {
+					console.log('发送消息', o)
 					this.websocket.send(JSON.stringify(o));
 				},
 				refreshB() { //刷新平板
@@ -450,22 +441,19 @@
 						this.st.push(1);
 					this.status = 1;
 
+					let o = {
+						target: this.userMsg.aiUserId,
+						data: 1,
+						status: 1,
+						from_who: USER_ID
+					};
+					this.sendMsg(o)
+
 				},
 				toNext: function() {
 					if (this.pos + 1 >= this.RandomTest.length)
 						return
 					this.pos++;
-					this.RandomTest[this.pos][1].answer = this.RandomTest[this.pos][1].value + 1;
-					if (this.pos == 1) {
-						let o = {
-							target: this.userMsg.aiUserId,
-							data: this.pos,
-							status: 1,
-							from_who: USER_ID
-						};
-						this.sendMsg(o)
-					}
-
 				},
 				toBack: function() {
 					if (this.status1 - 1 < 0)
@@ -497,6 +485,39 @@
 					handler(a, b) {
 						if (a == 0)
 							this.isFinish = 1;
+					},
+					immediate: false
+				},
+				J:{
+					handler(a, b) {
+						console.log('JOK',a);
+						let that = this;
+						let k = {};
+						let k2 = {};
+						for (let [key, value] of this.keyData)
+							k[key] = value
+						for (let [key, value] of this.valueData)
+							k2[key] = value;
+						let o = {
+							target: this.userMsg.aiUserId,
+							status: 0,
+							from_who: USER_ID,
+							data: {
+								keyData: k,
+								valueData: k2,
+								testData: testData,
+								RandomTest: RandomTest
+							}
+						}
+						try{
+							that.sendMsg(o)
+						}catch(e){
+							//TODO handle the exception
+							this.websocket.addEventListener('open', function(event) {
+								that.sendMsg(o)
+							});
+						}
+						
 					},
 					immediate: false
 				}
