@@ -2,48 +2,69 @@
 <html lang="zh">
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
 		<script src="js/vue.js"></script>
-		
 		<title></title>
 	</head>
 	<body>
-		
-	<!-- 	<object data="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" style="1200px;height: auto;">
+
+
+		<!-- 	<object data="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" style="1200px;height: auto;">
 			
 		</object> -->
 		<iframe src="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" style="width: 700px;"></iframe>
-<!-- <object data="http://www.baidu.com" width="500" height="500"></object>
+		<!-- <object data="http://www.baidu.com" width="500" height="500"></object>
 <button type="button" onclick="a()">a</button>
 <button type="button" onclick="b()">b</button> -->
+
 	</body>
 	<script src="html/utils/Storage.js">
-	
+
 	</script>
 	<script src="js/jquery/jquery.min.js"></script>
 	<script type="text/javascript">
-		setInterval(function(){
-			console.log('**')
-		},500)
-		console.log(parent.window)
-		let o = {
-			name:2,
-			n:8
-		}
-		function a(){
-		let t = o.name;
-		}
-		function b(){
-			o.name = 5;
-		}
-		Object.defineProperty(o,"name",{
-				get(){
-					console.log('读取')
+		// setInterval(function(){
+		// },500)
+
+		// Object.defineProperty(a,"a",{
+		// 	get(){
+
+		// 	},
+		// 	set(e){
+		// 		console.log('fuzhi',e)
+		// 	}
+		// })
+
+
+
+		// let vue ={
+		// 	itemPage:{
+		// 		data:""
+		// 	}
+		// }
+		window.addEventListener('message', (event) => {
+			const op = event.data
+			console.log(op);
+		})
+
+		var vm = new Vue({
+			el: '#app',
+			data: {
+				test: null
+			},
+			methods: {
+				child_f: function(params) {
+					console.log(params);
+					this.test = params;
+					console.log(this.test);
 				},
-				set(va){
-					console.log('赋值'+va)
+				child_p: function(params) {
+					console.log(this.test);
 				}
-			})
+			}
+		})
 	</script>
+
 </html>
