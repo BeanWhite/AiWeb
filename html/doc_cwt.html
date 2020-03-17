@@ -35,7 +35,10 @@
 
 				<div id="title">
 					<span>量表名称：{{titleName.aiScaleName}}</span>
-
+					<div class="title-right">
+						<span class="little-title-green cursorPointer" @click="toSt()">刷新平板</span>
+						<span class="little-title-red cursorPointer">进入下一个量表</span>
+					</div>
 				</div>
 				<div class="scale-left flex-layout-aligin" style="width: 70%;justify-content: flex-start;align-items: flex-start;">
 					<div class="content-title" style="height: auto;">
@@ -64,12 +67,17 @@
 							</td>
 						</tr>
 					</table>
-					<div class="cGroup little-title-green">
+					<div class="cGroup little-title-green" v-if="isStart==false">
 						<span v-on:click="back()" class="cursorPointer" style="display: inline-block;margin-right: 30px;">{{status == 0 ? '':'上一组'}}</span>
 						<span v-on:click="next()" class="cursorPointer">{{status == 2 ?(finishStatus==1?'':'查看得分'):'下一组'}}</span>
 					</div>
 	<!-- 				als==1?(finishStatus==0?'flex':''):(status>0?(finishStatus==0?'flex':''):'none')
 					status>0?(finishStatus==0?'flex':''):'none' -->
+					<div class="st-box" v-if="isStart">
+						<div class="st-button little-title-white" @click="toSt()">
+							开始
+						</div>
+					</div>
 					<div class="myResult" :style="{display:(status>0?(finishStatus==0?'flex':''):'none')}">
 						<span class="little-title-red">已用时间：{{timerData}}</span>
 						<div class="">
@@ -104,7 +112,7 @@
 	<script src="config/urlConfig.js"></script>
 	<script>
 		//const USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
-		const USER_ID = 222;
+		const USER_ID = 22;
 		let reg_1 = /&/;
 		let reg_2 = /\$/;
 		let reg_3 = /split;/;
@@ -176,7 +184,7 @@
 			}
 			RandomTest.push(arr);
 		}
-		console.log(setColor)
+		console.log(setColor,'setColor')
 		console.log(RandomTest, 'RandomTest');
 		let vue = new Vue({
 			el: '.vue',
@@ -220,8 +228,38 @@
 				timerStatus: [0, 0], //计时器状态
 				finishStatus: 0,//量表是否完成，默认0
 				isFinish: 0, 
+				J:false,	//jQuery是否加载完
+				isStart:true,	//开始按钮是否待点击
+				websocket:null,
+				userMsg:null,
+			},
+			watch:{
+				J:{
+					handler(newa,oldb){
+						console.log(this.J,'JOk')
+					},
+					deep:true,
+					immediate:false
+				},
+			},
+			created() {
+				let that = this;
+				this.userMsg = sstorage.getItem("userMsg");
+				this.websocket = new WebSocket(config.wsURL + "/websocket/" + USER_ID);
+				
+				this.websocket.onmessage = function(e){
+					
+				};
+				
+				this.websocket.onclose = function(e){
+					console.log('连接关闭')
+				}
+				window.onbeforeunload = function() {
+					that.websocket.close();
+				}
 			},
 			computed: {
+			
 				timerData: function() {
 					if (this.status == 0)
 						return
@@ -255,6 +293,25 @@
 				}
 			},
 			methods: {
+				sendMsg(o){
+					console.log('消息发送',o)
+					this.websocket.send(JSON.stringify(o));
+				},
+				toSt:function(){
+					this.isStart = false;
+					let that  = this;
+					let o = {
+						target:this.userMsg.aiUserId,
+						data:{
+							setColor:that.setColor,
+							RandomTest:that.RandomTest,
+							guid:that.scaleMsg.aiQuestionGuid[that.status]
+						},
+						status:0,
+						from_who:USER_ID,
+					}
+					this.sendMsg(o)
+				},
 				back: function() {
 					if (this.status - 1 < 0)
 						return
@@ -270,6 +327,13 @@
 						return
 					}
 					this.status++;
+					let o = {
+						target:this.userMsg.aiUserId,
+						data:this.scaleMsg.aiQuestionGuid[this.status],
+						status:6,
+						from_who:USER_ID,
+					}
+					this.sendMsg(o);
 				},
 				itemsClick: function(index,index_2) {
 					if (this.status == 0)

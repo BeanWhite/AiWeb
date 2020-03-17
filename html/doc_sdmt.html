@@ -80,9 +80,9 @@
 								</td>
 							</tr>
 							<tr>
-								<td v-for="(it,index) in testData" class="exam-td">
+								<td v-for="(it,index) in testAnswer" class="exam-td">
 									<!-- <input  class="little-title-content value-item-input" type="text"/> -->
-
+											{{it}}
 								</td>
 							</tr>
 						</table>
@@ -349,6 +349,7 @@
 				pos: 0, //当前符号，默认0
 				websocket: null,
 				userMsg: null,
+				testAnswer:["","","","","","","","","","","","","","",""]
 			},
 			created() {
 				console.log(this.RandomTest)
@@ -361,12 +362,19 @@
 						/**
 						 * 处理即时数据
 						 */
-						that.RandomTest[data.data.x][data.data.y].answer = data.data.value;
+						if(data.dataOptions==1)
+							that.RandomTest[data.data.x][data.data.y].answer = data.data.value;
+						else if(data.dataOptions==0){
+							that.testAnswer.splice(data.data.y,1,data.data.value);
+						}
 					
 					}
 				};
 				this.websocket.onclose = function() {
 					console.log('关闭')
+				}
+				window.onbeforeunload = function() {
+					this.websocket.close();
 				}
 			},
 			methods: {
