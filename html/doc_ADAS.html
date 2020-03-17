@@ -128,7 +128,8 @@
 								<div class="line">
 								</div>
 								<div class="word-check" v-on:click="checkBox(it,index)">
-									<img class="checkBox-svg transformX" v-bind:class="[checkBoxIndex_1.indexOf(index)>-1?'toHidden':'toShow']" src="../svg/checkBox_off.svg">
+									<img class="checkBox-svg transformX" v-bind:class="[checkBoxIndex_1.indexOf(index)>-1?'toHidden':'toShow']"
+									 src="../svg/checkBox_off.svg">
 									<img class="checkBox-svg" v-bind:class="[checkBoxIndex_1.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/checkBox_on.svg">
 								</div>
 							</li>
@@ -208,7 +209,8 @@
 							评判
 						</div>
 						<ul class="scale-topic " style="justify-content: space-between;height: 100%;">
-							<li v-for="(it,index) in scaleData['2'].aiQuestionContent" class="word-group word-wrap-s word-judge-2 word-p radius" style="width: 30%;">
+							<li v-for="(it,index) in scaleData['2'].aiQuestionContent" class="word-group word-wrap-s word-judge-2 word-p radius"
+							 style="width: 30%;">
 								<div style="width: 100%;height: 100%;position: relative;">
 									<img v-bind:class="[wordSelect_2.indexOf(index)>-1?'on':'off']" class="word-select" src="../svg/checkBox_on_green.svg">
 									<img v-bind:class="[wordCancle_2.indexOf(index)>-1?'on':'off']" class="word-select" src="../svg/must.svg">
@@ -216,7 +218,7 @@
 								</div>
 							</li>
 							<li style="border: none; width: 30%;"></li>
-<!-- 							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li>
+							<!-- 							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li>
 							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li>
 							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li> -->
 						</ul>
@@ -253,12 +255,12 @@
 									</div>
 								</li>
 							</ul>
-							<div >
+							<div>
 								<span class="little-title">得分:</span>
 								<span class="little-title-redU">{{jClickF_3.length}}</span>
-								
+
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
@@ -282,20 +284,25 @@
 							患者作图
 						</div>
 						<div class="uImg">
-							<span style="position: absolute;top: 5px;left: 10;" class="little-title">图{{pos_4+1}}:</span>
-							<img src="../img/5/flower.jpg" class="re-img">
+							<span style="position: absolute;top: 0;left: 0;" class="little-title">图{{pos_4+1}}:</span>
+							<img class="re-img" :src="picUrls_4[pos_4]">
 						</div>
 						<div class="block-div"></div>
 						<div class="score">
 							<div class="score-j">
 								<span class="little-title">本次评判:</span>
 								<ul class="ul-list">
-									<li class="flex-layout-j"><img :src="jIcon_4.indexOf(0)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'" v-on:click="jClick_4(0)" /><span class="des">正确</span></li>
-									<li class="flex-layout-j"><img :src="jIcon_4.indexOf(1)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'" v-on:click="jClick_4(1)" /><span class="des">错误</span></li>
-									<li class="flex-layout-j"><img :src="jIcon_4.indexOf(2)>-1?'../svg/doubt_green.svg':'../svg/doubt_gray.svg'" v-on:click="jClick_4(2)" /><span class="des">未做图</span></li>
+									<li class="flex-layout-j"><img :src="jIcon_4[pos_4].indexOf(0)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'"
+										 v-on:click="jClick_4(0)" /><span class="des">正确</span></li>
+									<li class="flex-layout-j"><img :src="jIcon_4[pos_4].indexOf(1)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'"
+										 v-on:click="jClick_4(1)" /><span class="des">错误</span></li>
+									<li class="flex-layout-j"><img :src="jIcon_4[pos_4].indexOf(2)>-1?'../svg/doubt_green.svg':'../svg/doubt_gray.svg'"
+										 v-on:click="jClick_4(2)" /><span class="des">未做图</span></li>
 								</ul>
-								<div class="button ne-3" v-on:click="save_4()">
-									下一图
+								<div class="button ne-3">
+									<span style="display: inline-block;margin-right: 10px;" @click="back_4()">上一图</span>
+									<span style="display: inline-block;" v-on:click="save_4()">下一图</span>
+
 								</div>
 							</div>
 							<div class="score-content" style="justify-content: space-around;">
@@ -326,11 +333,12 @@
 									{{index+1}}<span style="visibility: hidden;">一</span>{{it[0]}}
 								</div>
 								<div>
-									<img :src="jClickT_5.indexOf(index)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'"  v-on:click="jClick_5(0,index)" style="margin-right: 24px;"/>
-									<img :src="jClickF_5.indexOf(index)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'" v-on:click="jClick_5(1,index)"/>
+									<img :src="jClickT_5.indexOf(index)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'" v-on:click="jClick_5(0,index)"
+									 style="margin-right: 24px;" />
+									<img :src="jClickF_5.indexOf(index)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'" v-on:click="jClick_5(1,index)" />
 								</div>
 							</li>
-						</ul>			
+						</ul>
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
@@ -357,18 +365,19 @@
 							<span class="little-title">指导语:</span> <span class="little-title-content"> {{scaleData['6'].aiQuestionGuid}}</span><br>
 						</div>
 						<div class="line"></div>
-						
+
 						<ul class="content-5">
 							<li class="content-5-items" v-for="(it,index) in scaleData['6'].aiQuestionContent">
 								<div>
 									{{index+1}}<span style="visibility: hidden;">一</span>{{it[0]}}
 								</div>
 								<div>
-									<img :src="jClickT_6.indexOf(index)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'"  v-on:click="jClick_6(0,index)" style="margin-right: 24px;"/>
-									<img :src="jClickF_6.indexOf(index)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'" v-on:click="jClick_6(1,index)"/>
+									<img :src="jClickT_6.indexOf(index)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'" v-on:click="jClick_6(0,index)"
+									 style="margin-right: 24px;" />
+									<img :src="jClickF_6.indexOf(index)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'" v-on:click="jClick_6(1,index)" />
 								</div>
 							</li>
-						</ul>			
+						</ul>
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
@@ -395,30 +404,32 @@
 							<span class="little-title">指导语:</span> <span class="little-title-content"> {{scaleData['7'].aiQuestionGuid[0][0]}}</span><br>
 							<!-- <span class="little-title">操作:</span> <span class="little-title-content">{{scaleData['7'].aiQuestionContent}}</span> -->
 						</div>
-						<ul class="flex-layout-j-space-evenly ul" style="flex-wrap: wrap;" >
-							<li class="word-group word-wrap-s word-judge-2 word-p radius" v-for="(it,index) in scaleData['7'].aiQuestionContent[0][0]" style="width: 16%;">
+						<ul class="flex-layout-j-space-evenly ul" style="flex-wrap: wrap;">
+							<li class="word-group word-wrap-s word-judge-2 word-p radius" v-for="(it,index) in scaleData['7'].aiQuestionContent[0][0]"
+							 style="width: 16%;">
 								{{it}}
 							</li>
 						</ul>
 						<div class="little-title-content" style="height: auto;padding-top: 15px;padding-bottom: 15px;">
 							{{scaleData['7'].aiQuestionNotice}}
 						</div>
-						<div class="line" ></div>
+						<div class="line"></div>
 						<div class="third-content">
 							<span class="little-title">指导语二:</span>
 							<span class="little-title-content">{{scaleData['7'].aiQuestionGuid[1][0]}}</span>
 						</div>
 						<div class="little-title-content">{{scaleData['8'].aiQuestionNotice}}</div>
-						
+
 					</div>
-					<div class="scale-right flex-layout-aligin" style="width: 30%;" :style="{display:(isShow_7>0?'none':'')}">
+					<!-- <div class="scale-right flex-layout-aligin" style="width: 30%;" :style="{display:(isShow_7>0?'none':'')}"> -->
+					<div class="scale-right flex-layout-aligin" style="width: 30%;" v-if="pagePos==7">
 						<div class="content-title">
 							患者作答
 						</div>
 						<ul class="flex-layout-j-space-between ul" style="flex-wrap: wrap;height: 100%;">
-							<li v-for="(it,index) in scaleData['7'].aiQuestionContent[wPos_7-1][pos_7]" class="word-group word-wrap-s word-judge-2 word-p radius" 
-							style="width: 22%;" v-bind:class="[chooseF_7.indexOf(index)>-1?'red-bgc':'',chooseT_7.indexOf(index)>-1?'green-bgc':'']">
-							{{it}}
+							<li v-for="(it,index) in scaleData['7'].aiQuestionContent[wPos_7-1][pos_7]" class="word-group word-wrap-s word-judge-2 word-p radius"
+							 style="width: 22%;" v-bind:class="[chooseF_7[pos_7-1].indexOf(index)>-1?'red-bgc':'',chooseT_7[pos_7-1].indexOf(index)>-1?'green-bgc':'']">
+								{{it}}
 							</li>
 							<li class="word-group word-wrap-s word-judge-2 word-p radius" style="width: 22%;visibility: hidden;"></li>
 							<li class="word-group word-wrap-s word-judge-2 word-p radius" style="width: 22%;visibility: hidden;"></li>
@@ -428,27 +439,29 @@
 							<div style="width: 100%;text-align: right;height: auto">
 								<span class="little-title-red" v-on:click="toNextGroup_7($event)">{{pos_7==3?'进行回忆':'进入下一组'}}</span>
 							</div>
-							<div >
+							<div>
 								<span class="little-title">第一组错误个数:</span>
 								<span class="little-title-redU">{{performence['7']['1']}}</span>
 							</div>
-							<div >
+							<div>
 								<span class="little-title">第二组错误个数:</span>
 								<span class="little-title-redU">{{performence['7']['1']}}</span>
 							</div>
-							
+
 							<div>
 								<span class="little-title">第三组错误个数:</span>
 								<span class="little-title-redU">{{performence['7']['1']}}</span>
 							</div>
 						</div>
 					</div>
-					<div class="scale-right off" v-bind:class="[isShow_7>0?'flex-on':'']">
+					<!-- <div class="scale-right off" v-bind:class="[isShow_7>0?'flex-on':'']"> -->
+					<div class="scale-right" v-else>
 						<div class="content-title">
 							8.回忆测验指令
 						</div>
 						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
-							<li v-for="(it,index) in scaleData['8'].aiQuestionOption" class="content-8" v-on:click="cList_8(index)" v-bind:class="[performence['8']==index?'blue-bgc':'']">
+							<li v-for="(it,index) in scaleData['8'].aiQuestionOption" class="content-8" v-on:click="cList_8(index)"
+							 v-bind:class="[performence['8']==index?'blue-bgc':'']">
 								{{scaleData['8'].aiQuestionAnswer[index][0]}}--{{it[0]}}
 							</li>
 						</ul>
@@ -466,16 +479,17 @@
 						<div class="third-content">
 							<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['9'].aiQuestionContent}}</span>
 						</div>
-						
+
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
 							评<span style="visibility: hidden;">一</span>分
 						</div>
 						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
-							<li v-for="(it,index) in scaleData['9'].aiQuestionOption" class="content-9" v-on:click="cList_9(index)" v-bind:class="[performence['9']==index?'blue-bgc':'']">
+							<li v-for="(it,index) in scaleData['9'].aiQuestionOption" class="content-9" v-on:click="cList_9(index)"
+							 v-bind:class="[performence['9']==index?'blue-bgc':'']">
 								<span style="font-size: 20px;font-weight: 700;">{{scaleData['9'].aiQuestionAnswer[index][0]}}</span>
-								<span style="font-size: 12px;">{{it[0]}}</span> 
+								<span style="font-size: 12px;">{{it[0]}}</span>
 							</li>
 						</ul>
 						<div style="height: auto;width: 100%;text-align: right;">
@@ -492,16 +506,17 @@
 						<div class="third-content">
 							<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['10'].aiQuestionContent}}</span>
 						</div>
-						
+
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
 							评<span style="visibility: hidden;">一</span>分
 						</div>
 						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
-							<li v-for="(it,index) in scaleData['10'].aiQuestionOption" class="content-9" v-on:click="cList_10(index)" v-bind:class="[performence['10']==index?'blue-bgc':'']">
+							<li v-for="(it,index) in scaleData['10'].aiQuestionOption" class="content-9" v-on:click="cList_10(index)"
+							 v-bind:class="[performence['10']==index?'blue-bgc':'']">
 								<span style="font-size: 20px;font-weight: 700;">{{scaleData['10'].aiQuestionAnswer[index][0]}}</span>
-								<span style="font-size: 12px;">{{it[0]}}</span> 
+								<span style="font-size: 12px;">{{it[0]}}</span>
 							</li>
 						</ul>
 						<div style="height: auto;width: 100%;text-align: right;">
@@ -518,16 +533,17 @@
 						<div class="third-content">
 							<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['11'].aiQuestionContent}}</span>
 						</div>
-						
+
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
 							评<span style="visibility: hidden;">一</span>分
 						</div>
 						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
-							<li v-for="(it,index) in scaleData['11'].aiQuestionOption" class="content-9" v-on:click="cList_11(index)" v-bind:class="[performence['11']==index?'blue-bgc':'']">
+							<li v-for="(it,index) in scaleData['11'].aiQuestionOption" class="content-9" v-on:click="cList_11(index)"
+							 v-bind:class="[performence['11']==index?'blue-bgc':'']">
 								<span style="font-size: 20px;font-weight: 700;">{{scaleData['11'].aiQuestionAnswer[index][0]}}</span>
-								<span style="font-size: 12px;">{{it[0]}}</span> 
+								<span style="font-size: 12px;">{{it[0]}}</span>
 							</li>
 						</ul>
 						<div style="height: auto;width: 100%;text-align: right;">
@@ -544,16 +560,17 @@
 						<div class="third-content">
 							<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['12'].aiQuestionContent}}</span>
 						</div>
-						
+
 					</div>
 					<div class="scale-right">
 						<div class="content-title">
 							评<span style="visibility: hidden;">一</span>分
 						</div>
 						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
-							<li v-for="(it,index) in scaleData['12'].aiQuestionOption" class="content-9" v-on:click="cList_12(index)" v-bind:class="[performence['12']==index?'blue-bgc':'']">
+							<li v-for="(it,index) in scaleData['12'].aiQuestionOption" class="content-9" v-on:click="cList_12(index)"
+							 v-bind:class="[performence['12']==index?'blue-bgc':'']">
 								<span style="font-size: 20px;font-weight: 700;">{{scaleData['12'].aiQuestionAnswer[index][0]}}</span>
-								<span style="font-size: 12px;">{{it[0]}}</span> 
+								<span style="font-size: 12px;">{{it[0]}}</span>
 							</li>
 						</ul>
 						<div style="height: auto;width: 100%;text-align: right;">
@@ -570,17 +587,18 @@
 	<script src="../js/toJump.js"></script>
 	<script>
 		//const USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
-		const USER_ID = 222;
+		const USER_ID = 22;
 		/**
 		 * 数据初始化
 		 */
+
 		$(document).ready(function() {
 			$.ajax({
 				url: config.url + '/scales/testMsg/' + 5,
 				type: 'GET',
 				success: function(e) {
 					let topicMsg = e.object;
-					console.log(topicMsg,'topicMsg')
+					console.log(topicMsg, 'topicMsg')
 					//渲染每个题目数据
 					let reg_1 = /&/;
 					let reg_2 = /$/;
@@ -595,14 +613,14 @@
 							if (reg_1.test(topicMsg[i][propertyNames[j]])) {
 								let arr = topicMsg[i][propertyNames[j]].split('&');
 								//二级分段
-								
+
 								if (reg_2.test(topicMsg[i][propertyNames[j]])) {
 									obj[propertyNames[j]] = arr;
 									for (let k = 0; k < obj[propertyNames[j]].length; k++) {
 										let arr2 = obj[propertyNames[j]][k].split('$');
 										//三级分段
-										if(reg_3.test(topicMsg[i][propertyNames[j]])){
-											for(let t=0;t<arr2.length;t++){
+										if (reg_3.test(topicMsg[i][propertyNames[j]])) {
+											for (let t = 0; t < arr2.length; t++) {
 												arr2[t] = arr2[t].split('split;');
 											}
 										}
@@ -611,7 +629,6 @@
 								} else {
 									obj[propertyNames[j]] = arr;
 								}
-								console.log(obj,'end')
 							} else { //不分段
 								obj[propertyNames[j]] = topicMsg[i][propertyNames[j]];
 							}
@@ -632,12 +649,12 @@
 								vue.groupId_1[1] = obj.aiScoreMethodName;
 							}
 						} else {
-							
+
 						}
 						scaleData[obj.aiQuestionId] = obj
 						// n.push(obj);
 					}
-					console.log(scaleData,'scaleData')
+					console.log(scaleData, 'scaleData')
 					// let scaleQIdNames = Object.getOwnPropertyNames(scaleData);
 					//初始化线索
 					{
@@ -645,8 +662,8 @@
 
 						let t = scaleData['2'].aiQuestionAnswerDescribe;
 						console.log(clueData)
-						if(clueData.title)
-						clueData.title = t[0][0];
+						if (clueData.title)
+							clueData.title = t[0][0];
 
 						for (let i = 1; i < t.length; i++) {
 							let obj = {
@@ -669,7 +686,7 @@
 							clueData.content.push(obj);
 						}
 					}
-					
+
 					//初始化第一题没有被选中的单词
 					vue.wordCancle_1.push(scaleData['1'].aiQuestionContent[0].length);
 					vue.wordCancle_1.push(scaleData['1'].aiQuestionContent[1].length);
@@ -686,6 +703,7 @@
 
 		});
 		//题目信息数据包
+
 		const scaleData = {
 			index: {
 				aiScaleId: '',
@@ -757,8 +775,13 @@
 			},
 			7: {
 				aiQuestionAnswerDescribe: '',
-				aiQuestionContent: [[]],
-				aiQuestionGuid: [[],[]],
+				aiQuestionContent: [
+					[]
+				],
+				aiQuestionGuid: [
+					[],
+					[]
+				],
 				aiQuestionId: '',
 				aiQuestionNotice: '',
 				aiQuestionType: '',
@@ -847,10 +870,26 @@
 		const vue = new Vue({
 			el: '.vue',
 			data: {
-				pagePos: 0, //当前页面页号
+				totalSend: [], //已经发送的题目
+				pagePos: 0, //当前页面页号,默认0
 				isShow: false,
 				scaleData,
+				titleGroup: [
+					"单词回忆任务",
+					"命名物体或手指",
+					"命令",
+					"结构性练习",
+					"意向性练习",
+					"定向力",
+					"单词辨认任务",
+					"回忆测验指令",
+					"口头语言能力",
+					"找词困难",
+					"口头语言理解能力",
+					"注意力"
+				],
 				groupId_1: ['第一组', '第一套', 0], //第三个参数表示组号
+				isClick: true, //部分点击需要延时，为true可以点击
 				checkBoxIndex_1: [], //复选框索引
 				pos: [0], //手指位置
 				wordTouch: [], //已经被点击过的单词
@@ -858,26 +897,61 @@
 				clueData,
 				wordSelect_2: [], //记录哪些单词是正确的
 				wordCancle_2: [], //记录哪些单词是错误的		
+				picUrl: [
+					"../img/5/flower.jpe",
+					"../img/5/sofa.jpg",
+					"../img/5/whistle.jpg",
+					"../img/5/pen.jpg",
+					"../img/5/shuttlecock.jpg",
+					"../img/5/mask.jpg",
+					"../img/5/scissor.jpg",
+					"../img/5/comb.jpg",
+					"../img/5/billfold.jpg",
+					"../img/5/organ.jpg",
+					"../img/5/echometer.jpg",
+					"../img/5/pliers.jpg",
+					"../img/5/thumb.jpg",
+					"../img/5/little_finger.jpg",
+					"../img/5/index_finger.jpg",
+					"../img/5/middle_finger.jpg",
+					"../img/5/the_ring_finger.jpg"
+				], //第二题图片路径
 				jClickT_3: [], //记录正确图标被选中
 				jClickF_3: [], //记录错误图标被选中
-				jClickT_4: [],	//正确图标被选中结果集合
-				jClickF_4: [],	//错误图标被选中结果集合
-				jDoubt_4: [],	//疑问图标被选中结果集合
-				jResult_4: [],	//结果记录
-				jIcon_4: [],	//当前图标选中记录
-				statusA_4: [1,2,3,4],	//所有题目
-				pos_4: 0,		//当前题号，默认为0
-				
-				jClickT_5: [],	//正确图标被选中集合
-				jClickF_5: [],	//错误图标被选中集合
-				jClickT_6: [],	//正确图标被选中集合
-				jClickF_6: [],	//错误图标被选中集合
-				pos_7: 1,		//第七题组号
-				wPos_7:1,		//第七题试题套号
-				chooseT_7:	[1],	//记录患者回答正确的下标(只记录当前组)
-				chooseF_7:	[3],	//记录患者回答错误的下标(只记录当前组)
-				isShow_7:	0,		//第七题和第八题显示
-				isFinish: 1,		//所有题目是否已完成,>0表示完成
+				jClickT_4: [], //正确图标被选中结果集合
+				jClickF_4: [], //错误图标被选中结果集合
+				jDoubt_4: [], //疑问图标被选中结果集合
+				jResult_4: [], //结果记录
+				jIcon_4: [
+					[],
+					[],
+					[],
+					[],
+					[]
+				], //当前图标选中记录
+				picUrls_4: [], //第四题患者的结果图
+				pos_4_max: 0, //第四题最远组
+				statusA_4: [1, 2, 3, 4], //所有题目
+				pos_4: 0, //当前题号，默认为0
+
+				jClickT_5: [], //正确图标被选中集合
+				jClickF_5: [], //错误图标被选中集合
+				jClickT_6: [], //正确图标被选中集合
+				jClickF_6: [], //错误图标被选中集合
+				pos_7: 1, //第七题组号
+				wPos_7: 1, //第七题试题套号
+				chooseT_7: [
+					[],
+					[],
+					[]
+				], //记录患者回答正确的下标(只记录当前组)
+				chooseF_7: [
+					[],
+					[],
+					[]
+				], //记录患者回答错误的下标(只记录当前组)
+				isShow_7: 0, //第七题和第八题显示
+				isFinish: 1, //所有题目是否已完成,>0表示完成
 				performence: { //得分信息记录
 					1: null,
 					2: null,
@@ -886,9 +960,9 @@
 					5: null,
 					6: null,
 					7: {
-						1:'0',
-						2:'0',
-						3:'0'
+						1: '0',
+						2: '0',
+						3: '0'
 					},
 					8: null,
 					9: null,
@@ -896,8 +970,93 @@
 					11: null,
 					12: null,
 				},
+				ws: null,
+				userMsg: null
+			},
+			created() {
+				this.userMsg = sstorage.getItem("userMsg");
+				let that = this;
+				this.ws = new WebSocket(config.wsURL + "/websocket/" + USER_ID);
+				this.ws.onclose = function() {
+					console.log('连接关闭')
+				};
+				this.ws.onerror = function() {
+					console.log('连接出错')
+				};
+				this.ws.onmessage = function(e) {
+					let data = JSON.parse(e.data);
+					if (data.status == 1) {
+						/**
+						 * 处理平板端第七题
+						 */
+						if (data.dataOptions == 7) {
+							let ar = that.scaleData['7'].aiQuestionContent[that.wPos_7 - 1][that.pos_7];
+							let bas = that.scaleData['7'].aiQuestionContent[0][0];
+							let ind = ar.indexOf(data.data.title);
+							let pp = bas.indexOf(data.data.title);
+							let p1 = that.chooseF_7[that.pos_7 - 1].indexOf(ind);
+							let p2 = that.chooseT_7[that.pos_7 - 1].indexOf(ind);
+							if (data.data.value == 0) {
+								//平板点击否
+								if (pp > -1) {
+									if (p1 == -1)
+										that.chooseF_7[that.pos_7 - 1].push(ind);
+									if (p2 > -1)
+										that.chooseT_7[that.pos_7 - 1].splice(p2, 1);
+								} else {
+									if (p2 < 0)
+										that.chooseT_7[that.pos_7 - 1].push(ind);
+									if (p1 > -1)
+										that.chooseF_7[that.pos_7 - 1].splice(p1, 1);
+								}
+							} else {
+								//平板点击是
+								if (pp > -1) {
+									if (p2 < 0)
+										that.chooseT_7[that.pos_7 - 1].push(ind);
+									if (p1 > -1)
+										that.chooseF_7[that.pos_7 - 1].splice(p1, 1);
+								} else {
+									if (p1 < 0)
+										that.chooseF_7[that.pos_7 - 1].push(ind);
+									if (p2 > -1)
+										that.chooseT_7[that.pos_7 - 1].splice(p2, 1);
+								}
+							}
+						} else if (data.dataOptions == 4) {
+							/**
+							 * 处理第四题
+							 */
+							if (that.picUrls_4[that.pos_4_max]) {
+								that.picUrls_4.splice(that.pos_4_max, 1, data.data)
+							} else {
+								that.picUrls_4.push(data.data)
+							}
+						}
+
+					}
+					console.log(data, '推送消息')
+				}
+				this.ws.onopen = function(e) {
+					console.log('建立连接')
+				}
+				
+				let o = {
+					target: this.userMsg.aiUserId,
+					data: 5,
+					status: 3,
+					from_who: USER_ID
+				}
+				console.log(this.userMsg, 'userMsg')
+				this.ws.addEventListener("open", function() {
+					that.ws.send(JSON.stringify(o))
+				})
 			},
 			methods: {
+				//websocket实现的消息发送
+				sendMsg(o) {
+					this.ws.send(JSON.stringify(o));
+				},
 				//返回
 				backPage: function() {
 					this.pagePos--;
@@ -910,21 +1069,40 @@
 				},
 				//进入下一个页面
 				intoPage: function() {
-					if(this.pagePos==12){
+					if (this.pagePos == 12) {
 						alert('题目全部完成')
 						return
 					}
-					if(this.pagePos==7)
-						return
+					// if (this.pagePos == 7)
+					// 	return
 					if (this.pagePos > 0) {
 						if (this.performence[this.pagePos] == null) {
 							alert('题目还没有完成!');
 							return;
 						}
 					}
+
 					this.pagePos++;
-					if (this.pagePos > 12)
+					if (this.pagePos > 12) {
 						this.pagePos = 12;
+					}
+
+					if (this.pagePos > 0) {
+						this.scaleData[this.pagePos].name = this.titleGroup[this.pagePos - 1]
+						let o = {
+							target: this.userMsg.aiUserId,
+							status: 7,
+							data: this.scaleData[this.pagePos]
+						}
+						let p = this.totalSend.indexOf(this.pagePos);
+						if (p < 0) {
+							this.totalSend.push(this.pagePos);
+							this.sendMsg(o)
+						} else {
+							// do nothing
+						}
+
+					}
 				},
 				/**	第一题
 				 */
@@ -946,21 +1124,38 @@
 					this.performence['1'] = this.wordCancle_1[2] + this.wordCancle_1[1] + this.wordCancle_1[0];
 				},
 				wordClick: function(e, index) {
-
+					if (this.isClick == false)
+						return
+					else this.isClick = false;
 					if (index == this.wordTouch[this.wordTouch.length - 1] + 1)
 						this.wordTouch.push(index);
 					if (this.wordTouch.length == 0 && index == 0)
 						this.wordTouch.push(index);
-
 					let arr = this.checkBoxIndex_1.indexOf(index);
+					setTimeout(() => {
+						this.isClick = true;
+					}, 2000)
 					if (this.pos.length > 0) {
 						if (index == this.pos[0]) {
 							this.pos.pop();
 							this.pos.push(index + 1)
+							let o = {
+								target: this.userMsg.aiUserId,
+								status: 1,
+								data: e
+							}
+							this.sendMsg(o)
 						}
 					} else {
 						this.pos.push(index + 1);
+						let o = {
+							target: this.userMsg.aiUserId,
+							status: 1,
+							data: e
+						}
+						this.sendMsg(o)
 					}
+
 
 				},
 				toNextGroup_1: function() {
@@ -985,7 +1180,6 @@
 					this.checkBoxIndex_1 = []; //初始化复选框
 					this.pos = [0]; //初始化手指位置
 					this.wordTouch = []; //清空点击过的单词
-
 					if (pos == 0) {
 						this.groupId_1[0] = '第二组';
 					} else if (pos == 1) {
@@ -1012,15 +1206,25 @@
 						if (p) {
 							clueData.level = clueData.content[i].level;
 							clueData.des = p;
-
 						}
-
 					}
 					if (clueData.level == '' || clueData.des == '')
 						clueData.title = '';
 					else clueData.title = '物品线索:'
 					this.isShow = true;
-					console.log(it[0], index)
+					let img = document.createElement("img");
+					img.src = this.picUrl[index];
+					let canvas = document.createElement("canvas");
+					canvas.width = img.width;
+					canvas.height = img.height;
+					canvas.getContext("2d").drawImage(img, 0, 0);
+					let d = canvas.toDataURL();
+					let o = {
+						target: this.userMsg.aiUserId,
+						data: d,
+						status: 1,
+					}
+					this.sendMsg(o)
 				},
 				wordTrue_2: function(i) {
 					if (this.wordSelect_2.indexOf(i) < 0) {
@@ -1094,7 +1298,7 @@
 							this.jClickF_3.push(index);
 						}
 					}
-					
+
 					this.performence['3'] = this.jClickF_3.length;
 				},
 
@@ -1102,186 +1306,195 @@
 				 * 第四题
 				 */
 				jClick_4: function(e) {
-					let i = this.jIcon_4.indexOf(e);
-					if(e==0){//正确图标
-						if(i>-1)
-							this.jIcon_4.splice(i,1);
-						else{
-							this.jIcon_4.splice(0)
-							this.jIcon_4.push(e);
+					let i = this.jIcon_4[this.pos_4].indexOf(e);
+					if (e == 0) { //正确图标
+						if (i > -1)
+							this.jIcon_4[this.pos_4].splice(i, 1);
+						else {
+							this.jIcon_4[this.pos_4].splice(0)
+							this.jIcon_4[this.pos_4].push(e);
 						}
-					}else if(e==1){//错误图标
-						if(i>-1)
-							this.jIcon_4.splice(i,1);
-						else{
-							this.jIcon_4.splice(0)
-							this.jIcon_4.push(e);
+					} else if (e == 1) { //错误图标
+						if (i > -1)
+							this.jIcon_4[this.pos_4].splice(i, 1);
+						else {
+							this.jIcon_4[this.pos_4].splice(0)
+							this.jIcon_4[this.pos_4].push(e);
 						}
-					}else if(e==2){//未作答图标
-						if(i>-1)
-							this.jIcon_4.splice(i,1);
-						else{
-							this.jIcon_4.splice(0)
-							this.jIcon_4.push(e);
+					} else if (e == 2) { //未作答图标
+						if (i > -1)
+							this.jIcon_4[this.pos_4].splice(i, 1);
+						else {
+							this.jIcon_4[this.pos_4].splice(0)
+							this.jIcon_4[this.pos_4].push(e);
 						}
 					}
 				},
 				save_4: function() {
-					if(this.jIcon_4.length==0){
+					if (this.jIcon_4[this.pos_4].length == 0) {
 						alert("请完成题目")
 						return
 					}
-					if(this.pos_4 > this.statusA_4.length)
-					return
-					
-					let i= this.jIcon_4[0];
-					if(i==0)
+					if (this.pos_4 > this.statusA_4.length)
+						return
+					let i = this.jIcon_4[this.pos_4][0];
+					if (i == 0)
 						this.jClickT_4.push(i);
-					else if(i==1)
+					else if (i == 1)
 						this.jClickF_4.push(i);
-					else if(i==2)
+					else if (i == 2)
 						this.jDoubt_4.push(i);
 					this.jResult_4.push(i);
-					console.log(this.jResult_4);
-					if(this.pos_4+1>=this.statusA_4.length){
+					if (this.pos_4 + 1 >= this.statusA_4.length) {
 						alert("题目已全部完成");
-						this.pos_4 = this.statusA_4.length + 1;
-					}
-						
-					else{
-						this.jIcon_4.splice(0);
+						//this.pos_4 = this.statusA_4.length + 1;
+					} else {
 						this.pos_4++;
+						if (this.pos_4 > this.pos_4_max)
+							this.pos_4_max = this.pos_4;
 					}
-					
 					this.performence['4'] = this.jClickF_4.length;
-						
+					
+						let o = {
+							target: this.userMsg.aiUserId,
+							status: 1,
+							data: this.pos_4_max,
+							dataOptions: 4,
+						}
+						this.sendMsg(o)
 				},
-			
+				back_4: function() {
+					if (this.pos_4 - 1 < 0)
+						return
+					this.pos_4--;
+
+				},
 				/**
 				 * 第五题
 				 */
-				jClick_5: function(e,index){
+				jClick_5: function(e, index) {
 					let T = this.jClickT_5.indexOf(index);
 					let F = this.jClickF_5.indexOf(index);
-					if(e==0){
-						if(T>-1)
-							this.jClickT_5.splice(T,1);
+					if (e == 0) {
+						if (T > -1)
+							this.jClickT_5.splice(T, 1);
 						else {
-							if(F >-1){
-								this.jClickF_5.splice(F,1);
+							if (F > -1) {
+								this.jClickF_5.splice(F, 1);
 								this.jClickT_5.push(index);
-							}
-								
-							else
+							} else
 								this.jClickT_5.push(index);
 						}
-					}else if(e == 1){
-						if(F>-1)
-							this.jClickF_5.splice(F,1);
+					} else if (e == 1) {
+						if (F > -1)
+							this.jClickF_5.splice(F, 1);
 						else {
-							if(T>-1){
-								this.jClickT_5.splice(T,1);
+							if (T > -1) {
+								this.jClickT_5.splice(T, 1);
 								this.jClickF_5.push(index);
-							}
-								
-							else
+							} else
 								this.jClickF_5.push(index);
 						}
 					}
 					this.performence['5'] = this.jClickF_5.length;
 				},
-				
+
 				/**
 				 * 第六题
 				 */
-				jClick_6: function(e,index){
+				jClick_6: function(e, index) {
 					let T = this.jClickT_6.indexOf(index);
 					let F = this.jClickF_6.indexOf(index);
-					if(e==0){
-						if(T>-1)
-							this.jClickT_6.splice(T,1);
+					if (e == 0) {
+						if (T > -1)
+							this.jClickT_6.splice(T, 1);
 						else {
-							if(F >-1){
-								this.jClickF_6.splice(F,1);
+							if (F > -1) {
+								this.jClickF_6.splice(F, 1);
 								this.jClickT_6.push(index);
-							}
-								
-							else
+							} else
 								this.jClickT_6.push(index);
 						}
-					}else if(e == 1){
-						if(F>-1)
-							this.jClickF_6.splice(F,1);
+					} else if (e == 1) {
+						if (F > -1)
+							this.jClickF_6.splice(F, 1);
 						else {
-							if(T>-1){
-								this.jClickT_6.splice(T,1);
+							if (T > -1) {
+								this.jClickT_6.splice(T, 1);
 								this.jClickF_6.push(index);
-							}
-								
-							else
+							} else
 								this.jClickF_6.push(index);
 						}
 					}
 					this.performence['6'] = this.jClickF_6.length;
 				},
-				
+
 				/**
 				 * 第七题
 				 */
-				websocket_7: function(e){
+				websocket_7: function(e) {
 					let o = {
-						1:'',
-						2:'',
-						3:''
+						1: '',
+						2: '',
+						3: ''
 					};
 					let s = this.chooseF_7.length;
-					if(this.performence['7']==null)
+					if (this.performence['7'] == null)
 						this.performence['7'] = o;
-					if(s>12)
-						s=12;
-					this.performence['7'][this.wPos_7] = 12; 
+					if (s > 12)
+						s = 12;
+					this.performence['7'][this.wPos_7] = 12;
 				},
-				toNextGroup_7: function(e){
+				toNextGroup_7: function(e) {
+					// if(this.chooseF_7[this.pos_7-1].length+this.chooseT_7[this.pos_7-1].length<24)
+					// return
 					let el = e.srcElement;
-					if(el.innerHTML == '进行回忆'){
-							console.log('进行回忆')
-							this.pagePos++;
-							this.isShow_7=1;
-							return
+					if (el.innerHTML == '进行回忆') {
+
+						this.intoPage()
+						console.log('进行回忆', this.pagePos)
+						this.isShow_7 = 1;
+						return
 					}
 					this.pos_7++;
-					if(this.pos_7>=3)
-						this.pos_7=3;
+					if (this.pos_7 >= 3)
+						this.pos_7 = 3;
+					let o = {
+						target: this.userMsg.aiUserId,
+						data: this.pos_7,
+						status: 1
+					}
+					this.sendMsg(o);
 				},
-				
+
 				/**
 				 * 第八题
 				 */
-				cList_8: function(e){
+				cList_8: function(e) {
 					this.performence['8'] = e;
 				},
 				/**
 				 * 第九题
 				 */
-				cList_9: function(e){
+				cList_9: function(e) {
 					this.performence['9'] = e;
 				},
 				/**
 				 * 第十题
 				 */
-				cList_10: function(e){
+				cList_10: function(e) {
 					this.performence['10'] = e;
 				},
 				/**
 				 * 第十一题
 				 */
-				cList_11: function(e){
+				cList_11: function(e) {
 					this.performence['11'] = e;
 				},
 				/**
 				 * 第十二题
 				 */
-				cList_12: function(e){
+				cList_12: function(e) {
 					this.performence['12'] = e;
 				}
 			}
@@ -1290,9 +1503,8 @@
 		//获取量表基本信息(首页)
 		var scales = sstorage.getItem("scaleRest");
 		for (let i = 0; i < scales.items.length; i++) {
-			
+
 			if (scales.items[i].aiScaleId == 5) {
-				console.log(scales.items[i], '***'+i)
 				scaleData.index.aiScaleId = scales.items[i].aiScaleId;
 				scaleData.index.aiScaleName = scales.items[i].aiScaleName;
 				let notice, overView;
@@ -1304,10 +1516,11 @@
 				scaleData.index.aiScaleOverview = overView;
 			}
 		}
-		function next_scale(){
+
+		function next_scale() {
 			console.log(scales)
-			if (vue.isFinish>0){
-				let ind=-1;
+			if (vue.isFinish > 0) {
+				let ind = -1;
 				for (let i = 0; i < scales.items.length; i++) {
 					if (scales.items[i].aiScaleId == 5)
 						ind = i;
