@@ -18,13 +18,14 @@
 	width: auto;
 	height: 30px;
 	line-height: 30px;
-	background-color: burlywood;
+	background-color: white;
 	border-radius: 5px;
 	max-width: 110px;
 	padding: 0 5px 0 5px;
 	cursor: default;
 	user-select: none;
 	margin-right: 20px;
+	border: solid 1px darkgray;
 }
 
 .slid-bar {
@@ -72,10 +73,6 @@
 
 .back {
 	display: none;
-	position: absolute;
-	top: 0px;
-	right: 0px;
-
 }
 
 .scale-right {
@@ -153,6 +150,7 @@
 }
 
 .test-data {
+	position: relative;
 	line-height: 25px;
 	font-family: SourceHanSansSC;
 	font-weight: 600;
@@ -260,8 +258,7 @@
 }
 
 #re-img {
-	width: 100%;
-	margin-left: -100px;
+	height: 70%;
 	border-color: white;
 }
 
@@ -288,4 +285,22 @@
 	line-height: 30px;
 	border: solid 1px darkgray;
 	border-radius: 5px;
+}
+
+
+.saveButton{
+	font-weight: normal;
+	font-size: 26px;
+	border: solid 1px darkgray;
+	border-radius: 5px;
+	width: 100px;
+	height: 50px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin: 0 auto;
+	cursor: pointer;
 }

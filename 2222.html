@@ -14,7 +14,7 @@
 		<!-- 	<object data="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" style="1200px;height: auto;">
 			
 		</object> -->
-		<iframe src="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" style="width: 700px;"></iframe>
+		<iframe src="http://xjt.xnyy.psycloud-china.com/evaluation-start_mmse1?call=1" style="width: 900px;height: 800px; background-color: #008B8B;"></iframe>
 		<!-- <object data="http://www.baidu.com" width="500" height="500"></object>
 <button type="button" onclick="a()">a</button>
 <button type="button" onclick="b()">b</button> -->
@@ -36,35 +36,24 @@
 		// 		console.log('fuzhi',e)
 		// 	}
 		// })
-
-
-
 		// let vue ={
 		// 	itemPage:{
 		// 		data:""
 		// 	}
 		// }
+		
 		window.addEventListener('message', (event) => {
 			const op = event.data
-			console.log(op);
+			console.log(op,'****');
 		})
-
-		var vm = new Vue({
-			el: '#app',
-			data: {
-				test: null
-			},
-			methods: {
-				child_f: function(params) {
-					console.log(params);
-					this.test = params;
-					console.log(this.test);
-				},
-				child_p: function(params) {
-					console.log(this.test);
-				}
-			}
-		})
+		/**
+		 * 时间转换
+		 */
+		let da = new Date().toLocaleString('chinese', {
+				hour12: false
+			});
+			
+			console.log(da)
 	</script>
 
 </html>

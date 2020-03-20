@@ -24,11 +24,9 @@
 		</div>
 		<div id="content">
 			<div class="scale">
-				<div id="next-scale">
-					<button type="button" onclick="stopTest()">完成测试</button>
-					<button type="button" onclick="next_scale()">下一个</button>
-
-				</div>
+				<!-- <div style="bottom: 0;font-size: 24px;color: #008B8B;cursor: pointer;" id="next-scale" >
+					
+				</div> -->
 				<div class="cdt-menu">
 					<span class="cdt">CDT-3</span>
 					<span class="cdt">CDT-4</span>
@@ -63,12 +61,14 @@
 				</div>
 				<div class="scale-left">
 
-					<div class="scale-check  content1" onclick="checkScore()">查看患者绘图并打分>></div>
-					<div class="scale-check  content2" onclick="createReport()">
-						生成报告>>
+					<div class="scale-check  content1" onclick="checkScore()">查看患者绘图并打分</div>
+					<div class="scale-check  content2">
+						<span  onclick="backPage()" style="margin-right: 40px;color: green;">返回</span>
+						<span onclick="next_scale()" style="margin-right: 20px;">下一个练习</span>
+						<span  onclick="createReport()">生成报告</span>
+						
 					</div>
-					<button class="back" onclick="backPage()">返回</button>
-					<div class="scale-content  content1">
+					<div class="scale-content  content1 scrollbar">
 						<div class="content-title">量表说明</div>
 						<ul id="scale-list">
 							<li v-for="item in scale_explain">
@@ -77,14 +77,13 @@
 						</ul>
 					</div>
 
-
 					<div class="scale-content  content2">
 						<div class="content-title">
 							评判
 						</div>
 						<ul class="options">
-							<li v-bind:class="[indexList.indexOf(p)>-1 ? 'on' :'off']" v-for="(it,p) in scale_test_package" :key="it.index"
-							 v-on:click="greet(it,p)">{{it.aiQuestionOption}}</li>
+							<li  v-bind:class="[indexList.indexOf(p)>-1 ? 'on' :'off']" v-for="(it,p) in scale_test_package" :key="it.index"
+							 v-on:click="greet(it,p)" :style="{width:(scale_test_package.length<6?'80%':'')}">{{it.aiQuestionOption}}</li>
 						</ul>
 						<div class="test-data">
 							<span id="do-time">完成时长:{{data}}</span>
@@ -106,12 +105,17 @@
 		let USER_ID = window.location.search.split('?')[1].split(0,1).join("");
 		//let USER_ID = 22;
 		let RESULT_DATA = {	//	项目结论存储的信息
-			'CDT-3': '',
-			'CDT-4': '',
-			'CDT-5': '',
-			'CDT-7': '',
-			'CDT-10': '',
-			'CDT-30': '',
+			allResult:[
+				// ['CDT-3'],
+				// ['CDT-4'],
+				// ['CDT-5'],
+				// ['CDT-7'],
+				// ['CDT-10'],
+				// ['CDT-30']
+			],
+			useTime:"",
+			serviceImg:[],
+			buttomMsg:[]
 		}; 
 
 		let START_TIME = ""; //计时开始时间
@@ -206,9 +210,9 @@
 			for (let i = 0; i < cdt.length; i++)
 				cdt[i].onclick = function() {
 					for (let r = 0; r < cdt.length; r++) {
-						cdt[r].style.backgroundColor = "burlywood"
+						cdt[r].style.backgroundColor = "white"
 					}
-					this.style.backgroundColor = "rosybrown"
+					this.style.backgroundColor = "#dfdfdf"
 
 					//量表说明
 					let obj = {};
@@ -300,11 +304,11 @@
 
 		//题目选项数据包
 		var scale_test_package = [];
-
+		
 		var do_time = new Vue({
 			el: '#do-time',
 			data: {
-				data: 0
+				data: '65s'
 			}
 		});
 
@@ -347,6 +351,7 @@
 						do_score.data += parseInt(it.aiQuestionScore);
 					}
 					this.ispitch = ~this.ispitch;
+					stopTest()
 					//console.log(do_score.)
 				}
 			}
@@ -358,36 +363,60 @@
 		function stopTest() {
 			
 			let img = document.getElementById('re-img');
-			let canvas = document.createElement("canvas");
-			canvas.width = img.width;
-			canvas.height = img.height;
-			let ctx = canvas.getContext("2d");
-			ctx.drawImage(img, 0, 0, img.width, img.height);
-			//let dataURL = canvas.toDataURL('image/png');
-			
-			
-			
+						
 			let EndTime = new Date(); //完成时的时间
-			let obj = {
-				name: scale_name.name, //题目名称
-				time: do_time.data, //完成时间
-				score: do_score.data, //最终得分
-				img: canvas.toDataURL('image/png'), //结果图片url
-				doc: "", //施测人
-				date: "", //完成量表时间
-				des: '' //最终测试结果
+			
+			
+			console.log(img.src)
+			let allResult_item=[];	
+			let serviceImg =[];
+			let bottomMsg="";	//最后结论
+			/**
+			 * 后期需要将标准图加上
+			 */
+			
+			let imgObj = {
+				id:11,
+				title:scale_name.name,
+				localURL:"",
+				proURL:"",
+				base64:img.src
 			}
-			console.log(theEnd)
-			console.log(do_score.data)
+			
+			
+			allResult_item[0] = scale_name.name;	//项目名
+			allResult_item[1] = do_score.data;	//得分
 			for (let i = 0; i < theEnd.methods.length; i++) {
 				if (theEnd.methods[i].topicName == scale_name.name) {
 					if (do_score.data >= theEnd.methods[i].min &&
 						do_score.data <= theEnd.methods[i].max) {
-						obj.des = theEnd.methods[i];
+						allResult_item[2] = theEnd.methods[i].referenceValue;
+						allResult_item[3] = theEnd.methods[i].des;
+						bottomMsg = scale_name.name+theEnd.methods[i].tzms;
 					}
 				}
 			}
-			RESULT_DATA[scale_name.name] = obj;
+			if(RESULT_DATA.allResult.length == 0){//如果还没有操作
+				RESULT_DATA.allResult.push(allResult_item);
+				RESULT_DATA.buttomMsg.push(bottomMsg);
+				RESULT_DATA.serviceImg.push(imgObj);
+			}else{
+				let ind =-1;
+				for(let i=0;i<RESULT_DATA.allResult.length;i++){
+					ind = RESULT_DATA.allResult[i].indexOf(scale_name.name)
+					if(ind>-1){
+						RESULT_DATA.allResult[i] = allResult_item;
+						RESULT_DATA.buttomMsg[i] = bottomMsg;
+						RESULT_DATA.serviceImg[i] = imgObj;
+						break;
+					}	
+				}
+				if(ind==-1){
+					RESULT_DATA.allResult.push(allResult_item);
+					RESULT_DATA.buttomMsg.push(bottomMsg);
+					RESULT_DATA.serviceImg.push(imgObj);
+				}
+			}
 			sstorage.setItem('&11', RESULT_DATA);
 			console.log(RESULT_DATA)
 		}
@@ -429,13 +458,11 @@
 				b[i].style.display = getComputedStyle(a[i], null).getPropertyValue('display');
 				a[i].style.display = 'none';
 			}
-			document.getElementsByClassName('back')[0].style.display = 'initial';
 		}
 		/**
 		 * 返回上一层
 		 */
 		function backPage() {
-			document.getElementsByClassName('back')[0].style.display = 'none';
 			let a = document.getElementsByClassName('content1');
 			let b = document.getElementsByClassName('content2');
 			for (let i = 0; i < a.length; i++) {
@@ -450,7 +477,7 @@
 		function createReport() {
 			//需要先将结果数据提交给服务器
 			//告诉打印页面应该处理哪一项测验，多个测验用&隔开
-			window.open("report/report.html?" + 11)
+			window.open("report/report.html?" + USER_ID)
 		}
 
 		/**

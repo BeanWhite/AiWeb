@@ -24,16 +24,12 @@
 		</div>
 		<div id="content">
 			<div class="scale scale-Title vue">
-				<!-- 临时使用 -->
-				<div id="next-scale">
-					<button type="button" onclick="stopTest()">完成</button>
-					<button type="button" onclick="next_scale()">下一个</button>
-				</div>
 				<div id="title">
 					<span>量表名称：{{scaleData.index.aiScaleName}}-认知</span>
 					<div class="change-page">
 						<span class="back-page" v-on:click="backPage()">返回上一题</span>
-						<span class="into-page" v-on:click="intoPage()">进入下一题</span>
+						<span class="into-page" v-on:click="intoPage()" v-if="isFinish==0">进入下一题</span>
+						<span class="into-page" onclick="next_scale()" v-else>下一个测验</span>
 					</div>
 				</div>
 				<div class="dialog-back" v-bind:class="[isShow?'dialog-on':'dialog-off']"></div>
@@ -118,7 +114,7 @@
 							{{groupId_1[0]}}({{groupId_1[1]}})
 						</div>
 						<ul class="scale-topic">
-							<li class="toNext" v-on:click="toNextGroup_1()" style="cursor: pointer;">进入下一组>></li>
+							<li class="toNext" v-on:click="toNextGroup_1()" style="cursor: pointer;">进入下一组</li>
 							<li v-for="(it,index) in scaleData['1'].aiQuestionContent[0]" class="word-group   last-list-2">
 								<div class="word" v-on:click="wordClick(it,index)" v-bind:class="[wordTouch.indexOf(index)>-1?'word-bgc':'']">
 									<div v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" class="pointer-content">点击并朗读</div>
@@ -592,7 +588,7 @@
 		 * 数据初始化
 		 */
 
-		$(document).ready(function() {
+	$(document).ready(function() {
 			$.ajax({
 				url: config.url + '/scales/testMsg/' + 5,
 				type: 'GET',
@@ -874,6 +870,7 @@
 				pagePos: 0, //当前页面页号,默认0
 				isShow: false,
 				scaleData,
+				
 				titleGroup: [
 					"单词回忆任务",
 					"命名物体或手指",
@@ -898,7 +895,7 @@
 				wordSelect_2: [], //记录哪些单词是正确的
 				wordCancle_2: [], //记录哪些单词是错误的		
 				picUrl: [
-					"../img/5/flower.jpe",
+					"../img/5/flower.jpg",
 					"../img/5/sofa.jpg",
 					"../img/5/whistle.jpg",
 					"../img/5/pen.jpg",
@@ -951,7 +948,7 @@
 					[]
 				], //记录患者回答错误的下标(只记录当前组)
 				isShow_7: 0, //第七题和第八题显示
-				isFinish: 1, //所有题目是否已完成,>0表示完成
+				isFinish: 0, //所有题目是否已完成,>0表示完成
 				performence: { //得分信息记录
 					1: null,
 					2: null,
@@ -1041,7 +1038,7 @@
 					console.log('建立连接')
 				}
 				window.onbeforeunload = function() {
-					websocket.close();
+					that.ws.close();
 				}
 				
 				let o = {
@@ -1073,7 +1070,7 @@
 				//进入下一个页面
 				intoPage: function() {
 					if (this.pagePos == 12) {
-						alert('题目全部完成')
+						this.isFinish = 1;
 						return
 					}
 					// if (this.pagePos == 7)
@@ -1112,7 +1109,7 @@
 				checkBox: function(e, index) {
 					let pos = this.groupId_1[2];
 					if (this.wordTouch.length < this.scaleData['1'].aiQuestionContent[0].length) {
-						alert('请先完成读词!');
+						//alert('请先完成读词!');
 						return
 					}
 
@@ -1523,6 +1520,17 @@
 		function next_scale() {
 			console.log(scales)
 			if (vue.isFinish > 0) {
+				/**
+				 * 跳转之前通知平板进入下一个量表
+				 */
+				
+				let o ={
+					target:vue.userMsg.aiUserId,
+					status:3,
+					from_who:USER_ID
+				}
+				vue.sendMsg(o);
+				
 				let ind = -1;
 				for (let i = 0; i < scales.items.length; i++) {
 					if (scales.items[i].aiScaleId == 5)
@@ -1533,7 +1541,7 @@
 				} else {
 					toJump(scales.items[ind + 1].aiScaleId)
 				}
-				alert('可以跳转');
+				
 			} else {
 				alert('您还有未完成的内容');
 			}

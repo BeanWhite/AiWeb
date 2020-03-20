@@ -23,10 +23,7 @@
 		</div>
 		<div id="content">
 			<div class="scale">
-				<div id="next-scale">
-					<button type="button" onclick="stopTest()">完成</button>
-					<button type="button" onclick="next_scale()">下一个</button>
-				</div>
+
 				<div class="cdt-menu">
 					<span class="cdt">A部分练习</span>
 					<span class="cdt">A部分测试</span>
@@ -56,12 +53,17 @@
 				</div>
 				<div class="scale-left">
 
-					<div class="scale-check  content1" onclick="checkScore()">查看患者绘图并打分>></div>
-					<div class="scale-check  content2" onclick="createReport()">
-						生成报告>>
+					<div class="scale-check  content1" onclick="checkScore()">查看患者绘图并打分</div>
+
+					<div class="scale-check  content2" style="position: relative;width: 600px;text-align: right;justify-content: space-evenly;align-items: center;">
+						<span class="back" onclick="backPage()">返回</span>
+						<span onclick="createReport()" style="margin-right: 40px;margin-left: 40px;">生成报告</span>
+						<span onclick="next_scale()">下一个测验</span>
 					</div>
-					<button class="back" onclick="backPage()">返回</button>
-					<div class="scale-content  content1">
+
+
+
+					<div class="scale-content  content1 scrollbar">
 						<div class="content-title">量表说明</div>
 						<ul id="scale-list">
 							<li v-for="item in scale_explain">
@@ -86,16 +88,16 @@
 						<div class="option-content" style="	width: 100%;padding-top: 15px;">
 							<table border="0" cellspacing="3" cellpadding="10" style="width: 100%;text-align: center;">
 								<tr>
-									<td class="option-child" ><span onclick="sendValue(this)">1</span></td>
-									<td class="option-child" ><span onclick="sendValue(this)">2</span></td>
-									<td class="option-child" ><span onclick="sendValue(this)">3</span></td>
-									<td class="option-child" ><span onclick="sendValue(this)">4</span></td>
+									<td class="option-child"><span onclick="sendValue(this)">1</span></td>
+									<td class="option-child"><span onclick="sendValue(this)">2</span></td>
+									<td class="option-child"><span onclick="sendValue(this)">3</span></td>
+									<td class="option-child"><span onclick="sendValue(this)">4</span></td>
 								</tr>
 								<tr>
-									<td class="option-child" ><span onclick="sendValue(this)">A</span></td>
-									<td class="option-child" ><span onclick="sendValue(this)">B</span></td>
-									<td class="option-child" ><span onclick="sendValue(this)">C</span></td>
-									<td class="option-child" ><span onclick="sendValue(this)">D</span></td>
+									<td class="option-child"><span onclick="sendValue(this)">A</span></td>
+									<td class="option-child"><span onclick="sendValue(this)">B</span></td>
+									<td class="option-child"><span onclick="sendValue(this)">C</span></td>
+									<td class="option-child"><span onclick="sendValue(this)">D</span></td>
 								</tr>
 							</table>
 						</div>
@@ -104,6 +106,12 @@
 							<span id="do-score">
 								连接错误数:{{error_con}}
 							</span>
+
+							<div class="saveButton" onclick="sda(this)">
+								保存
+							</div>
+
+
 							<!-- <span id="do-score">
 								忽略错误数:{{ignore_con}}
 							</span> -->
@@ -119,14 +127,23 @@
 	<script src="utils/Storage.js"></script>
 	<script src="../js/toJump.js"></script>
 	<script>
+		function sda(a) {
+			stopTest();
+			a.style.backgroundColor = "#cccccc";
+			setTimeout(function() {
+				a.style.backgroundColor = "white"
+			}, 300)
+		}
+	</script>
+	<script>
 		let USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
 		console.log(USER_ID)
 		let _targetID = 222;
 		let RESULT_DATA = { //	项目结论存储的信息
-			'A部分练习': '',
-			'A部分测试': '',
-			'B部分练习': '',
-			'B部分测试': ''
+			allResult: [],
+			useTime: "",
+			serviceImg: [],
+			buttomMsg: []
 		};
 		let theEnd = JSON.parse($.ajax({
 			url: '../JSON/report_config.json',
@@ -236,7 +253,7 @@
 							Pos++;
 						if (Pos > 3)
 							Pos = 3;
-						this.style.backgroundColor = "rosybrown";
+						this.style.backgroundColor = "darkgray";
 						notice.splice(0, notice.length);
 						//加载注意事项和指导语
 						for (let k = 0; k < all_test.length; k++)
@@ -254,7 +271,8 @@
 						let obj = {};
 						obj.target = _targetID;
 						obj.from_who = USER_ID;
-						obj.status = 0;
+						obj.status = -1,
+							obj.ot = 0;
 						obj.data = i + 1;
 						sendMSG(obj);
 					}
@@ -307,9 +325,9 @@
 		var do_time = new Vue({
 			el: '#bc',
 			data: {
-				time: 0,
-				error_con: 0,
-				ignore_con: 0
+				time: 0, //完成时间，计时器
+				error_con: 0, //连接错误数
+				ignore_con: 0 //忽略错误数
 			}
 		});
 
@@ -341,27 +359,70 @@
 			 * 获取患者画的图片
 			 */
 			let img = document.getElementById('re-img');
-			let canvas = document.createElement("canvas");
-			canvas.width = img.width;
-			canvas.height = img.height;
-			let ctx = canvas.getContext("2d");
-			ctx.drawImage(img, 0, 0, img.width, img.height);
+			// let canvas = document.createElement("canvas");
+			// canvas.width = img.width;
+			// canvas.height = img.height;
+			// let ctx = canvas.getContext("2d");
+			// ctx.drawImage(img, 0, 0, img.width, img.height);
 
 			let date = new Date().toLocaleString('chinese', {
 				hour12: false
 			});
 
 			let EndTime = new Date(); //完成时的时间
-			let obj = {
-				name: scale_name.name, //题目名称
-				time: do_time.time, //完成时间
-				score: do_time.error_con, //最终得分
-				img: canvas.toDataURL('image/png'), //结果图片url
-				doc: "", //施测人（不填）
-				date: date, //完成量表日期()
-				des: "" //最终测试结果
+			// let obj = {
+			// 	name: scale_name.name, //题目名称
+			// 	time: do_time.time, //完成时间
+			// 	score: do_time.error_con, //最终得分
+			// 	img: canvas.toDataURL('image/png'), //结果图片url
+			// 	doc: "", //施测人（不填）
+			// 	date: date, //完成量表日期()
+			// 	des: "" //最终测试结果
+			// }
+
+
+
+			let allResult_item = [];
+			let serviceImg = [];
+			let bottomMsg = ""; //最后结论
+			/**
+			 * 后期需要将正确图加上
+			 */
+
+			let imgObj = {
+				id: 20,
+				title: scale_name.name,
+				localURL: "",
+				proURL: "",
+				base64: img.src
 			}
-			RESULT_DATA[scale_name.name] = obj;
+
+			allResult_item[0] = scale_name.name; //项目名
+			allResult_item[1] = do_time.time; //消耗时长
+			allResult_item[2] = do_time.error_con;
+
+			if (RESULT_DATA.allResult.length == 0) { //如果还没有操作
+				RESULT_DATA.allResult.push(allResult_item);
+				RESULT_DATA.buttomMsg.push(bottomMsg);
+				RESULT_DATA.serviceImg.push(imgObj);
+			} else {
+				let ind = -1;
+				for (let i = 0; i < RESULT_DATA.allResult.length; i++) {
+					ind = RESULT_DATA.allResult[i].indexOf(scale_name.name)
+					if (ind > -1) {
+						RESULT_DATA.allResult[i] = allResult_item;
+						RESULT_DATA.buttomMsg[i] = bottomMsg;
+						RESULT_DATA.serviceImg[i] = imgObj;
+						break;
+					}
+				}
+				if (ind == -1) {
+					RESULT_DATA.allResult.push(allResult_item);
+					RESULT_DATA.buttomMsg.push(bottomMsg);
+					RESULT_DATA.serviceImg.push(imgObj);
+				}
+			}
+
 			sstorage.setItem('&20', RESULT_DATA);
 			console.log(RESULT_DATA)
 		}
@@ -374,12 +435,19 @@
 					if (s.items[i].aiScaleId == 20)
 						ind = i;
 				}
+				
+				let o = {
+					target:sstorage.getItem('userMsg').aiUserId,
+					status:3,
+					from_who:USER_ID
+				}
+				sendMSG(o)
 				if (ind + 1 == s.items.length) {
 					window.location.href = 'finish.html'
 				} else {
 					toJump(s.items[ind + 1].aiScaleId)
 				}
-				alert('可以跳转');
+				
 			} else {
 				alert('您还有未完成的内容');
 			}
@@ -390,21 +458,22 @@
 		 * 为选项列表添加事件,在画板上高亮显示圆
 		 */
 		function sendValue(t) {
-			t.style.backgroundColor =" rgb(16, 112, 193)";
+			t.style.backgroundColor = " rgb(16, 112, 193)";
 			let targetId = _targetID;
 			let docId = USER_ID;
 			obj = {};
 			obj.target = targetId;
 			obj.from_who = docId;
-			obj.status = 1;
+			obj.status = -1,
+				obj.ot = 1;
 			obj.data = t.innerHTML;
 			//obj.data = t.childNodes[0].innerHTML;
 			obj.incise = false;
 			obj.isLongData = false;
 			sendMSG(obj);
-			setTimeout(function(){
+			setTimeout(function() {
 				t.style.backgroundColor = 'white';
-			},500);
+			}, 500);
 		}
 
 		/**
@@ -438,8 +507,8 @@
 		 * 打印报告
 		 */
 		function createReport() {
-			
-			
+
+
 			//需要先将结果数据提交给服务器
 			//告诉打印页面应该处理哪一项测验，多个测验用&隔开
 			window.open("report/report.html?" + 20)
@@ -470,15 +539,16 @@
 			console.log(e)
 			try {
 				let data = JSON.parse(e.data);
+				document.getElementById('re-img').src = data.data;
 				//console.log(e.data)
-				if (data.endIncise) {
-					src += data.data;
-					document.getElementById('re-img').src = src;
-					//console.log(src);
-					src = "";
-				} else if (data.data != 'undefined') {
-					src += data.data;
-				}
+				// if (data.endIncise) {
+				// 	src += data.data;
+				// 	document.getElementById('re-img').src = src;
+				// 	//console.log(src);
+				// 	src = "";
+				// } else if (data.data != 'undefined') {
+				// 	src += data.data;
+				// }
 			} catch (e) {
 				//TODO handle the exception
 			}

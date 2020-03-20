@@ -17,8 +17,9 @@
 	width: auto;
 	height: 30px;
 	line-height: 30px;
-	background-color: burlywood;
+	background-color: white;
 	border-radius: 5px;
+	border: solid 1px darkgray;
 	max-width: 100px;
 	padding: 0 5px 0 5px;
 	cursor: default;
@@ -144,7 +145,7 @@ margin: auto 0;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: space-evenly;
 	width: 100%;
 }
 
@@ -160,13 +161,16 @@ margin: auto 0;
 	user-select: none;
 	border: solid 1px darkgray;
 }
+.large-width{
+	width: 80%;
+}
 
 .test-data{
 	font-family: SourceHanSansSC;
 	font-weight: 600;
 	font-size: 16px;
 	color: rgb(16, 112, 193);
-	padding: 25px 0 25px 0;
+	padding: 25px 0 25px 20px;
 	position: absolute;
 	bottom: 10px;
 	width: 100%;
@@ -175,7 +179,7 @@ margin: auto 0;
 	flex-direction: column;
 	justify-content: space-around;
 	align-items: flex-start;
-	background-color:whitesmoke;
+	
 }
 
 #scale-list {
@@ -258,18 +262,16 @@ margin: auto 0;
 .re-img {
 	display: flex;
 	justify-content: center;
-	align-content: center;
+	align-items: center;
 	width: 100%;
 	height: 100%;
-	margin-bottom: 30px;
-	padding-top: 30px;
 }
 #re-img{
-	width: 100%;
-	height: 100%;
+max-width: 100%;
 }
 .on{
-	background: rgb(16, 112, 193);
+	background: rgb(47, 161, 232);
+	color: white;
 }
 .off{
 	background: white;

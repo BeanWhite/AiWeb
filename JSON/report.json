@@ -40,11 +40,140 @@
 			"msg_b": ""
 		}
 	],
-	"11": {
-		"projectsTitle": ["name", "score", ["des", "referenceValue", "des"]],
-		"projects": [
-			["项目", "得分", "结论参考", "结论"]
+	"T": {
+		"id":"量表ID号",
+		"projectsTitle": ["name", "score", "referenceValue", "des"],
+		"projects": ["项目", "得分", "结论参考", "结论"],
+		"useTime": ["测试所用时间"],
+		"allResult": [
+			["项目1", "得分1", "参考结论1", "结论1"],
+			["项目1", "得分1", "参考结论1", "结论1"],
+			["项目1", "得分1", "参考结论1", "结论1"],
+			["***注意，顺序必须和projects保持一致，projectsTitle为对应的属性名，可以不填**"]
 		],
+		"bottomMsg": ["最后结论"],
+		"office": ["科室"],
+		"date": ["测试的日期"],
+		"images": ["其他图片，暂无"],
+		"serviceImg": [{
+			"title": "标题",
+			"localURL": "网页显示的图片url，可以和打印的url一致，但必须使用urlConfig.js方式",
+			"proURL": "打印图片的url，使用urlConfig.js方式",
+			"base64":""
+		}]
+	},
+	"5": {
+		"id":"5",
+		"projectsTitle": ["name", "score", "referenceValue", "des"],
+		"projects": ["项目", "得分", "结论参考", "结论"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"11": {
+		"id":11,
+		"projectsTitle": ["name", "score", "referenceValue", "des"],
+		"projects": ["项目", "得分", "结论参考", "结论"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"12": {
+		"id":"12",
+		"projectsTitle": ["name", "score_1", "score_2", "score_3", "score_4", "score_5", "final"],
+		"projects": ["项目", "第一次", "第二次", "第三次", "第四次", "第五次", "最后得分"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"13": {
+		"id":"13",
+		"projectsTitle": ["name", "score"],
+		"projects": ["项目", "得分"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"14": {
+		
+		"id":"14",
+		"projectsTitle": ["name", "score"],
+		"projects": ["项目", "得分"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"15": {
+		"id":"15",
+		"projectsTitle": ["name", "rightNum", "userTime"],
+		"projects": ["项目", "准确数", "耗时数"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"16": {
+		"id":"16",
+		"projectsTitle": ["name", "rightNum", "userTime"],
+		"projects": ["待定", "待定", "待定"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"17": {
+		"projectsTitle": ["name", "rightNum", "userTime"],
+		"projects": ["待定", "待定", "待定"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"18": {
+		"id":"18",
+		"projectsTitle": ["name", "rightNum", "userTime"],
+		"projects": ["待定", "待定", "待定"],
+		"useTime": [],
+		"allResult": [],
+		"bottomMsg": [],
+		"office": [],
+		"date": [],
+		"images": [],
+		"serviceImg": []
+	},
+	"19": {
+		"id":"19",
+		"projectsTitle": ["name", "rightNum"],
+		"projects": ["项目", "正确数"],
 		"useTime": [],
 		"allResult": [],
 		"bottomMsg": [],
@@ -54,10 +183,9 @@
 		"serviceImg": []
 	},
 	"20": {
+		"id":"20",
 		"projectsTitle": ["name", "time", "score"],
-		"projects": [
-			["项目", "花费时间", "错误数"]
-		],
+		"projects": ["项目", "消耗时长", "错误数"],
 		"useTime": [],
 		"allResult": [],
 		"bottomMsg": [],

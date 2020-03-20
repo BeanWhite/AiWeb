@@ -200,6 +200,10 @@ class Timer{
 		else
 			this.timerSpeed = 10;
 	}
+	
+	/**
+	 * 正常计时
+	 */
 	startTimer() {
 		this.SS = 0;
 		let m;
@@ -244,22 +248,51 @@ class Timer{
 			}, 1);
 		}else return
 	}
+	/**
+	 * 暂停
+	 */
 	pause(){
 		clearInterval(this.timer);
 		this.status = -10;
 	}
+	
+	/**
+	 * 继续
+	 */
 	goOn(){
 		if(this.SS ==0){
 			this.startTimer()
 		}else if(this.SS = 1){
 			this.startCutDown()
 		}
-		
 	}
+	/**
+	 * 停止
+	 */
 	stop(){
 		clearInterval(this.timer);
 		this.status = 0;
 	}
+	
+	/**
+	 * 重新开始倒计时
+	 */
+	reStartCutDown(o, hour, min, seconds, p, timerSpeed){
+		reSet(o, hour, min, seconds, p, timerSpeed);
+		startCutDown()
+	}
+	
+	/**
+	 * 重新开始正常计时
+	 */
+	reStart(o, hour, min, seconds, p, timerSpeed){
+		reSet(o, hour, min, seconds, p, timerSpeed);
+		startTimer();
+	}
+	
+	/**
+	 * 开始倒计时
+	 */
 	startCutDown() {
 		this.SS = 1;
 		if(this.status==-10)

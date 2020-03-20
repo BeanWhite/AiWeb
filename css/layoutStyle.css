@@ -12,15 +12,18 @@
 	font-family: SourceHanSansSC;
 	font-size: 30px;
 	color: rgb(16, 112, 193);
+	visibility: ;
 }
+
 .third-content {
 	padding: 5px 0 5px 0;
 	width: 100%;
 	height: auto;
 	line-height: 30px;
 }
+
 .scale-right {
-	
+
 	width: 30%;
 	height: 100%;
 	margin-left: 30px;
@@ -34,12 +37,12 @@
 	flex-direction: column;
 	align-items: center;
 	background-color: white;
-	
+
 	padding: 20px;
 }
 
 .scale-left {
-	
+
 	padding: 20px 30px 20px 30px;
 	width: 70%;
 	height: 100%;
@@ -51,6 +54,7 @@
 	background-color: white;
 
 }
+
 /**
  * 居中布局
  */
@@ -156,7 +160,8 @@
 	border: solid 1px darkcyan;
 	background-color: floralwhite;
 }
-.dialog-content-s{
+
+.dialog-content-s {
 	z-index: 100;
 	overflow: hidden;
 	border-top-left-radius: 10px;
@@ -172,23 +177,27 @@
 	height: 240px;
 	background-color: white;
 }
-.dialog-content-s-top{
+
+.dialog-content-s-top {
 	width: 100%;
 	height: 30px;
 	background-color: #1070C1;
 }
-.dialog-content-s-main{
+
+.dialog-content-s-main {
 	padding: 30px 30px 0 30px;
 	width: 100%;
 	height: calc(100% - 100px);
 }
-.dialog-content-s-button{
+
+.dialog-content-s-button {
 	position: relative;
 	height: 70px;
 	width: 100%;
 	padding: 20px 0 20px 0;
 }
-.s-button{
+
+.s-button {
 	cursor: pointer;
 	border-radius: 20px;
 	position: absolute;
@@ -204,6 +213,7 @@
 	justify-content: center;
 	align-items: center;
 }
+
 .dialog-b {
 	margin-top: 20px;
 	margin-bottom: 30px;
@@ -242,7 +252,8 @@
 .flex-on {
 	display: flex;
 }
-.absolute-on{
+
+.absolute-on {
 	position: absolute;
 }
 
@@ -347,7 +358,7 @@
 
 }
 
-.little-title-white{
+.little-title-white {
 	white-space: nowrap;
 	font-family: SourceHanSansSC;
 	font-weight: 400;
@@ -396,7 +407,8 @@
 	align-items: center;
 	flex-direction: column;
 }
-.flex-layout-aligin-none{
+
+.flex-layout-aligin-none {
 	width: 100%;
 	display: none;
 	justify-content: flex-start;
@@ -418,27 +430,31 @@
 	align-items: center;
 	height: auto;
 }
-.flex-layout-j-start{
+
+.flex-layout-j-start {
 	width: 100%;
 	height: auto;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
 }
-.flex-layout-j-start-none{
+
+.flex-layout-j-start-none {
 	width: 100%;
 	height: auto;
 	display: none;
 	justify-content: flex-start;
 	align-items: center;
 }
-.flex-layout-j-center{
+
+.flex-layout-j-center {
 	width: 100%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	height: auto;
 }
+
 .des {
 	margin-left: 20px;
 	font-size: 20px;
@@ -474,10 +490,12 @@
 	background-color: #4FAA4F;
 	color: white;
 }
+
 .blue-bgc {
 	background-color: rgb(47, 161, 232);
 	color: white;
 }
+
 .pink-bgc {
 	background-color: #FF9B9B;
 	color: #000000;
@@ -496,66 +514,81 @@
 }
 
 
-.little-title-darkgray{
+.little-title-darkgray {
 	font-size: 20px;
 	color: darkgray;
 }
-.little-title-green{
+
+.little-title-green {
 	font-size: 20px;
 	color: #4FAA4F;
 }
-.line-darkgray{
+
+.line-darkgray {
 	width: 100%;
 	border-top: solid 1px darkgray;
 	height: 5px;
 }
-.border-top-darkgray{
+
+.border-top-darkgray {
 	border-top: solid 1px darkgray;
 }
-.border-left-darkgray{
+
+.border-left-darkgray {
 	border-left: solid 1px darkgray;
 }
-.border-right-darkgray{
+
+.border-right-darkgray {
 	border-right: solid 1px darkgray;
 }
-.border-bottom-darkgray{
+
+.border-bottom-darkgray {
 	border-bottom: solid 1px darkgray;
 }
-.transformY{
+
+.transformY {
 	transform: rotateY(180deg);
 }
-.transformX{
+
+.transformX {
 	transform: rotateX(180deg);
 	-webkit-transform: rotateX(180deg);
 }
-.transformZ{
+
+.transformZ {
 	transform: rotateZ(180deg);
 }
-.icon-des{
+
+.icon-des {
 	font-size: 4px;
 	color: rgb(195, 7, 7)
 }
-.colorBlack{
+
+.colorBlack {
 	color: black;
 }
-.cursorPointer{
+
+.cursorPointer {
 	cursor: pointer;
 }
-.scoreBlack{
+
+.scoreBlack {
 	color: #000000;
 	font-size: 20px;
 	opacity: 0.8;
 }
-.finishTest{
+
+.finishTest {
 	color: rgb(195, 7, 7);
 }
-.nextGroup{
+
+.nextGroup {
 	width: 100%;
 	height: auto;
 	text-align: right;
 }
 
-.title-right{
+.title-right {
 	width: 400px;
 	height: 100%;
 	display: flex;
@@ -571,7 +604,7 @@
 	align-items: center;
 }
 
-.st-button{
+.st-button {
 	width: 130px;
 	height: 60px;
 	border-radius: 5px;
@@ -580,4 +613,11 @@
 	justify-content: center;
 	border: 1px solid darkgray;
 	align-items: center;
+}
+
+.testButton_nextScale {
+	bottom: 0;
+	font-size: 24px;
+	color: #008B8B;
+	cursor: pointer;
 }

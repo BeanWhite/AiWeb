@@ -10,8 +10,8 @@
 		<link href="../css/doc_cwt.css" rel="stylesheet" type="text/css" />
 		<link href="../css/layoutStyle.css" rel="stylesheet" type="text/css" />
 		<!-- 导入vue.js -->
-		<script src="../js/vue.js"></script>
-		<!-- <script src="../js/vue.min.js"></script> -->
+		<!-- <script src="../js/vue.js"></script> -->
+		<script src="../js/vue.min.js"></script>
 		<!-- <script type="text/javascript" src="../js/vue.min.js"></script> -->
 		<!-- 引入jQuery.js -->
 		<script src="../js/jquery/jquery.min.js"></script>
@@ -28,16 +28,17 @@
 
 			<div class="scale scale-Title">
 				<!-- 临时使用 -->
-				<div id="next-scale">
+				<!-- <div id="next-scale">
 					<button type="button" onclick="stopTest()">完成</button>
 					<button type="button" onclick="next_scale()">下一个</button>
-				</div>
+				</div> -->
 
 				<div id="title">
 					<span>量表名称：{{titleName.aiScaleName}}</span>
 					<div class="title-right">
 						<span class="little-title-green cursorPointer" @click="toSt()">刷新平板</span>
-						<span class="little-title-red cursorPointer">进入下一个量表</span>
+						<span class="little-title-red cursorPointer" @click="nextScale()">进入下一个量表</span>
+						<span v-if="isFinish==1" class="little-title-red cursorPointer" @click="printPDF()">打印报告</span>
 					</div>
 				</div>
 				<div class="scale-left flex-layout-aligin" style="width: 70%;justify-content: flex-start;align-items: flex-start;">
@@ -54,15 +55,14 @@
 					</div>
 					<table border="1" cellpadding="5" class="little-title-darkgray">
 						<tr class="table-line" v-for="(it,index) in RandomTest">
-							<td  v-on:click="itemsClick(index,index_2)" class="table-line-item" v-for="(i,index_2) in it" :style="{color:(status==2?i.colorGroup[setColor[index][index_2]]:'')}">
+							<td v-on:click="itemsClick(index,index_2)" class="table-line-item" v-for="(i,index_2) in it" :style="{color:(status==2?i.colorGroup[setColor[index][index_2]]:'')}">
 								{{
 										status == 0 ?i.value:(status == 1?'':i.value)
 								}}
 								<!-- {{Math.round(Math.random()*10)%4+1}} -->
 								<div class="circle" :style="{display:(status==1?'flex':'none'),backgroundColor:i.color}"></div>
-								<img src="../svg/true_green.svg" class="item-icon"
-								 :style="{display:
-								 (status>0?(trueItems[status-1][index].indexOf(index_2)>-1?'flex':''):'')
+								<img src="../svg/true_green.svg" class="item-icon" :style="{display:
+								 (status>=0?(trueItems[status][index].indexOf(index_2)>-1?'flex':''):'')
 								 }">
 							</td>
 						</tr>
@@ -71,26 +71,27 @@
 						<span v-on:click="back()" class="cursorPointer" style="display: inline-block;margin-right: 30px;">{{status == 0 ? '':'上一组'}}</span>
 						<span v-on:click="next()" class="cursorPointer">{{status == 2 ?(finishStatus==1?'':'查看得分'):'下一组'}}</span>
 					</div>
-	<!-- 				als==1?(finishStatus==0?'flex':''):(status>0?(finishStatus==0?'flex':''):'none')
+					<!-- 				als==1?(finishStatus==0?'flex':''):(status>0?(finishStatus==0?'flex':''):'none')
 					status>0?(finishStatus==0?'flex':''):'none' -->
 					<div class="st-box" v-if="isStart">
 						<div class="st-button little-title-white" @click="toSt()">
 							开始
 						</div>
 					</div>
-					<div class="myResult" :style="{display:(status>0?(finishStatus==0?'flex':''):'none')}">
+					<div v-if="isStart==false" class="myResult" :style="{display:(status>= 0?(finishStatus==0?'flex':''):'none')}">
 						<span class="little-title-red">已用时间：{{timerData}}</span>
 						<div class="">
-							<span class="cursorPointer" v-on:click="timerListener(0)" v-bind:class="[timerStatus[status-1]==0?'little-title-green':'',timerStatus[status-1]==1?'little-title-red':'',timerStatus[status-1]>=2?'little-title-green':'']">
-								{{timerContent[timerStatus[status-1]]}}
+
+							<span class="cursorPointer" v-on:click="timerListener(0)" v-bind:class="[timerStatus[status]==0?'little-title-green':'',timerStatus[status]==1?'little-title-red':'',timerStatus[status]>=2?'little-title-green':'']">
+								{{timerContent[timerStatus[status]]}}
 							</span>
-							<span v-on:click="timerListener(1)" style="margin-left: 15px;" class="cursorPointer little-title-green" :style="{color:(timerStatus[status-1]==3?'darkgray':'')}">
-								{{timerStatus[status-1] > 0 ? '停止':'&nbsp;'}}
+							<span v-on:click="timerListener(1)" style="margin-left: 15px;" class="cursorPointer little-title-green" :style="{visibility:(timerStatus[status]==3?'hidden':'')}">
+								{{timerStatus[status] > 0 ? '停止':'&nbsp;'}}
 							</span>
 						</div>
 
 					</div>
-					<div class="myResult" :style="{display:(status>0?(finishStatus==1?'flex':''):'none')}">
+					<div class="myResult" :style="{display:(status>=0?(finishStatus==1?'flex':''):'none')}">
 						<span class="little-title-red">SIE&nbsp;耗时数：{{SIETimer}}秒</span>
 						<span class="little-title-red">SIE&nbsp;标准数：{{SIENum}}个</span>
 					</div>
@@ -184,12 +185,21 @@
 			}
 			RandomTest.push(arr);
 		}
-		console.log(setColor,'setColor')
+		console.log(setColor, 'setColor')
 		console.log(RandomTest, 'RandomTest');
 		let vue = new Vue({
 			el: '.vue',
 			data: {
-				als:0,//答题状态
+				report_config: $.ajax({ //报告结果配置信息
+					url: '../JSON/report_config.json',
+					async: false
+				}).responseJSON.scale_15,
+				RESULT_DATA: { //需要打印的结果信息
+					id: 15,
+					allResult: [],
+					bottomMsg: []
+				},
+				als: 0, //答题状态
 				RandomTest: RandomTest,
 				titleName: scaleData,
 				status: 0,
@@ -207,8 +217,19 @@
 					minutes: 0,
 					seconds: 0,
 					p: 0
-				}, ],
+				}, {
+					minutes: 0,
+					seconds: 0,
+					p: 0
+				}],
 				trueItems: [
+					[
+						[],
+						[],
+						[],
+						[],
+						[]
+					],
 					[
 						[],
 						[],
@@ -225,47 +246,51 @@
 					],
 				],
 				finishCard: [], //完成的卡片
-				timerStatus: [0, 0], //计时器状态
-				finishStatus: 0,//量表是否完成，默认0
-				isFinish: 0, 
-				J:false,	//jQuery是否加载完
-				isStart:true,	//开始按钮是否待点击
-				websocket:null,
-				userMsg:null,
+				timerStatus: [0, 0, 0], //计时器状态
+				finishStatus: 0, //量表是否完成，默认0
+				isFinish: 0,
+				J: false, //jQuery是否加载完
+				isStart: true, //开始按钮是否待点击
+				websocket: null,
+				userMsg: null,
+				saveStatus: 0 //	数据是否为待保存状态
 			},
-			watch:{
-				J:{
-					handler(newa,oldb){
-						console.log(this.J,'JOk')
+			watch: {
+				J: {
+					handler(newa, oldb) {
+						console.log(this.J, 'JOk')
 					},
-					deep:true,
-					immediate:false
+					deep: true,
+					immediate: false
 				},
+
 			},
 			created() {
 				let that = this;
 				this.userMsg = sstorage.getItem("userMsg");
 				this.websocket = new WebSocket(config.wsURL + "/websocket/" + USER_ID);
-				
-				this.websocket.onmessage = function(e){
-					
+
+				this.websocket.onmessage = function(e) {
+
 				};
-				
-				this.websocket.onclose = function(e){
+
+				this.websocket.onclose = function(e) {
 					console.log('连接关闭')
 				}
 				window.onbeforeunload = function() {
 					that.websocket.close();
 				}
 			},
+
 			computed: {
-			
+
 				timerData: function() {
-					if (this.status == 0)
-						return
-					let m = this.timerObj[this.status - 1].minutes;
-					let s = this.timerObj[this.status - 1].seconds;
-					let p = this.timerObj[this.status - 1].p;
+					// if (this.status == 0)
+					// 	return
+
+					let m = this.timerObj[this.status].minutes;
+					let s = this.timerObj[this.status].seconds;
+					let p = this.timerObj[this.status].p;
 					if (m < 10)
 						m = '0' + m;
 					if (s < 10)
@@ -275,40 +300,63 @@
 					return m + ':' + s + ":" + p;
 				},
 				SIETimer: function() {
-					let a = this.timerObj[0].seconds + this.timerObj[0].minutes * 60;
+					let a = this.timerObj[2].seconds + this.timerObj[2].minutes * 60;
 					let b = this.timerObj[1].seconds + this.timerObj[1].minutes * 60;
-					let c = b - a;
+					let c = a - b;
 					return c;
 				},
 				SIENum: function() {
-					let c=0;
-					let b=0;
-					for(let i=0;i<this.trueItems[1].length;i++){
-						c+=this.trueItems[1][i].length;
+					let c = 0;
+					let b = 0;
+					for (let i = 0; i < this.trueItems[2].length; i++) {
+						c += this.trueItems[2][i].length;
 					}
-					for(let i=0;i<this.trueItems[0].length;i++){
-						b+=this.trueItems[0][i].length;
+					for (let i = 0; i < this.trueItems[1].length; i++) {
+						b += this.trueItems[1][i].length;
 					}
-					return c-b;
+					return c - b;
 				}
 			},
 			methods: {
-				sendMsg(o){
-					console.log('消息发送',o)
+				printPDF() {
+					window.open("report/report.html?" + USER_ID)
+				},
+				sendMsg(o) {
+					console.log('消息发送', o)
 					this.websocket.send(JSON.stringify(o));
 				},
-				toSt:function(){
+				nextScale() {
+					if (this.isFinish == 1) {
+						let o = {
+							target: vue.userMsg.aiUserId,
+							status: 3,
+							from_who: USER_ID
+						}
+						this.sendMsg(o);
+						let ind = -1;
+						for (let i = 0; i < scales.items.length; i++) {
+							if (scales.items[i].aiScaleId == 15)
+								ind = i;
+						}
+						if (ind + 1 == scales.items.length) {
+							window.location.href = 'finish.html'
+						} else {
+							toJump(scales.items[ind + 1].aiScaleId)
+						}
+					} else return
+				},
+				toSt: function() {
 					this.isStart = false;
-					let that  = this;
+					let that = this;
 					let o = {
-						target:this.userMsg.aiUserId,
-						data:{
-							setColor:that.setColor,
-							RandomTest:that.RandomTest,
-							guid:that.scaleMsg.aiQuestionGuid[that.status]
+						target: this.userMsg.aiUserId,
+						data: {
+							setColor: that.setColor,
+							RandomTest: that.RandomTest,
+							guid: that.scaleMsg.aiQuestionGuid[that.status]
 						},
-						status:0,
-						from_who:USER_ID,
+						status: 0,
+						from_who: USER_ID,
 					}
 					this.sendMsg(o)
 				},
@@ -318,67 +366,129 @@
 					this.status--;
 				},
 				next: function() {
-					if (this.status > 0) {
-						if (this.finishCard.indexOf(this.status) < 0)
+					if (this.status >= 0) {
+						if (this.finishCard.indexOf(this.status) < 0) {
 							return;
+						}
+
 					}
 					if (this.status + 1 > 2) {
 						this.finishStatus = 1;
 						return
 					}
 					this.status++;
+					console.log(this.status)
 					let o = {
-						target:this.userMsg.aiUserId,
-						data:this.scaleMsg.aiQuestionGuid[this.status],
-						status:6,
-						from_who:USER_ID,
+						target: this.userMsg.aiUserId,
+						data: this.scaleMsg.aiQuestionGuid[this.status],
+						status: 6,
+						from_who: USER_ID,
 					}
 					this.sendMsg(o);
 				},
-				itemsClick: function(index,index_2) {
-					if (this.status == 0)
-						return
-					let i = this.trueItems[this.status - 1][index].indexOf(index_2)
+				itemsClick: function(index, index_2) {
+
+					let i = this.trueItems[this.status][index].indexOf(index_2)
 					if (i > -1) {
-						this.trueItems[this.status - 1][index].splice(i, 1);
+						this.trueItems[this.status][index].splice(i, 1);
 					} else {
-						this.trueItems[this.status - 1][index].push(index_2)
+						this.trueItems[this.status][index].push(index_2)
 					}
+
+					this.keepData()
 				},
 				timerListener: function(a, b) {
-					let w = this.timerStatus[this.status - 1];
+					let w = this.timerStatus[this.status];
 					if (a == 0) {
 						if (w == 2) {
-							this.timerStatus.splice(this.status - 1, 1, 1);
+							//计时继续
+							this.timerStatus.splice(this.status, 1, 1);
 							this.timer.goOn()
 						} else if (w == 3) {
-							this.timerStatus.splice(this.status - 1, 1, 0)
+							//重新开始计时
+							if (this.isFinish == 1)
+								this.isFinish = 0;
+							this.timerStatus.splice(this.status, 1, 0)
+							let o = {
+								minutes: 0,
+								seconds: 0,
+								p: 0
+							};
+							this.timerObj.splice(this.status, 1, o);
 						} else {
-							this.timerStatus.splice(this.status - 1, 1, this.timerStatus[this.status - 1] + 1);
+							this.timerStatus.splice(this.status, 1, this.timerStatus[this.status] + 1);
 							if (w == 0) {
-								if(this.als==0)
-									this.als=1;
-								this.timer = new Timer(this.timerObj[this.status - 1]);
+								//开始计时
+								if (this.als == 0)
+									this.als = 1;
+								this.timer = new Timer(this.timerObj[this.status]);
 								this.timer.setMinute(0);
 								this.timer.setSeconds(0);
 								this.timer.setP(0);
 								this.timer.startTimer()
 							} else if (w == 1) {
+								//暂停计时
 								this.timer.pause()
 							}
 						}
 
 					} else if (a == 1) {
-						if (this.timerStatus[this.status - 1] == 3)
-							return
+						// if (this.timerStatus[this.status] == 3)
+						// 	return
 						this.timer.stop();
 						this.timer = null;
 						if (this.finishCard.indexOf(this.status) < 0) {
 							this.finishCard.push(this.status);
 						}
-						this.timerStatus.splice(this.status - 1, 1, 3)
+						this.timerStatus.splice(this.status, 1, 3)
+						if (this.status == 2) {
+							this.isFinish = 1;
+							this.keepData()
+
+						}
 					}
 
+				},
+				keepData: function() {
+					let na = 0; //C卡片数量
+					let nb = 0; //B卡片数量
+					let n = 0; //A卡片数量
+					for (let i = 0; i < this.trueItems[0].length; i++) {
+						na += this.trueItems[0][i].length;
+					}
+					for (let i = 0; i < this.trueItems[1].length; i++) {
+						nb += this.trueItems[1][i].length;
+					}
+
+					for (let i = 0; i < this.trueItems[2].length; i++) {
+						n += this.trueItems[2][i].length;
+					}
+					let ar1 = ["卡片A", n, this.getTime(0)];
+					let ar2 = ["卡片B", na, this.getTime(1)];
+					let ar3 = ["卡片C", nb, this.getTime(2)];
+					let ar4 = ["烦扰效应SIE", this.SIENum, this.SIETimer];
+
+					this.RESULT_DATA.allResult[0] = ar1;
+					this.RESULT_DATA.allResult[1] = ar2;
+					this.RESULT_DATA.allResult[2] = ar3;
+					this.RESULT_DATA.allResult[3] = ar4;
+					for (let i = 0; i < this.report_config.methods.length; i++) {
+						if (n + na + nb >= this.report_config.methods[i].min && n + na + nb <= this.report_config.methods[i].max) {
+							this.RESULT_DATA.bottomMsg[0] = this.report_config.methods[i].tzms;
+							console.log(this.report_config.methods[i].tzms)
+						}
+					}
+					sstorage.setItem("&15", this.RESULT_DATA);
+					console.log('保存报告数据', this.RESULT_DATA)
+				},
+				getTime(ind) {
+
+					let m = this.timerObj[ind].minutes * 60;
+					let s = this.timerObj[ind].seconds;
+					let p = 0;
+					if (p > 50)
+						p = 1;
+					return m + s + p;
 				}
 			}
 		});
@@ -400,24 +510,7 @@
 				}
 			}
 
-		function next_scale() {
-			console.log(scales)
-			if (vue.finishStatus != 0) {
-				let ind = -1;
-				for (let i = 0; i < scales.items.length; i++) {
-					if (scales.items[i].aiScaleId == 15)
-						ind = i;
-				}
-				if (ind + 1 == scales.items.length) {
-					window.location.href = 'finish.html'
-				} else {
-					toJump(scales.items[ind + 1].aiScaleId)
-				}
-				alert('可以跳转');
-			} else {
-				alert('您还有未完成的内容');
-			}
-		}
+
 		console.log(scaleData, 'scaleData')
 		/**
 		 * 数据初始化
