@@ -100,6 +100,14 @@ class seStorage {
 		}
 		return item;
 	}
+	
+	removeItem(key){
+		sessionStorage.removeItem(key)
+	}
+	
+	clearAll(){
+		sessionStorage.clear()
+	}
 }
 /**
  * 封装的计时器

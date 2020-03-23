@@ -22,18 +22,21 @@
 			<div class="dynamic-area1"></div>
 			<div class="dynamic-area2"></div>
 		</div>
-		<div id="content">
-			<div class="scale scale-Title vue">
+		<div id="content" class="vue">
+			<div class="dialog-back" v-bind:class="[isShow?'dialog-on':'dialog-off']" v-if="isShow"></div>
+			<div class="scale scale-Title ">
 				<div id="title">
 					<span>量表名称：{{scaleData.index.aiScaleName}}-认知</span>
-					<div class="change-page">
-						<span class="back-page" v-on:click="backPage()">返回上一题</span>
-						<span class="into-page" v-on:click="intoPage()" v-if="isFinish==0">进入下一题</span>
-						<span class="into-page" onclick="next_scale()" v-else>下一个测验</span>
+					<div class="change-page" style="width: 50%;justify-content: flex-end;">
+						<span class="back-page" v-on:click="backPage()" style="margin-right: 20px;">返回上一题</span>
+						
+						<span class="into-page" v-on:click="intoPage()" v-if="isFinish==0" style="margin-right: 20px;">进入下一题</span>
+						<span class="into-page" onclick="printPDF()" v-if="isFinish==1" style="margin-right: 20px;">打印报告</span>
+						<span class="into-page" onclick="next_scale()" v-if="isFinish==1" style="margin-right: 20px;">下一个测验</span>
 					</div>
 				</div>
-				<div class="dialog-back" v-bind:class="[isShow?'dialog-on':'dialog-off']"></div>
-				<div class="dialog-content" v-bind:class="[isShow?'dialog-on':'dialog-off']">
+
+				<div class="dialog-content" v-bind:class="[isShow?'dialog-on':'dialog-off']" v-if="isShow">
 					<div class="dialog-title">
 						单词{{clueData.ind[1]+1}}
 					</div>
@@ -114,7 +117,7 @@
 							{{groupId_1[0]}}({{groupId_1[1]}})
 						</div>
 						<ul class="scale-topic">
-							<li class="toNext" v-on:click="toNextGroup_1()" style="cursor: pointer;">进入下一组</li>
+							<li class="toNext" v-on:click="toNextGroup_1()" style="cursor: pointer;" v-if="gropuId_1!=3">进入下一组</li>
 							<li v-for="(it,index) in scaleData['1'].aiQuestionContent[0]" class="word-group   last-list-2">
 								<div class="word" v-on:click="wordClick(it,index)" v-bind:class="[wordTouch.indexOf(index)>-1?'word-bgc':'']">
 									<div v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" class="pointer-content">点击并朗读</div>
@@ -179,7 +182,7 @@
 							<li class="judege-list">
 								<div style="width: 100%;display: flex;justify-content: flex-start;white-space: nowrap;">
 									<span class="title-style">评判得分:</span>
-									<span class="title-content-b little-title-redU">{{(wordCancle_1[2]+wordCancle_1[1]+wordCancle_1[0])/3}}</span>
+									<span class="title-content-b little-title-redU">{{((wordCancle_1[2]+wordCancle_1[1]+wordCancle_1[0])/3).toFixed(1)}}</span>
 								</div>
 							</li>
 						</ul>
@@ -297,7 +300,7 @@
 								</ul>
 								<div class="button ne-3">
 									<span style="display: inline-block;margin-right: 10px;" @click="back_4()">上一图</span>
-									<span style="display: inline-block;" v-on:click="save_4()">下一图</span>
+									<span style="display: inline-block;" v-on:click="save_4()" v-if="pos_4 + 1 < statusA_4.length">下一图</span>
 
 								</div>
 							</div>
@@ -588,7 +591,8 @@
 		 * 数据初始化
 		 */
 
-	$(document).ready(function() {
+
+		$(document).ready(function() {
 			$.ajax({
 				url: config.url + '/scales/testMsg/' + 5,
 				type: 'GET',
@@ -699,7 +703,6 @@
 
 		});
 		//题目信息数据包
-
 		const scaleData = {
 			index: {
 				aiScaleId: '',
@@ -866,11 +869,161 @@
 		const vue = new Vue({
 			el: '.vue',
 			data: {
+
+				adas: {
+					"t1": "",
+					"t2": [],
+					"t3": {
+						num: "",
+						answer: []
+					},
+					"t4": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "四幅图全部正确"
+						}, {
+							value: 1,
+							title: "1幅图错误"
+						}, {
+							value: 2,
+							title: "2幅图错误"
+						}, {
+							value: 3,
+							title: "3幅图错误"
+						}, {
+							value: 4,
+							title: "4幅均错误"
+						}, {
+							value: 5,
+							title: "未作画;描写;只有部分图形;文字代替图形"
+						}]
+					},
+					"t5": {
+						num: "",
+						answer: []
+					},
+					"t6": {
+						num: "3",
+						answer: []
+					},
+					"t8": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无"
+						}, {
+							value: 1,
+							title: "很轻:忘记一次"
+						}, {
+							value: 2,
+							title: "轻度:必须提醒两次"
+						}, {
+							value: 3,
+							title: "中度:必须提醒3或4次"
+						}, {
+							value: 4,
+							title: "中重度:必须提醒5或6次"
+						}, {
+							value: 5,
+							title: "重度:必须提醒7次或7次以上"
+						}]
+					},
+					"t7": 0,
+					"t9": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无"
+						}, {
+							value: 1,
+							title: "很轻:有一次缺乏可理解性的情况"
+						}, {
+							value: 2,
+							title: "轻度:<25%的时间内存在言语可理解性困难"
+						}, {
+							value: 3,
+							title: "中度:被试者在25%~50%的时间内存在言语可理解性困难"
+						}, {
+							value: 4,
+							title: "中重度:被试在50%以上的时间内存在言语可理解性困难"
+						}, {
+							value: 5,
+							title: "重度:说-两个词即中断;说话虽流利,但内容空洞;缄默"
+						}]
+					},
+					"t10": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无"
+						}, {
+							value: 1,
+							title: "很轻:出现一两次"
+						}, {
+							value: 2,
+							title: "轻度:明显的赘述或用同义词替代"
+						}, {
+							value: 3,
+							title: "中度:偶尔缺词，且无替代词"
+						}, {
+							value: 4,
+							title: "中重度:频繁缺词,且无替代词"
+						}, {
+							value: 5,
+							title: "重度:几乎完全缺乏有内容的单词言语听起来空洞"
+						}]
+					},
+					"t11": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无:患者能理解"
+						}, {
+							value: 1,
+							title: "很轻:错误的理解1次"
+						}, {
+							value: 2,
+							title: "轻度:错误的理解3~5次"
+						}, {
+							value: 3,
+							title: "中度:需要多次重复和改述"
+						}, {
+							value: 4,
+							title: "中重度:仅偶尔正确回答;也就是说只回答”是”或“否”"
+						}, {
+							value: 5,
+							title: "重度:患者极少对问题作出恰当反映"
+						}]
+					},
+					"t12": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无"
+						}, {
+							value: 1,
+							title: "很轻:有1次注意力不集中"
+						}, {
+							value: 2,
+							title: "轻度:有2~3次注意力不集中;出现坐立不安心不在焉的表现"
+						}, {
+							value: 3,
+							title: "中度:访谈过程中4~5次注意力"
+						}, {
+							value: 4,
+							title: "中重度:访谈过程中很多时候注意力不集中"
+						}, {
+							value: 5,
+							title: "重度:极其难以集中注意力和注意力极其易转移无法完成任务"
+						}]
+					}
+				},
 				totalSend: [], //已经发送的题目
 				pagePos: 0, //当前页面页号,默认0
 				isShow: false,
 				scaleData,
-				
+
 				titleGroup: [
 					"单词回忆任务",
 					"命名物体或手指",
@@ -889,6 +1042,7 @@
 				isClick: true, //部分点击需要延时，为true可以点击
 				checkBoxIndex_1: [], //复选框索引
 				pos: [0], //手指位置
+				gropuId_1: 1, //第一题组号
 				wordTouch: [], //已经被点击过的单词
 				wordCancle_1: [], //记录每一组单词中哪些单词未被选中,默认全部未选中
 				clueData,
@@ -1040,17 +1194,6 @@
 				window.onbeforeunload = function() {
 					that.ws.close();
 				}
-				
-				let o = {
-					target: this.userMsg.aiUserId,
-					data: 5,
-					status: 3,
-					from_who: USER_ID
-				}
-				console.log(this.userMsg, 'userMsg')
-				this.ws.addEventListener("open", function() {
-					that.ws.send(JSON.stringify(o))
-				})
 			},
 			methods: {
 				//websocket实现的消息发送
@@ -1069,6 +1212,138 @@
 				},
 				//进入下一个页面
 				intoPage: function() {
+					
+					if(this.isFinish!=1){
+						/**
+						 * 将结果存入本地
+						 */
+						if (this.pagePos == 1) {
+							if (this.gropuId_1 == 3 && this.pos[0] > 9) {
+								let a = (this.wordCancle_1[2] + this.wordCancle_1[1] + this.wordCancle_1[0]) / 3;
+								this.adas.t1 = a.toFixed(1)
+							} else return
+
+						} else if (this.pagePos == 2) {
+							if (this.wordSelect_2.length + this.wordCancle_2.length == this.scaleData['2'].aiQuestionContent.length) {
+								this.adas.t2.splice(0)
+								let a = this.scaleData['2'].aiQuestionContent;
+								for (let i = 0; i < a.length; i++) {
+									let o = {}
+									o.name = a[i][0];
+									let b = this.wordSelect_2.indexOf(i);
+									let c = this.wordCancle_2.indexOf(i);
+									if (b > -1) {
+										o.select = 1;
+									} else if (c > -1) {
+										o.select = 0;
+									}
+									this.adas.t2.push(o);
+								}
+
+							} else return
+						} else if (this.pagePos == 3) {
+							let a = this.scaleData['3'].aiQuestionContent;
+							if (this.jClickF_3.length + this.jClickT_3.length == a.length) {
+								this.adas.t3.num = this.jClickF_3.length;
+								this.adas.t3.answer.splice(0)
+								for (let i = 0; i < a.length; i++) {
+									let o = {};
+									let b = this.jClickF_3.indexOf(i);
+									let c = this.jClickT_3.indexOf(i);
+									if (b > -1) {
+										o.select = 1;
+										o.name = a[i][0]
+									} else if (c > -1) {
+										o.select = 0;
+										o.name = a[i][0]
+									}
+									this.adas.t3.answer.push(o)
+								}
+							} else return
+						} else if (this.pagePos == 4) {
+							let a = this.scaleData['4'].aiQuestionContent;
+							if (this.jClickF_4.length + this.jClickT_4.length + this.jDoubt_4.length == 4) {
+								if (this.jClickF_4.length == 4)
+									this.adas.t4.answer = 0;
+								else if (this.jDoubt_4 == 4)
+									this.adas.t4.answer = 5
+								else this.adas.t4.answer = this.jClickF_4.length;
+							} else return
+						} else if (this.pagePos == 5) {
+							if (this.jClickT_5.length + this.jClickF_5.length == 5) {
+								this.adas.t5.num = this.jClickF_5.length;
+								let a = this.scaleData['5'].aiQuestionContent;
+
+								this.adas.t5.answer.splice(0)
+								for (let i = 0; i < a.length; i++) {
+									let o = {}
+									o.name = a[i][0];
+									let b = this.jClickF_5.indexOf(i);
+									let c = this.jClickT_5.indexOf(i);
+									if (b > -1) {
+										o.select = 1
+									} else if (c > -1) {
+										o.select = 0
+									}
+									this.adas.t5.answer.push(o)
+								}
+							} else return
+						} else if (this.pagePos == 6) {
+							if (this.jClickT_6.length + this.jClickF_6.length == 8) {
+								this.t6.num = this.jClickF_6.length;
+								let a = this.scaleData['6'].aiQuestionContent;
+								this.adas.t6.answer.splice(0);
+								for (let i = 0; i < a.length; i++) {
+									let o = {};
+									o.name = a[i][0];
+									let b = this.jClickF_6.indexOf(i);
+									let c = this.jClickT_6.indexOf(i);
+									if (b > -1) {
+										o.select = 1
+									} else if (c > -1) {
+										o.select = 0
+									}
+									this.adas.t6.answer.push(o);
+								}
+							} else return
+						} else if (this.pagePos == 7) {
+							if (this.pos_7 == 3 && this.chooseF_7[this.pos_7 - 1].length + this.chooseT_7[this.pos_7 - 1].length >= 24) {
+								this.adas.t7 = ((this.performence['7']['1'] + this.performence['7']['2'] + this.performence['7']['3']) / 3).toFixed(
+									1)
+							} else return
+						} else if (this.pagePos == 8) {
+							if (this.performence['8'] == null) {
+								return
+							} else {
+								this.adas.t8.answer = this.performence['8']
+							}
+						} else if (this.pagePos == 9) {
+							if (this.performence['9'] == null) {
+								return
+							} else {
+								this.adas.t9.answer = this.performence['9']
+							}
+						} else if (this.pagePos == 10) {
+							if (this.performence['10'] == null) {
+								return
+							} else {
+								this.adas.t10.answer = this.performence['10']
+							}
+						} else if (this.pagePos == 11) {
+							if (this.performence['11'] == null) {
+								return
+							} else {
+								this.adas.t11.answer = this.performence['11']
+							}
+						} else if (this.pagePos == 12) {
+							if (this.performence['12'] == null) {
+								return
+							} else {
+								this.adas.t12.answer = this.performence['12']
+							}
+						}
+						sstorage.setItem('&5',this.adas);
+					}
 					if (this.pagePos == 12) {
 						this.isFinish = 1;
 						return
@@ -1120,7 +1395,7 @@
 						this.checkBoxIndex_1.push(index);
 					}
 
-					this.wordCancle_1[pos] = this.checkBoxIndex_1.length;
+					this.wordCancle_1[pos] = scaleData['1'].aiQuestionContent[0].length - this.checkBoxIndex_1.length;
 					this.performence['1'] = this.wordCancle_1[2] + this.wordCancle_1[1] + this.wordCancle_1[0];
 				},
 				wordClick: function(e, index) {
@@ -1182,8 +1457,10 @@
 					this.wordTouch = []; //清空点击过的单词
 					if (pos == 0) {
 						this.groupId_1[0] = '第二组';
+						this.gropuId_1++;
 					} else if (pos == 1) {
 						this.groupId_1[0] = '第三组'
+						this.gropuId_1++;
 					}
 					pos++;
 					if (pos >= size)
@@ -1329,32 +1606,59 @@
 							this.jIcon_4[this.pos_4].push(e);
 						}
 					}
+					this.save_4(1)
 				},
-				save_4: function() {
+				save_4: function(e) {
 					if (this.jIcon_4[this.pos_4].length == 0) {
 						alert("请完成题目")
 						return
 					}
-					if (this.pos_4 > this.statusA_4.length)
-						return
-					let i = this.jIcon_4[this.pos_4][0];
-					if (i == 0)
-						this.jClickT_4.push(i);
-					else if (i == 1)
-						this.jClickF_4.push(i);
-					else if (i == 2)
-						this.jDoubt_4.push(i);
-					this.jResult_4.push(i);
-					if (this.pos_4 + 1 >= this.statusA_4.length) {
-						alert("题目已全部完成");
-						//this.pos_4 = this.statusA_4.length + 1;
+					if (e == 1) {
+
 					} else {
-						this.pos_4++;
-						if (this.pos_4 > this.pos_4_max)
-							this.pos_4_max = this.pos_4;
+						if (this.pos_4 > this.statusA_4.length)
+							return
 					}
-					this.performence['4'] = this.jClickF_4.length;
-					
+					let i = this.jIcon_4[this.pos_4][0];
+					let a = this.jClickF_4.indexOf(this.pos_4);
+					let b = this.jClickT_4.indexOf(this.pos_4);
+					let c = this.jDoubt_4.indexOf(this.pos_4);
+					if (i == 0) {
+						if (b < 0)
+							this.jClickT_4.push(this.pos_4);
+						if (a > -1)
+							this.jClickF_4.splice(a, 1);
+						if (c > -1)
+							this.jDoubt_4.splice(c, 1)
+					} else if (i == 1) {
+						if (a < 0)
+							this.jClickF_4.push(this.pos_4);
+						if (b > -1)
+							this.jClickT_4.splice(b, 1);
+						if (c > -1)
+							this.jDoubt_4.splice(c, 1)
+					} else if (i == 2) {
+						if (c < 0)
+							this.jDoubt_4.push(this.pos_4);
+						if (a > -1)
+							this.jClickF_4.splice(a, 1);
+						if (b > -1)
+							this.jClickT_4.splice(b, 1);
+					}
+					this.jResult_4.push(this.pos_4);
+					if (e == 1) {
+
+					} else {
+						if (this.pos_4 + 1 >= this.statusA_4.length) {
+							//	alert("题目已全部完成");
+							//this.pos_4 = this.statusA_4.length + 1;
+						} else {
+							this.pos_4++;
+							if (this.pos_4 > this.pos_4_max)
+								this.pos_4_max = this.pos_4;
+						}
+						this.performence['4'] = this.jClickF_4.length;
+
 						let o = {
 							target: this.userMsg.aiUserId,
 							status: 1,
@@ -1362,11 +1666,15 @@
 							dataOptions: 4,
 						}
 						this.sendMsg(o)
+					}
+
 				},
 				back_4: function() {
 					if (this.pos_4 - 1 < 0)
 						return
 					this.pos_4--;
+					this.save_4(1)
+
 
 				},
 				/**
@@ -1446,8 +1754,8 @@
 					this.performence['7'][this.wPos_7] = 12;
 				},
 				toNextGroup_7: function(e) {
-					// if(this.chooseF_7[this.pos_7-1].length+this.chooseT_7[this.pos_7-1].length<24)
-					// return
+					if (this.chooseF_7[this.pos_7 - 1].length + this.chooseT_7[this.pos_7 - 1].length < 24)
+						return
 					let el = e.srcElement;
 					if (el.innerHTML == '进行回忆') {
 
@@ -1517,20 +1825,21 @@
 			}
 		}
 
+		function printPDF(){
+			window.open('report/report.html')
+		}
 		function next_scale() {
 			console.log(scales)
 			if (vue.isFinish > 0) {
 				/**
 				 * 跳转之前通知平板进入下一个量表
 				 */
-				
-				let o ={
-					target:vue.userMsg.aiUserId,
-					status:3,
-					from_who:USER_ID
+				let o = {
+					target: vue.userMsg.aiUserId,
+					status: 3,
+					from_who: USER_ID
 				}
 				vue.sendMsg(o);
-				
 				let ind = -1;
 				for (let i = 0; i < scales.items.length; i++) {
 					if (scales.items[i].aiScaleId == 5)
@@ -1541,7 +1850,7 @@
 				} else {
 					toJump(scales.items[ind + 1].aiScaleId)
 				}
-				
+
 			} else {
 				alert('您还有未完成的内容');
 			}

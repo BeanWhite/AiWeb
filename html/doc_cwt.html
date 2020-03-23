@@ -202,7 +202,7 @@
 				als: 0, //答题状态
 				RandomTest: RandomTest,
 				titleName: scaleData,
-				status: 0,
+				status: 0,	//0,1,2三个状态分别对应三张卡片
 				cardTitle: ['卡片A', '卡片B', '卡片C'],
 				timerContent: ['开始', '暂停', '继续', '重置'],
 				scaleMsg: scaleMsg,
@@ -346,6 +346,9 @@
 					} else return
 				},
 				toSt: function() {
+				/**
+				 * 点击开始按钮
+				 */
 					this.isStart = false;
 					let that = this;
 					let o = {
@@ -376,15 +379,21 @@
 						this.finishStatus = 1;
 						return
 					}
-					this.status++;
-					console.log(this.status)
-					let o = {
-						target: this.userMsg.aiUserId,
-						data: this.scaleMsg.aiQuestionGuid[this.status],
-						status: 6,
-						from_who: USER_ID,
+					if(this.pos == this.status){
+						this.pos++;
+						let o = {
+							target: this.userMsg.aiUserId,
+							data: this.scaleMsg.aiQuestionGuid[this.status],
+							ot:this.status,
+							status: 6,
+							from_who: USER_ID,
+						}
+						this.sendMsg(o);
 					}
-					this.sendMsg(o);
+					this.status++;
+					
+					console.log(this.status)
+					
 				},
 				itemsClick: function(index, index_2) {
 
@@ -444,6 +453,7 @@
 						if (this.status == 2) {
 							this.isFinish = 1;
 							this.keepData()
+							console.log('保存数据')
 
 						}
 					}

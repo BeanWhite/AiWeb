@@ -19,19 +19,31 @@ const msgObject = $.ajax({
 	async: false
 }).responseJSON.msg;
 
-let RESULT_DATA = {}
+let RESULT_DATA = {};
+let foreignData = {};	//外部测验报告数据
 sstorage.getItem("RESULT_DATA"); //所有量表的结论信息，每一个属性为一个allResult数组,从本地获取
 
 
 for (let i = 0; i < S.length; i++) {
 	let o = sstorage.getItem('&' + i);
-	if (o != null){
-		RESULT_DATA[i] = o
-		reportSize.push(S[i])
-	}
+	if (o != null) {
+		if(i==5){
+			foreignData.adas = o;//vue中的adas数据直接获取该值
+		}else{
+			RESULT_DATA[i] = o
+		}
 		
-}
+		reportSize.push(S[i])
+		
+		/**
+		 * 需要将本地缓存内容删掉防止下次打印报告数据错乱
+		 */
+		
+		//sstorage.removeItem('&'+i)
+	}
 
+}
+console.log(RESULT_DATA, '报告数据')
 const imgBaseURL = 'D:/AixlProject/AiWeb/'; //设置打印图片的基本目录
 
 const patientID = 222; //获取病人账号信息，用于图片保存，目前为测试账号
@@ -63,45 +75,62 @@ $(document).ready(function() {
 			console.log('读取用户信息出错出错', e);
 			return
 		}
+		console.log('报错')
 		msgObject[i].msg_b = userMsg[msgObject[i].name]; //渲染基础信息
+
 	}
-	
-	
 	/**
 	 * 遍历所有待打印的报告，找到有图片的内容并保存到服务器
 	 */
-	let imgs={
-		images:[]
+	let imgs = {
+		images: []
 	}
-	for(let i=0;i<reportSize.length;i++){
+	for (let i = 0; i < reportSize.length; i++) {
+		/**
+		 * 跳过阿尔茨海默
+		 */
+		if(reportSize[i]==5)
+		continue
+		console.log('开始扫描图片')
 		let a = vue[vue.config[reportSize[i]].properName];
-		for(let j=0;j<a.serviceImg.length;j++){
-			let o = {
-				url:a.serviceImg[j].base64,	//图片base64编码
-				name:a.serviceImg[j].title+'='+userMsg.aiUserId		//图片的文件名
+		if (a.serviceImg) {
+			console.log('有图片')
+			for (let j = 0; j < a.serviceImg.length; j++) {
+				let o = {
+					url: a.serviceImg[j].base64, //图片base64编码
+					name: a.serviceImg[j].title + '=' + userMsg.aiUserId //图片的文件名
+				}
+				a.serviceImg[j].proURL = o.name + '.png';
+				imgs.images.push(o);
 			}
-			a.serviceImg[j].proURL = o.name+'.png';
-			imgs.images.push(o);
 		}
+
 		//console.log(a,'???????>>>>>>>>>>>>>')
 	}
-	console.log(imgs,'???????>>>>>>>>>>>>>')
-	if(imgs.images.length>0)
-		$.ajax({
-			type: "POST",
-			url: 'http://localhost:80/pdf/Img',
-			contentType: "application/json;charset=UTF-8",
-			data: JSON.stringify(imgs),
-			success: function(e) {
-				console.log('图片保存成功')
-			},
-			error: function(e) {
-				console.log(912)
-			}
-		})
+	console.log(imgs, '???????>>>>>>>>>>>>>')
+	if (imgs.images)
+		if (imgs.images.length > 0)
+			$.ajax({
+				type: "POST",
+				url: 'http://localhost:80/pdf/Img',
+				async:false,
+				contentType: "application/json;charset=UTF-8",
+				data: JSON.stringify(imgs),
+				success: function(e) {
+					console.log('图片保存成功')
+				},
+				error: function(e) {
+					console.log(912)
+				}
+			})
+	
+	// setTimeout(function(){
+	// 	printPDF()
+	// },100)
 })
 
 function printPDF() {
+	console.log('开始打印')
 	var k = document.documentElement.outerHTML;
 	var pdf = 'test.pdf';
 	$.ajax({
@@ -115,8 +144,11 @@ function printPDF() {
 		// contentType: false, // 告诉jQuery不要去设置Content-Type请求头
 		success: function(data) {
 			console.log(data)
-			if (data.object == true)
+			if (data.object == true){
+				//window.close()
 				window.open('../../js/pdf.js/web/viewer.html?../../pdfDocument/' + pdf, 'PDF');
+			}
+				
 		},
 		error: function() {
 			console.log(555)
@@ -166,7 +198,7 @@ let vue = new Vue({
 	el: '.vue',
 	data: {
 		reportSize: reportSize,
-		msgObject,
+		msgObject: msgObject,
 		office: obj['11'].office,
 		date: obj['11'].date,
 		adas: $.ajax({
@@ -179,7 +211,7 @@ let vue = new Vue({
 				properName: "scale_5"
 			},
 			"11": {
-				title: "画中测验",
+				title: "画钟测验",
 				properName: "scale_11"
 			},
 			"12": {
@@ -215,14 +247,14 @@ let vue = new Vue({
 			rTableObject: obj['5'].projects,
 			useTime: obj['5'].useTime,
 			allResult: obj['5'].allResult,
-			img: obj['5'].serviceImg,
+			serviceImg: obj['5'].serviceImg,
 		},
 		scale_11: {
-			msgObject, //基本信息,因为是一个人的一份或多份报告，一份信息就够了
+			//msgObject, //基本信息,因为是一个人的一份或多份报告，一份信息就够了
 			rTableObject: obj['11'].projects, //项目内容，报告结论，中文
 			useTime: obj['11'].useTime, //花费时间
 			allResult: obj['11'].allResult, //量表测量结果信息(总结论),二维数组存放，防止多个项目
-			img: obj['11'].serviceImg, //服务器保存的图片信息，方便pdf打印图片，用户答题图片
+			serviceImg: obj['11'].serviceImg, //服务器保存的图片信息，方便pdf打印图片，用户答题图片
 			// [{
 			// 	localURL:'',	//用于打印pdf时的本地url
 			// 	proURL:'',		//在项目中url
@@ -236,7 +268,7 @@ let vue = new Vue({
 			rTableObject: obj['12'].projects,
 			useTime: obj['12'].useTime,
 			allResult: obj['12'].allResult,
-			img: obj['12'].serviceImg,
+			serviceImg: obj['12'].serviceImg,
 
 
 		},
@@ -245,7 +277,7 @@ let vue = new Vue({
 			rTableObject: obj['13'].projects,
 			useTime: obj['13'].useTime,
 			allResult: obj['13'].allResult,
-			img: obj['13'].serviceImg,
+			serviceImg: obj['13'].serviceImg,
 
 
 		},
@@ -254,7 +286,7 @@ let vue = new Vue({
 			rTableObject: obj['14'].projects,
 			useTime: obj['14'].useTime,
 			allResult: obj['14'].allResult,
-			img: obj['14'].serviceImg,
+			serviceImg: obj['14'].serviceImg,
 
 
 		},
@@ -262,7 +294,7 @@ let vue = new Vue({
 			rTableObject: obj['15'].projects, //项目内容，报告结论，中文
 			useTime: obj['15'].useTime, //花费时间
 			allResult: obj['15'].allResult, //量表测量结果信息(总结论)
-			img: obj['15'].serviceImg, //服务器保存的图片信息，方便pdf打印图片，用户答题图片
+			serviceImg: obj['15'].serviceImg, //服务器保存的图片信息，方便pdf打印图片，用户答题图片
 
 
 		},
@@ -271,7 +303,7 @@ let vue = new Vue({
 			rTableObject: obj['18'].projects,
 			useTime: obj['18'].useTime,
 			allResult: obj['18'].allResult,
-			img: obj['18'].serviceImg,
+			serviceImg: obj['18'].serviceImg,
 
 
 		},
@@ -280,22 +312,27 @@ let vue = new Vue({
 			rTableObject: obj['19'].projects,
 			useTime: obj['19'].useTime,
 			allResult: obj['19'].allResult,
-			img: obj['19'].serviceImg,
+			serviceImg: obj['19'].serviceImg,
 
 
 		},
 		scale_20: {
-			msgObject,
+			//msgObject,
 			rTableObject: obj['20'].projects,
 			useTime: obj['20'].useTime,
 			allResult: obj['20'].allResult,
-			img: obj['20'].serviceImg
+			serviceImg: obj['20'].serviceImg
 		},
-		imgURL:config.imgPrintUrl,//打印图片地址
+		imgURL: config.imgPrintUrl, //打印图片地址
 		img: {
 			img_1: [imgBase + 'img//5//flower.jpg'],
 			img_2: [imgBase + 'img//5//shuttlecock.jpg'],
-		}
+		},
+		/**
+		 * 阿尔茨海默
+		 */
+		adas:foreignData.adas,
+		
 	},
 	created() {
 		for (let i in RESULT_DATA) {
@@ -314,7 +351,7 @@ let vue = new Vue({
 			return '365天'
 		},
 		getClusion: function() {
-			return '痴呆晚期'
+			return '下降'
 		}
 	},
 	methods: {

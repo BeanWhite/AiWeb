@@ -11,7 +11,7 @@
 	justify-content: space-between;
 	font-family: SourceHanSansSC;
 	font-size: 30px;
-	color: rgb(16, 112, 193);
+	color:  rgb(24,104,183);
 	visibility: ;
 }
 
@@ -85,7 +85,7 @@
 	font-family: SourceHanSansSC;
 
 	font-size: 30px;
-	color: rgb(16, 112, 193);
+	color:  rgb(24,104,183);
 	/* background-color: #ff557f; */
 }
 
@@ -104,7 +104,7 @@
 	font-family: SourceHanSansSC;
 
 	font-size: 20px;
-	color: rgba(16, 112, 193, 1);
+	color:  rgb(24,104,183);
 
 	/* background-color: #ffff00; */
 }
@@ -157,8 +157,8 @@
 	justify-content: flex-start;
 	flex-direction: column;
 	align-items: center;
-	border: solid 1px darkcyan;
-	background-color: floralwhite;
+	border:none;
+	background-color: white;
 }
 
 .dialog-content-s {
@@ -181,7 +181,7 @@
 .dialog-content-s-top {
 	width: 100%;
 	height: 30px;
-	background-color: #1070C1;
+	background-color:  rgb(24,104,183);
 }
 
 .dialog-content-s-main {
@@ -208,7 +208,7 @@
 	margin: auto;
 	width: 100px;
 	color: white;
-	background-color: rgba(16, 112, 193, 0.82);
+	background-color:  rgb(24,104,183);
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -304,18 +304,19 @@
 
 .tb-cancle {
 	display: inline-block;
-	border: solid 1px #0096e1;
+	border: solid 1px rgb(24,104,183);
 	border-radius: 12px;
 	width: 24px;
 	height: 24px;
 }
 
 .dialog-title {
+	color: white;
 	text-align: center;
 	width: 100%;
 	height: 30px;
 	line-height: 30px;
-	background-color: #2FA1E8;
+	background-color: rgb(24,104,183);
 }
 
 .img-name {
@@ -326,7 +327,8 @@
 }
 
 .show-bgc {
-	background-color: #0096E1;
+	background-color:  rgb(24,104,183);
+	color: white;
 }
 
 .title-style {

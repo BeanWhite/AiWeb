@@ -3,6 +3,8 @@ function toJump(id) {
 		case 1:
 			break;
 		case 2:
+		window.close();
+		window.location.href = '../html/doc_mmse.html?'+USER_ID
 			break;
 		case 3:
 			break;
