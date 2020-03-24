@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <link rel="stylesheet" type="text/css" href="report.css" />
+		<script src="../../js/jquery-3.4.1.js"></script>
+		<script src="../../js/vue.js"></script>
+		<!-- <script src="js/jquery-3.4.1.js"></script>
+		<script src="js/vue.js"></script> -->
+	</head>
+	<style>
+		@media print {
+
+			@page {
+				size: A4 portrait;
+				margin: 2.2cm 2cm 3.5cm 2cm;
+				padding: 0;
+
+
+				@top-center {
+					width: 100%;
+					height: 100%;
+					content: element(divHeader);
+				}
+
+				@bottom-center {
+					width: 100%;
+					height: 100%;
+					content: element(divFooter);
+				}
+
+			}
+
+			/* 
+			@page:first {
+				size: A4 portrait;
+				margin: 3.5cm 2cm 3.5cm 2cm;
+				padding: 0;
+
+				@top-center {
+					width: 100%;
+					height: 100%;
+					content: element(firstPageHead);
+				}
+			} */
+
+			.ti {
+				display: none;
+			}
+
+			/**
+			 * 自定义分页
+			 */
+			.break-before {
+				page-break-before: always;
+			}
+
+			.break-after {
+				page-break-after: always;
+			}
+
+			/* 第一个h1标题不需要分页 */
+			.first-h1 {
+				page-break-before: avoid;
+			}
+
+			/* 所有h1标题需要分页 */
+			h1 {
+				page-break-before: always;
+				width: 100%;
+				text-align: center;
+			}
+
+			.text-center {
+				width: 100%;
+				text-align: center;
+			}
+
+
+
+
+			/* fix相当于body,需要在fix中重新布局 */
+			.header-fix {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: center;
+			}
+
+			.footer-fix {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+			}
+
+			#footer-box {
+				height: 100%;
+				width: 100%;
+			}
+
+			#report-date {}
+
+			#office {}
+
+			.line-top {
+				display: flex;
+				justify-content: space-between;
+				border-bottom: 1px solid black;
+			}
+
+			.line-center {
+				margin-top: 2px;
+				border-top: 3px solid black;
+			}
+
+			.line-bottom {
+				margin-top: 3px;
+				border-bottom: 1px solid black;
+			}
+
+			#page-num {
+				width: 100%;
+				text-align: center;
+				content: "(第"counter(page)"页/共"counter(pages)"页)";
+			}
+
+			button {
+				display: none;
+			}
+
+			#firstPageHead {
+				font-size: 12px;
+				position: running(firstPageHead);
+				prince-flow: static(firstPageHead, start) width: 100%;
+				height: 100%;
+			}
+
+			#divHeader {
+
+				font-size: 12px;
+				position: running(divHeader);
+				prince-flow: static(divHeader, start) width: 100%;
+				height: 100px;
+				/* background-color: green; */
+			}
+
+			#divFooter {
+				font-size: 12px;
+				position: running(divFooter);
+				width: 100%;
+				/* background-color: red; */
+				height: 100%;
+			}
+
+			.bc {
+				width: 100%;
+			}
+
+			.top {
+				display: none;
+			}
+
+			.bottom {
+				display: none;
+			}
+
+			.pr {
+				display: initial;
+				margin: 20px;
+			}
+
+			.ot {
+				display: none;
+			}
+
+			.header-content {
+				font-size: 12px;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding-top: 0;
+			}
+
+			/**
+						 * 阿尔茨海默样式
+						 */
+			* {
+				padding: 0;
+				margin: 0;
+				font-size: 12px;
+			}
+
+			.table1 {
+				width: 100%;
+				border: none;
+				border-bottom: 1px solid black;
+			}
+
+			.table1>tbody>tr>td {
+				text-align: center;
+			}
+
+			.table2 {
+				width: 100%;
+				border-collapse: collapse;
+				table-layout: fixed;
+				word-wrap: break-word;
+				word-break: break-all;
+				border-bottom: 1px solid black;
+				border-top: 1px solid black;
+			}
+
+			.table2>tbody>tr>td {
+				padding: 0;
+				border: 1px solid black;
+			}
+            .table2>thead>tr>th {
+				padding: 0;
+				border: 1px solid black;
+			}
+            .table2>thead>tr>th:first-child {
+				width: 10%;
+			}
+            .table2>thead>tr>th:last-child {
+				width: 10%;
+			}
+            .table2>thead>tr>th:nth-child(4) {
+				width: 10%;
+			}
+
+			.table2>tbody>tr>td>p {
+				height: 20px;
+				line-height: 20px;
+                padding-left: 5px;
+			}
+
+			
+			.ul1 {
+				display: inline-block;
+				width: 100%;height: 100%;
+                margin: 0;padding: 0;;
+			}
+
+			.ul1>li {
+				height: 20px;
+				line-height: 20px;
+                width: 100%;
+                border-bottom: 1px solid black;
+			}
+            .ul1>li:last-child{
+                border: none;
+            }
+            .ul1>li>p{
+                padding-left: 5px;
+            }
+		}
+	</style>
+	<style type="text/css">
+		html {
+			width: 100%;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		p {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			overflow: auto;
+			margin: 0;
+			padding: 0;
+		}
+
+		h1 {
+			width: 100%;
+			text-align: center;
+		}
+
+		ul,
+		li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.font-12 {
+			font-size: 12px;
+		}
+
+		.pdf {
+			visibility: hidden;
+			opacity: 0;
+		}
+
+		.line-top {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			border-bottom: 1px solid black;
+		}
+
+		.line-center {
+			width: 100%;
+			margin-top: 1px;
+			border-top: 3px solid black;
+		}
+
+		.line-bottom {
+			width: 100%;
+			margin-top: 1px;
+			border-bottom: 1px solid black;
+		}
+
+		.line-bottom-darkgray {
+			width: 100%;
+			border-bottom: 1px solid #BBBBBB;
+		}
+
+		.msg {
+			width: 100%;
+			height: auto;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		.msg-item {
+			display: inline-block;
+			font-size: 12px;
+			width: 24%;
+			height: 24px;
+			line-height: 24px;
+			text-align: center;
+			/* background-color: #0096E1; */
+		}
+
+		.tab-items {
+			width: 100%;
+			height: auto;
+			display: flex;
+			justify-content: center;
+		}
+
+		.msg-item-a {
+			margin-left: 20px;
+		}
+
+		.report-img {
+			width: 100%;
+			height: 100%;
+			/* background-color: #008B8B; */
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+		}
+
+		.report-img-list {
+			position: relative;
+			width: 100%;
+			height: auto;
+			display: flex;
+			justify-content: center;
+		}
+
+		.report-img-item {
+			width: 400px;
+			height: 200px;
+		}
+
+		.top-left-corner {
+			position: absolute;
+			top: 20px;
+			left: 30px;
+		}
+
+		.use-time {
+			width: 100%;
+			height: auto;
+		}
+
+
+		.footer-content {
+			font-size: 12px;
+			width: 100%;
+			height: 100%;
+		}
+
+		.on {
+			display: none;
+		}
+
+		.off {
+			display: initial;
+		}
+
+		.header-left-content {
+			height: 40px;
+			line-height: 40px;
+			position: relative;
+			padding-left: 45px;
+			font-family: kartika;
+		}
+
+		.header-right-content {
+			color: #2c9cdc;
+			text-align: right;
+		}
+
+        .table2 {
+				width: 100%;
+				border-collapse: collapse;
+				table-layout: fixed;
+				word-wrap: break-word;
+				word-break: break-all;
+				border-bottom: 1px solid black;
+				border-top: 1px solid black;
+			}
+
+			.table2>tbody>tr>td {
+				padding:0;
+				border: 1px solid black;
+			}
+
+			.table2>tbody>tr>td>p {
+				height: 20px;
+				line-height: 20px;
+                padding-left: 5px;
+			}
+
+			.span {
+				height: 20px;
+				line-height: 20px;
+				vertical-align: top;
+            }
+            .span2 {
+				height: 20px;
+				line-height: 20px;
+                vertical-align: top;
+                border-bottom: 1px solid black;
+                width: 30px;text-align: center;
+			}
+
+			.ul1 {
+				display: inline-block;
+				width: 100%;height: 100%;
+                margin: 0;padding: 0;;
+			}
+
+			.ul1>li {
+				height: 20px;
+				line-height: 20px;
+                width: 100%;
+                border-bottom: 1px solid black;
+			}
+            .ul1>li:last-child{
+                border: none;
+            }
+            .ul1>li>p{
+                padding-left: 5px;
+            }
+	</style>
+	<body>
+		<style type="text/css">
+			.back-pic {
+				position: fixed;
+				top: 0;
+				z-index: -100;
+				width: 100%;
+				height: 100%;
+				background: url(../../img/poster-about.jpg) no-repeat center;
+				background-size: cover;
+			}
+		</style>
+
+		<button onclick="printPDF()" style="position: fixed; top: 50px;left: 50px;">666666</button>
+		<div class="back-pic">
+			<!-- 背景 -->
+		</div>
+
+		<!-- 用于打印显示的页眉页脚 -->
+		<div id="divHeader">
+			<div class="header-fix">
+				<div class="header-content">
+					<div class="header-left-content">
+						<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-plus-circle" viewBox="64 64 896 896" width="24"
+						 height="24" style="fill: rgba(34, 130, 34, 0.99); position: absolute;left: 10px;top: 0;
+						 bottom: 0; margin: auto 0;">
+							<path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
+							<path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+						</svg>
+						重庆市精神卫生中心
+					</div>
+					<div class="header-right-content">
+						<p>测评结果反映被测人最新状态</p>
+						<p>仅用于专业诊断参考</p>
+					</div>
+				</div>
+				<h1 class="first-h1">心理健康测评报告</h1>
+				<div class="line-top"></div>
+				<div class="line-center"></div>
+				<div class="line-bottom"></div>
+			</div>
+		</div>
+		<div id="divFooter">
+			<div class="footer-fix">
+				<div class="footer-content">
+					<div style="width: 100%;display: flex;justify-content: space-between;">
+						<span style="text-align: left;">报告日期:{{}}</span>
+						<span style="text-align: right;">科室:{{}}</span>
+					</div>
+					<div class="line-top"></div>
+					<div class="line-center"></div>
+					<div class="line-bottom"></div>
+					<div id="page-num"></div>
+					<div style="width: 100%;display: flex;justify-content: space-between;">
+						<ul>
+							<li>重庆市北碚区精神卫生中心</li>
+							<li>地址:重庆市北碚区</li>
+							<li>电话:123456,48484848</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--  打印页面-->
+		<div class="page bc vue">
+            <p style="text-align: center;height:45px;line-height: 45px;font-size:20px;">简易精神状态检查量表(MMSE)</p>
+            <table class="table2">
+                <thead>
+                    <tr >
+                        <th v-for="(it,index) in mmse.title">
+                            <p>{{it}}</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tr v-for="(it,index) in mmse.item">
+                    <td>
+                        <p>{{it.title}}</p>
+                    </td>
+                    <td>
+                        <ul class="ul1">
+                            <li v-for="(it2,index2) in it.value">
+                                <p >{{it2}}</p>
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul class="ul1">
+                            <li v-for="(it2,index2) in it.answer">
+                                <img  v-if="it2=='img'" src="" alt="">
+                                <p v-else>{{it2}}</p>
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul class="ul1">
+                            <li v-for="(it2,index2) in it.score">
+                                <p style="text-align:center">{{it2}}</p>
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <p style="text-align: center;">{{it.result}}</p>
+                    </td>
+                </tr>
+                
+                <tr >
+                    <td ><p>{{mmse.result.title}}</p></td>
+                    <td colspan="4"><p>{{mmse.result.value}}</p></td>
+                </tr>
+                <tr >
+                    <td ><p>{{mmse.conclusion.title}}</p></td>
+                    <td colspan="4"><p>{{mmse.conclusion.value}}</p></td>
+                </tr>
+            </table>
+		</div>
+	</body>
+	
+	<script>
+		let vue = new Vue({
+			el:'.vue',
+			data:{
+                mmse:{
+                    title:["因子名称","题目","回答","单项得分","总分"],
+                    item:[
+                        {
+                        title:'时间定向',//因子名称
+                        value:["年份","季节","月份","几号",'星期几'],//回答
+                        answer:["2020年","春季","2","27","4"],//单项得分
+                        score:["2","4","0","1","1"],//总分
+                        result:2,
+                        },
+                        {
+                        title:'空间定向',//因子名称
+                        value:["年份","季节","月份","几号",'星期几'],//回答
+                        answer:["2020年","春季","2","27","4"],//单项得分
+                        score:["2","4","0","1","1"],//总分
+                        result:2,
+                        },
+                        {
+                        title:'言语记忆',//因子名称
+                        value:["皮球、国旗、树木"],//回答
+                        answer:["皮球、国旗、树木"],//单项得分
+                        score:['3'],//总分
+                        result:3,
+                        },
+                        {
+                        title:'注意和计算',//因子名称
+                        value:["100-7","-7","-7","-7",'星-7期几'],//回答
+                        answer:["93","80","60","50","10"],//单项得分
+                        score:["1","1","1","1","1"],//总分
+                        result:5,
+                        },
+                        {
+                        title:'短程记忆',//因子名称
+                        value:["皮球、国旗、树木"],//回答
+                        answer:["皮球、国旗、树木"],//单项得分
+                        score:['3'],//总分
+                        result:3,
+                        },
+                        {
+                        title:'命名记忆',//因子名称
+                        value:["手表","铅笔"],//回答
+                        answer:["手表","铅笔"],//单项得分
+                        score:['1','1'],//总分
+                        result:2,
+                        },
+                        {
+                        title:'言语复述',//因子名称
+                        value:["四十四只石狮子"],//回答
+                        answer:[""],//单项得分
+                        score:['1'],//总分
+                        result:2,
+                        },
+                        {
+                        title:'阅读理解',//因子名称
+                        value:["闭上眼睛"],//回答
+                        answer:[""],//单项得分
+                        score:['1'],//总分
+                        result:2,
+                        },
+                        {
+                        title:'言语理解',//因子名称
+                        value:["三步命令、右手拿纸、对折、放在地上"],//回答
+                        answer:[""],//单项得分
+                        score:['3'],//总分
+                        result:3,
+                        },
+                        {
+                        title:'言语表达',//因子名称
+                        value:["写句子"],//回答
+                        answer:["我去世界各地旅行"],//单项得分
+                        score:['1'],//总分
+                        result:1,
+                        },
+                        {
+                        title:'图形描述',//因子名称
+                        value:["画图"],//回答
+                        answer:['img'],//单项得分
+                        score:['1'],//总分
+                        result:1,
+                        },
+                    ],
+                    result:{
+                        title:'总分',
+                        value:100
+                    },
+                    conclusion:{
+                        title:'结论描述',
+                        value:'受损明显'
+                    }
+                }
+			}
+		})
+
+		function printPDF() {
+			var k = document.documentElement.outerHTML;
+			var pdf = 'test.pdf';
+			$.ajax({
+				type: "POST",
+				url: "http://localhost:88/pdf/p",
+				// url: 'http://localhost:80/pdf/p',
+				data: {
+					s: k,
+					name: pdf
+				},
+				success: function(data) {
+					console.log(data)
+					if (data.object == true)
+						// window.open('http://localhost:8848/AiWeb/js/pdf.js/web/viewer.html?../../pdfDocument/' + pdf, 'PDF');
+					window.open('http://localhost:8848/AiWeb/js/pdf.js/web/viewer.html?../../pdfDocument/' + pdf, 'PDF');
+				},
+				error: function() {
+					console.log(555)
+				}
+			})
+		};
+	</script>
+</html>

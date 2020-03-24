@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge"> -->
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
+		<script src="js/vue.js"></script>
+		<title></title>
+	</head>
+	<body>
+
+
+		<!-- 	<object data="http://pcxjt.psycloud-china.com/Evaluation-call?title=测试&lblist=PHQ-9抑郁症筛查量表&luanxu=1" style="1200px;height: auto;">
+			
+		</object> -->
+		<iframe src="http://xjt.xnyy.psycloud-china.com/evaluation-start_mmse1?call=1" style="width: 900px;height: 800px; background-color: #008B8B;"></iframe>
+		<!-- <object data="http://www.baidu.com" width="500" height="500"></object>
+<button type="button" onclick="a()">a</button>
+<button type="button" onclick="b()">b</button> -->
+
+	</body>
+	<script src="html/utils/Storage.js">
+
+	</script>
+	<script src="js/jquery/jquery.min.js"></script>
+	<script type="text/javascript">
+		// setInterval(function(){
+		// },500)
+
+		// Object.defineProperty(a,"a",{
+		// 	get(){
+
+		// 	},
+		// 	set(e){
+		// 		console.log('fuzhi',e)
+		// 	}
+		// })
+		// let vue ={
+		// 	itemPage:{
+		// 		data:""
+		// 	}
+		// }
+		
+		
+		window.addEventListener('message', (event) => {
+			const op = event.data
+			console.log(op,'****');
+		})
+		/**
+		 * 时间转换
+		 */
+		let da = new Date().toLocaleString('chinese', {
+				hour12: false
+			});
+			
+			console.log(da)
+	</script>
+
+</html>

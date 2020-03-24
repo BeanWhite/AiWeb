@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="report.css" />
+		<script src="../../js/jquery-3.4.1.js"></script>
+
+
+		<script type="text/javascript" src="../../js/vue.min.js"></script>
+
+
+		<title></title>
+
+	</head>
+	<style>
+		@media print {
+			@page {
+				size: A4 portrait;
+				margin: 2.5cm 2cm 3cm 2cm;
+				padding: 0;
+
+				@top-center {
+					width: 100%;
+					height: 100%;
+					content: element(divHeader);
+				}
+
+				@bottom-center {
+					width: 100%;
+					height: 100%;
+					content: element(divFooter);
+				}
+
+			}
+
+			/**
+			 *  *****@page:和first之间不能有空格，否则该部分不会被加载****
+			 */
+			/* @page:first {
+				size: A4 portrait;
+				margin: 3.5cm 2cm 3.5cm 2cm;
+				padding: 0;
+				@top-center {
+					width: 100%;
+					height: 100%;
+					content: element(firstPageHead);
+				}
+			} */
+
+			.ti {
+				display: none;
+			}
+
+			/**
+			 * 自定义分页
+			 */
+			.break-before {
+				page-break-before: always;
+			}
+
+			.break-after {
+				page-break-after: always;
+			}
+
+			/* 第一个h1标题不需要分页 */
+			.first-h1 {
+				margin: 0;
+				padding: 0;
+				page-break-before: avoid;
+			}
+
+			/* 所有h1标题需要分页 */
+			h1 {
+				page-break-before: always;
+				width: 100%;
+				text-align: center;
+			}
+
+			.text-center {
+				width: 100%;
+				text-align: center;
+			}
+
+
+
+
+			/* fix相当于body,需要在fix中重新布局 */
+			.header-fix {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: center;
+			}
+
+			.footer-fix {
+				position: absolute;
+				height: 100%;
+				width: 100%;
+			}
+
+			#footer-box {
+				height: 100%;
+				width: 100%;
+			}
+
+			#report-date {}
+
+			#office {}
+
+			.line-top {
+				display: flex;
+				justify-content: space-between;
+				border-bottom: 1px solid black;
+			}
+
+			.line-center {
+				margin-top: 2px;
+				border-top: 3px solid black;
+			}
+
+			.line-bottom {
+				margin-top: 3px;
+				border-bottom: 1px solid black;
+			}
+
+			#page-num {
+				width: 100%;
+				text-align: center;
+				content: "(第"counter(page)"页/共"counter(pages)"页)";
+			}
+
+			button {
+				display: none;
+			}
+
+			#firstPageHead {
+				font-size: 12px;
+				position: running(firstPageHead);
+				prince-flow: static(firstPageHead, start) width: 100%;
+				height: 100%;
+			}
+
+			#divHeader {
+				font-size: 12px;
+				position: running(divHeader);
+				prince-flow: static(divHeader, start) width: 100%;
+				height: 100px;
+				/* background-color: green; */
+			}
+
+			#divFooter {
+				font-size: 12px;
+				position: running(divFooter);
+				width: 100%;
+				/* background-color: red; */
+				height: 100%;
+			}
+
+			.bc {
+				width: 100%;
+			}
+
+			.top {
+				display: none;
+			}
+
+			.bottom {
+				display: none;
+			}
+
+			.pr {
+				display: initial;
+				margin: 20px;
+			}
+
+			.ot {
+				display: none;
+			}
+
+			.header-content {
+				font-size: 12px;
+				width: 100%;
+				height: 100%;
+				display: flex;
+				justify-content: space-between;
+				align-items: flex-start;
+				padding-top: 10px;
+			}
+
+			/**
+			 * 阿尔茨海默样式
+				*/
+			.adas {
+				padding: 0;
+				margin: 0;
+				font-size: 10px;
+			}
+
+			.table1 {
+				width: 100%;
+				border: none;
+				border-bottom: 1px solid black;
+			}
+
+			.table1>tbody>tr>td {
+				text-align: center;
+			}
+
+			.table2 {
+				width: 100%;
+				border-collapse: collapse;
+				table-layout: fixed;
+				word-wrap: break-word;
+				word-break: break-all;
+				border-bottom: 1px solid black;
+				border-top: 1px solid black;
+			}
+
+			.table2>tbody>tr>td {
+				padding: 2px;
+				border: 1px solid black;
+			}
+
+			.table2>tbody>tr>td>p {
+				height: 16px;
+				line-height: 16px;
+			}
+
+			.span {
+				height: 16px;
+				line-height: 16px;
+				vertical-align: top;
+			}
+
+			.span2 {
+				height: 16px;
+				line-height: 16px;
+				vertical-align: top;
+				border-bottom: 1px solid black;
+				width: 30px;
+				text-align: center;
+			}
+
+			.ul1 {
+				display: inline-block;
+				width: 100%;
+			}
+
+			.ul1>li {
+				display: inline-block;
+				height: 16px;
+				line-height: 16px;
+			}
+
+			.ul1>li>span {
+				height: 16px;
+				line-height: 16px;
+				vertical-align: top;
+			}
+
+			/**
+			 * mmse
+			 */
+			.mmse {
+				padding: 0;
+				margin: 0;
+				font-size: 12px;
+			}
+
+			.table3 {
+				width: 100%;
+				border-collapse: collapse;
+				table-layout: fixed;
+				word-wrap: break-word;
+				word-break: break-all;
+				border-bottom: 1px solid black;
+				border-top: 1px solid black;
+			}
+
+			.table3>tbody>tr>td {
+				padding: 0;
+				border: 1px solid black;
+			}
+
+			.table3>thead>tr>th {
+				padding: 0;
+				border: 1px solid black;
+			}
+
+			.table3>thead>tr>th:first-child {
+				width: 10%;
+			}
+
+			.table3>thead>tr>th:last-child {
+				width: 10%;
+			}
+
+			.table3>thead>tr>th:nth-child(4) {
+				width: 10%;
+			}
+
+			.table3>tbody>tr>td>p {
+				height: 20px;
+				line-height: 20px;
+				padding-left: 5px;
+			}
+
+
+			.ul3 {
+				display: inline-block;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				;
+			}
+
+			.ul3>li {
+				height: 20px;
+				line-height: 20px;
+				width: 100%;
+				border-bottom: 1px solid black;
+			}
+
+			.ul3>li:last-child {
+				border: none;
+			}
+
+			.ul3>li>p {
+				padding-left: 5px;
+			}
+
+			/**
+			 * 通用报告
+			 */
+			.table4 {
+				width: 100%;
+				border-top: 2px solid black;
+				border-bottom: 2px solid black;
+				border-collapse: collapse;
+				table-layout: fixed;
+				word-wrap: break-word;
+				word-break: break-all;
+			}
+
+			.table4 td {
+				border-bottom: 1px solid #BBBBBB;
+				height: 20px;
+				font-size: 12px;
+			}
+
+			.table4 th {
+				border-bottom: 1px solid #BBBBBB;
+				height: 20px;
+				font-size: 12px;
+			}
+
+			.title4 {
+				height: 30px;
+				font-size: 16px;
+				font-weight: bold;
+				text-align: center;
+			}
+		}
+	</style>
+	<style type="text/css">
+		html {
+			width: 100%;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+		p {
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			overflow: auto;
+			margin: 0;
+			padding: 0;
+		}
+
+		h1 {
+			width: 100%;
+			text-align: center;
+		}
+
+		ul,
+		li {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.font-12 {
+			font-size: 12px;
+		}
+
+		.pdf {
+			visibility: hidden;
+			opacity: 0;
+		}
+
+		.line-top {
+			width: 100%;
+			display: flex;
+			justify-content: space-between;
+			border-bottom: 1px solid black;
+		}
+
+		.line-center {
+			width: 100%;
+			margin-top: 1px;
+			border-top: 3px solid black;
+		}
+
+		.line-bottom {
+			width: 100%;
+			margin-top: 1px;
+			border-bottom: 1px solid black;
+		}
+
+		.line-bottom-darkgray {
+			width: 100%;
+			border-bottom: 1px solid #BBBBBB;
+		}
+
+		.msg {
+			width: 100%;
+			height: auto;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-wrap: wrap;
+		}
+
+		.msg-item {
+			display: inline-block;
+			font-size: 12px;
+			width: 24%;
+			height: 24px;
+			line-height: 24px;
+			text-align: center;
+			/* background-color: #0096E1; */
+		}
+
+		.tab-items {
+			width: 100%;
+			height: auto;
+			display: flex;
+			justify-content: center;
+		}
+
+		.msg-item-a {
+			margin-left: 20px;
+		}
+
+		.tab-msg-item {
+			width: 100%;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			margin: 5px;
+		}
+
+		.report-img {
+			width: 100%;
+			height: auto;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-around;
+			align-items: center;
+		}
+
+		.report-img-list {
+			position: relative;
+			width: calc(50% - 15px);
+			height: auto;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.report-img-item {
+			/* width: calc(20% - 15px); */
+			width: 200px;
+		}
+
+		.top-left-corner {
+			position: absolute;
+			top: 20px;
+			left: 20px;
+		}
+
+		.use-time {
+			margin-top: 20px;
+			margin-bottom: 20px;
+			width: 100%;
+			height: auto;
+		}
+
+
+		.footer-content {
+			font-size: 12px;
+			width: 100%;
+			height: 100%;
+		}
+
+		.on {
+			display: none;
+		}
+
+		.off {
+			display: initial;
+		}
+
+		.header-left-content {
+			height: 40px;
+			line-height: 40px;
+			position: relative;
+			padding-left: 45px;
+			font-family: kartika;
+		}
+
+		.header-right-content {
+			color: #2c9cdc;
+			text-align: right;
+		}
+
+		@media screen {
+			.page {
+				min-height: 980px;
+				border: solid 1px black;
+			}
+
+			.pr {
+				display: none;
+			}
+
+			.off {
+				display: none;
+			}
+		}
+	</style>
+	<body>
+		<!-- <div class="ot" style="position:fixed ;width: 100%;height: 100%;top: 0;left: 0;font-size: 150px;background-color:wheat ;z-index: 1000;">
+			正在生成报告
+		</div> -->
+		<button onclick="printPDF()" style="position: fixed; top: 50px;left: 50px;">666666</button>
+
+		<!-- 用于打印显示的页眉页脚 -->
+		<div id="divHeader">
+			<div class="header-fix">
+				<div class="header-content">
+					<div class="header-left-content">
+						<svg xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-plus-circle" viewBox="64 64 896 896" width="24"
+						 height="24" style="fill: rgba(34, 130, 34, 0.99); position: absolute;left: 10px;top: 0;
+						 bottom: 0; margin: auto 0;">
+							<path d="M696 480H544V328c0-4.4-3.6-8-8-8h-48c-4.4 0-8 3.6-8 8v152H328c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h152v152c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V544h152c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8z"></path>
+							<path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+						</svg>
+						重庆市精神卫生中心
+					</div>
+					<div class="header-right-content">
+						<p>测评结果反映被测人最新状态</p>
+						<p>仅用于专业诊断参考</p>
+					</div>
+				</div>
+				<h1 class="first-h1">心理健康测评报告</h1>
+				<div class="line-top"></div>
+				<div class="line-center"></div>
+				<div class="line-bottom"></div>
+			</div>
+		</div>
+		<div id="divFooter">
+			<div class="footer-fix">
+				<div class="footer-content">
+					<div style="width: 100%;display: flex;justify-content: space-between;">
+						<span style="text-align: left;">报告日期:{{date}}</span>
+						<span style="text-align: right;">科室:{{office}}</span>
+					</div>
+					<div class="line-top"></div>
+					<div class="line-center"></div>
+					<div class="line-bottom"></div>
+					<div id="page-num"></div>
+					<div style="width: 100%;display: flex;justify-content: space-between;">
+						<ul>
+							<li>重庆市北碚区精神卫生中心</li>
+							<li>地址:重庆市北碚区</li>
+							<li>电话:123456,48484848</li>
+						</ul>
+						<!-- <ul style="text-align: center;">
+							<li>
+								<img style="width: 40px;height: 40px;background-color: #008B8B;">
+							</li>
+							<li>
+								测评二维码
+							</li>
+						</ul> -->
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--  打印页面-->
+		<div class="page bc vue" style="position: relative;">
+			<div v-if="rep!=5&&rep!=2&&rep<30" v-for="(rep,i) in reportSize" v-bind:class="i>0?'break-before':''">
+				<!-- <h1 class="ot">心理健康测评报告</h1> -->
+
+
+				<!-- 基本信息 -->
+				<ul class="msg">
+					<li class="msg-item" v-for="it in msgObject"><span class="msg-item-a">{{it.msg_a}}</span><span class="msg-item-b">{{it.msg_b}}</span></li>
+				</ul>
+				<div class="line-top"></div>
+				<h2 class="text-center">{{config[rep].title}}</h2>
+				<div class="line-top"></div>
+				<div class="line-bottom"></div>
+
+				<!-- 项目名称 -->
+				<ul class="msg">
+					<li class="tab-msg-item" style="width: 100%;">
+						<div v-for="(it,index) in $data[config[rep].properName].rTableObject" style="text-align: center;width: 100%;">
+							{{it}}
+						</div>
+					</li>
+					<!-- 结果数组 -->
+					<li class="tab-msg-item" v-for="(i3,ind_3) in $data[config[rep].properName].allResult">
+						<div v-for="(it,index) in i3" style="width: 100%; text-align: center;">
+							{{it}}
+						</div>
+					</li>
+				</ul>
+
+				<div class="line-top"></div>
+				<div class="line-bottom"></div>
+				<!-- 在图片上方添加分页符 -->
+
+				<h3 class="text-center" v-if="$data[config[rep].properName].serviceImg.length>0">患者结果图</h3>
+
+				<ul class="report-img" v-if="$data[config[rep].properName].serviceImg.length>0">
+					<li v-for="(it,index) in $data[config[rep].properName].serviceImg" class="report-img-list">
+						<div class="top-left-corner">{{it.title}}</div>
+						<!-- .pr为打印时使用,ot为查看时使用 -->
+
+						<img :src="it.localURL" class="report-img-item ot">
+						<img :src="imgURL+'/'+it.proURL" class="report-img-item pr ">
+					</li>
+				</ul>
+
+				<div class="use-time" v-if="getUserTime">
+					<span>作答时长:</span><span>{{getUserTime}}</span>
+				</div>
+				<div style="text-decoration: underline;align-self: flex-start;" v-if="getClusion">
+					<span class="line-bottom">总结论:</span>
+				</div>
+				<div class="all-result" style="align-self: flex-start;" v-if="getClusion">
+					<span v-for="(clu,ind) in $data[config[rep].properName].bottomMsg">{{clu}}</span>
+				</div>
+				<div style="width: 90%;text-align: right;">
+					施测人:
+				</div>
+			</div>
+
+			<div class="adas" v-else-if="rep==5" v-bind:class="i>0?'break-before':''">
+				<!-- <div class="adas" > -->
+				<!-- <p style="text-align: center;height:45px;line-height: 45px;font-size:20px;">阿尔茨海默病评定量表-认知</p> -->
+				<!-- 基本信息 -->
+				<ul class="msg">
+					<li class="msg-item" v-for="it in msgObject"><span class="msg-item-a">{{it.msg_a}}</span><span class="msg-item-b">{{it.msg_b}}</span></li>
+				</ul>
+				<div class="line-top"></div>
+				<h2 class="text-center">{{config[5].title}}</h2>
+				<div class="line-top"></div>
+				<div class="line-bottom"></div>
+				<table class="table2">
+					<tr>
+						<td>
+							<p>1.单词回忆任务:</p>
+							<p>三次试验平均错误分:<span class="span2">{{adas["t1"]}}</span></p>
+						</td>
+						<td>
+							<p>7.单词辨认任务:</p>
+							<p>三次试验平均错误分:<span class="span2">{{adas["t7"]}}</span></p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>2.命名物体或手指: 4 (12~ 14件物品不正确)</p>
+							<ul class="ul1">
+								<li style="width: 25%;" v-for="(it,index) in adas.t2">
+									<svg v-if="it.select==1" xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-close-square" viewBox="64 64 896 896"
+									 width="10" height="10" style="fill: rgb(16, 16, 16);">
+										<path d="M354 671h58.9c4.7 0 9.2-2.1 12.3-5.7L512 561.8l86.8 103.5c3 3.6 7.5 5.7 12.3 5.7H670c6.8 0 10.5-7.9 6.1-13.1L553.8 512l122.4-145.9c4.4-5.2.7-13.1-6.1-13.1h-58.9c-4.7 0-9.2 2.1-12.3 5.7L512 462.2l-86.8-103.5c-3-3.6-7.5-5.7-12.3-5.7H354c-6.8 0-10.5 7.9-6.1 13.1L470.2 512 347.9 657.9A7.95 7.95 0 0 0 354 671z"></path>
+										<path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+									</svg>
+									<svg v-else xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-border" viewBox="64 64 896 896"
+									 width="10" height="10" style="fill: rgb(16, 16, 16);">
+										<path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+									</svg>
+									<span>{{it["name"]}}</span>
+
+							</ul>
+						</td>
+						<td>
+							<p>8.回忆测验指令*:<span class="span2">{{adas["t8"]["answer"]}}</span></p>
+							<p v-for="(it,index) in adas.t8.option">{{it["value"]}}={{it["title"]}}</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>3.命名:不正确操作步骤数为<span class="span2">{{adas["t3"]["num"]}}</span>步</p>
+							<p v-for="(it,index) in adas.t3.answer">
+								<svg v-if="it.select==1" xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-close-square" viewBox="64 64 896 896"
+								 width="10" height="10" style="fill: rgb(16, 16, 16);">
+									<path d="M354 671h58.9c4.7 0 9.2-2.1 12.3-5.7L512 561.8l86.8 103.5c3 3.6 7.5 5.7 12.3 5.7H670c6.8 0 10.5-7.9 6.1-13.1L553.8 512l122.4-145.9c4.4-5.2.7-13.1-6.1-13.1h-58.9c-4.7 0-9.2 2.1-12.3 5.7L512 462.2l-86.8-103.5c-3-3.6-7.5-5.7-12.3-5.7H354c-6.8 0-10.5 7.9-6.1 13.1L470.2 512 347.9 657.9A7.95 7.95 0 0 0 354 671z"></path>
+									<path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+								</svg>
+								<svg v-else xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-border" viewBox="64 64 896 896"
+								 width="10" height="10" style="fill: rgb(16, 16, 16);">
+									<path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+								</svg>
+								<span class="span">{{it["name"]}}</span>
+							</p>
+						</td>
+						<td>
+							<p>9.口头语言能力:<span class="span2">{{adas["t9"]["answer"]}}</span></p>
+							<p v-for="(it,index) in adas.t9.option">{{it["value"]}}={{it["title"]}}</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>4.结构性练习:<span class="span2">{{adas["t4"]["answer"]}}</span></p>
+							<p v-for="(it,index) in adas.t4.option">{{it["value"]}}={{it["title"]}}</p>
+						</td>
+						<td>
+							<p>10.找词困难:<span class="span2">{{adas["t10"]["answer"]}}</span></p>
+							<p v-for="(it,index) in adas.t10.option">{{it["value"]}}={{it["title"]}}</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>5.意向性练习:不正确操作的步骤数为<span class="span2">{{adas["t5"]["num"]}}</span></p>
+							<p v-for="(it,index) in adas.t5.answer">
+								<svg v-if="it.select==1" xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-close-square" viewBox="64 64 896 896"
+								 width="10" height="10" style="fill: rgb(16, 16, 16);">
+									<path d="M354 671h58.9c4.7 0 9.2-2.1 12.3-5.7L512 561.8l86.8 103.5c3 3.6 7.5 5.7 12.3 5.7H670c6.8 0 10.5-7.9 6.1-13.1L553.8 512l122.4-145.9c4.4-5.2.7-13.1-6.1-13.1h-58.9c-4.7 0-9.2 2.1-12.3 5.7L512 462.2l-86.8-103.5c-3-3.6-7.5-5.7-12.3-5.7H354c-6.8 0-10.5 7.9-6.1 13.1L470.2 512 347.9 657.9A7.95 7.95 0 0 0 354 671z"></path>
+									<path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+								</svg>
+								<svg v-else xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-border" viewBox="64 64 896 896"
+								 width="10" height="10" style="fill: rgb(16, 16, 16);">
+									<path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+								</svg>
+								<span class="span">{{it["name"]}}</span>
+							</p>
+
+						</td>
+						<td>
+							<p>11.口头语言理解能力:<span class="span2">{{adas["t11"]["answer"]}}</span></p>
+							<p v-for="(it,index) in adas.t11.option">{{it["value"]}}={{it["title"]}}</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>6.定向力:错误部分的总数为:<span class="span2">{{adas["t6"]["num"]}}</span></p>
+							<ul class="ul1">
+								<li v-for="(it,index) in adas.t6.answer" :style="{width:(index%2==0?'30%':'70%')}">
+									<svg v-if="it.select==1" xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-close-square" viewBox="64 64 896 896"
+									 width="10" height="10" style="fill: rgb(16, 16, 16);">
+										<path d="M354 671h58.9c4.7 0 9.2-2.1 12.3-5.7L512 561.8l86.8 103.5c3 3.6 7.5 5.7 12.3 5.7H670c6.8 0 10.5-7.9 6.1-13.1L553.8 512l122.4-145.9c4.4-5.2.7-13.1-6.1-13.1h-58.9c-4.7 0-9.2 2.1-12.3 5.7L512 462.2l-86.8-103.5c-3-3.6-7.5-5.7-12.3-5.7H354c-6.8 0-10.5 7.9-6.1 13.1L470.2 512 347.9 657.9A7.95 7.95 0 0 0 354 671z"></path>
+										<path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+									</svg>
+									<svg v-else xmlns="http://www.w3.org/2000/svg" class="svg-icon an-icon ant-border" viewBox="64 64 896 896"
+									 width="10" height="10" style="fill: rgb(16, 16, 16);">
+										<path d="M880 112H144c-17.7 0-32 14.3-32 32v736c0 17.7 14.3 32 32 32h736c17.7 0 32-14.3 32-32V144c0-17.7-14.3-32-32-32zm-40 728H184V184h656v656z"></path>
+									</svg>
+									<span class="span">{{it["name"]}}</span>
+							</ul>
+						</td>
+						<td>
+							<p>12.注意力:<span class="span2">{{adas["t12"]["answer"]}}</span></p>
+							<p v-for="(it,index) in adas.t12.option">{{it["value"]}}={{it["title"]}}</p>
+						</td>
+					</tr>
+				</table>
+				<p style="text-align: right;font-size:20px;">测评医师(签名/盖章) :</p>
+			</div>
+
+			<div class="mmse" v-else-if="rep==2" v-bind:class="i>0?'break-before':''">
+				<p style="text-align: center;height:45px;line-height: 45px;font-size:20px;">简易精神状态检查量表(MMSE)</p>
+				<table class="table3">
+					<thead>
+						<tr>
+							<th v-for="(it,index) in mmse.title">
+								<p>{{it}}</p>
+							</th>
+						</tr>
+					</thead>
+					<tr v-for="(it,index) in mmse.item" :style="{height:(it.img?'200px':'')}">
+						<td>
+							<p>{{it.title}}</p>
+						</td>
+						<td>
+							<ul class="ul3">
+								<li v-for="(it2,index2) in it.value">
+									<p>{{it2}}</p>
+								</li>
+							</ul>
+						</td>
+						<td>
+							<ul class="ul3">
+								<li v-for="(it2,index2) in it.answer" style="position: relative;" :style="{height:(it.img?'200px':'')}">
+									<img v-if="it.img"  class="pr" :src="imgURL+'/'+'mmse'+msgObject[0].msg_b+'.png'" alt="" style="width: 100%;position: absolute;top: 0;bottom: 0;left: 0;right: 0;margin: auto;">
+									<p v-else>{{it2}}</p>
+								</li>
+							</ul>
+						</td>
+						<td>
+							<ul class="ul3">
+								<li v-for="(it2,index2) in it.score">
+									<p style="text-align:center">{{it2}}</p>
+								</li>
+							</ul>
+						</td>
+						<td>
+							<p style="text-align: center;">{{it.result}}</p>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<p>{{mmse.result.title}}</p>
+						</td>
+						<td colspan="4">
+							<p>{{mmse.result.value}}</p>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<p>{{mmse.conclusion.title}}</p>
+						</td>
+						<td colspan="4">
+							<p>{{mmse.conclusion.value}}</p>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div v-else-if="rep>=30" v-bind:class="i>0?'break-before':''">
+				<div class="Tong"  v-for="(it,index) in test.test" v-bind:class="index>0?'break-before':''">
+					<table class="table1">
+						<tr>
+							<td>门诊号:</td>
+							<td>姓名:</td>
+							<td>性别:</td>
+							<td>年龄:</td>
+						</tr>
+						<tr>
+							<td>来源:</td>
+							<td>职业:</td>
+							<td>婚姻:</td>
+							<td>教育:</td>
+						</tr>
+					</table>
+					<p class="title4"> {{it.lbinfo.title}}</p>
+					<div v-if="Object.keys(it.yz).length >0">
+						<table class="table4">
+							<thead>
+								<tr>
+									<td class="td" style="width:158.5px;">
+										项目
+									</td>
+									<td class="td" style="width:120px;">
+										得分
+									</td>
+									<td class="td" style="">
+										结论参考值
+									</td>
+									<td class="td" style="width:158.5px;">
+										结论
+									</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(yz,index1) in it.yz">
+									<td>{{yz.title}}</td>
+									<td>{{yz.score}}</td>
+									<td v-if="yz.resultname!=null">{{yz.resultname}}:{{yz.start_fen}}--{{yz.end_fen}}</td>
+									<td v-else>{{yz.start_fen}}--{{yz.end_fen}}</td>
+									<td>{{yz.resultname}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<p v-if="it.yz[0]['tzms']!=null" style="text-align: left;;font-size: 16px;font-weight: bold;height: 20px;text-decoration:underline;margin-left: 2px; ">
+							<font style="text-decoration:underline;border-bottom:1px solid black;">分因子结论 :</font>
+						</p>
+						<p v-for="(yz,index1) in it.yz">
+							<label v-if="yz.tzms!=null"><span style="font-weight: bold;">{{yz.title}}:</span>{{yz.tzms}}</label>
+						</p>
+					</div>
+				
+					<div v-if="Object.keys(it.questionlist).length >0">
+						<table class="table2">
+							<thead>
+								<tr>
+									<th>题目</th>
+									<th>答案</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="(questionlist,index3) in it.questionlist">
+									<td>{{questionlist.qtitle}}</td>
+									<td>{{questionlist.atitle}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<p style="text-align: left;;font-size: 16px;font-weight: bold;height: 20px;text-decoration:underline;margin-left: 2px; ">
+						<font style="text-decoration:underline;border-bottom:1px solid black;">总结论 :</font>
+					</p>
+					<p v-for="(ajl,index2) in it.ajl">{{ajl.tzms}}</p>
+				</div>
+			</div>
+			
+
+		</div>
+
+	</body>
+	<script src="../utils/Storage.js"></script>
+	<script src="../config/urlConfig.js"></script>
+	<script src="report.js"></script>
+
+</html>

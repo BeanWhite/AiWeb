@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title></title>
+		<!-- 引入背景变化控制js -->
+		<script src="./js/normalize.js"></script>
+		<!-- 引入jquery -->
+		<script type="text/javascript" src="./js/jquery-3.4.1.js"></script>
+		<!-- 背景动画 -->
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css">
+		<link rel="stylesheet" href="css/style.css">
+		<!-- 登录框样式 -->
+		<link rel="stylesheet" href="css/index.css" />
+		<link rel="stylesheet" type="text/css" href="js/print.css" />
+		<script src="./html/config/urlConfig.js"></script>
+
+	</head>
+	<body>
+		<!-- 背景 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+
+		<!-- 登录框 -->
+		<div class="login-div">
+			<form class="login-form">
+				<div class="form-title">
+					<span>心理认知测评</span>
+				</div>
+				<input id="user" placeholder="账号" class="login-block login-input" />
+				<input id="pwd" placeholder="密码" class="login-block login-input" />
+				<input type="button" class="login-block login-buttom" value="登录" onclick="submitForm()" />
+			</form>
+		</div>
+		<script src="html/utils/Storage.js"></script>
+		<script src="html/utils/loginCheck.js"></script>
+		<script>
+			
+			function submitForm() {
+				var user = document.getElementById("user").value;
+				var pwd = document.getElementById('pwd').value;
+				var data = {
+					id: user,
+					pwd: pwd
+				}
+				$.ajax({
+					type: "POST",
+					url: config.url + "/login/u",
+					dataType: "JSON",
+					data: data,
+					async: true,
+					success: function(data) {
+						console.log(data)
+						if (data.msg == '登录成功') {
+							if (data.object == "管理员" || data.object == 0) {
+								alert('管理员')
+								//跳转到管理员界面
+							} else if (data.object == "医生" || data.object == 1) {
+								let o = {
+									id: user,
+									pwd: pwd
+								}
+								//将登录信息存入本地
+								sstorage.setItem('logins',o);
+								//跳转到医生界面
+								window.location.href = "html/doc.html?" + user;
+							} else if (data.object == "用户" || data.object == 2) {
+								alert('该账号只限移动端登录')
+								//跳转到用户界面
+								//window.location.href = "html/user_menue.html?" + user;
+							} else {
+								//开发界面
+								console.log(data.msg)
+							}
+						}else{
+							alert(data.msg)
+						}
+					},
+					error: function() {
+						alert('服务器无法连接')
+						console.log(555)
+					}
+				})
+			}
+			
+			
+			
+		</script>
+	</body>
+</html>

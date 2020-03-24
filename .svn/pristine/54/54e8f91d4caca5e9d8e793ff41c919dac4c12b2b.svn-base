@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css"/>
+		<link rel="stylesheet" type="text/css" href="../css/user_test_list.css" />
+	</head>
+	<body>
+		<!-- 背景图 -->
+		<img class="back-img" src="../img/poster-about.jpg"/>
+		<div class="no-test">
+			<img src="../svg/user-md.svg" >
+			<p>暂无医生给您发布评估，请联系医生。</p>
+		</div>
+	</body>
+</html>

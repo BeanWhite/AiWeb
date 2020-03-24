@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/normalize.css"/>
+		<link rel="stylesheet" type="text/css" href="css/admin.css" />
+		<script src="js/jquery-3.4.1.js"></script>
+		<script src="html/config/urlConfig.js"></script>
+		<script src="html/utils/Storage.js"></script>
+		<title>管理员系统登录</title>
+	</head>
+	<body>
+		<img src="img/admin.jpeg" class="bgc-img" >
+		<div class="login">
+			<div class="login-title">
+				管理员登录
+			</div>
+			<div class="login-input">
+				<div class="login-input-content">
+					
+				<span class="no-white-space">账号：</span><input type="text" id="pw" class="input-in" onload="p()"/>
+				</div>
+			</div>
+			<div class="login-input">
+				<div class="login-input-content">
+					<span class="no-white-space">密码：</span><input type="text" id="id" class="input-in"/>
+				</div>
+			</div>
+			<div class="login-input">
+				<div class="login-button" onclick="login()">
+					登录
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		function login(){
+			let pw = document.getElementById('pw');
+			let id = document.getElementById('id');
+			$.ajax({
+				type:'GET',
+				url:config.url+'/login/admin',
+				data:{
+					id:id.value,
+					pwd:pw.value
+				},
+				success: function(e){
+					console.log(e)
+					if(e.msg!='登录成功'){
+						alert(e.msg)
+					}else {
+						if(e.object.aiUserType=='管理员'){
+							
+						sstorage.setItem('admin',e.object);
+						location.href = 'html/manage.html?Adminstrator'
+						}else if(e.object.aiUserType=='高级管理员'){
+						sstorage.setItem('admin',e.object);
+						//location.href = 'html/manage.html?developer'
+						
+						}
+					}
+				},
+				error:function(){
+					console.log(1)
+				}
+			})
+			
+		}
+		function p(){
+			
+		}
+		
+	</script>
+</html>

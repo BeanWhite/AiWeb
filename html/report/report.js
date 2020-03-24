@@ -2,7 +2,7 @@ const imgBase = 'D://AixlProject//AiWeb//'
 const endName = '.png' //默认图片后缀名
 let S = []; //接收医生发送过来的需要打印的量表id
 let reportSize = [];
-for (let i = 0; i < 30; i++)
+for (let i = 0; i < 100; i++)
 	S.push(i);
 let userMsg = sstorage.getItem("userMsg"); //从本地缓存获取用户信息
 
@@ -21,6 +21,7 @@ const msgObject = $.ajax({
 
 let RESULT_DATA = {};
 let foreignData = {};	//外部测验报告数据
+let Tong = [];	//通用报告
 sstorage.getItem("RESULT_DATA"); //所有量表的结论信息，每一个属性为一个allResult数组,从本地获取
 
 
@@ -29,11 +30,22 @@ for (let i = 0; i < S.length; i++) {
 	if (o != null) {
 		if(i==5){
 			foreignData.adas = o;//vue中的adas数据直接获取该值
-		}else{
+		} if(i==2){
+			foreignData.mmse = o;
+			console.log(o,'mmse')
+		} else if(i>=30){
+			Tong.push(o);
+		}	
+		else{
 			RESULT_DATA[i] = o
 		}
+		if(i>=30){
+			if(reportSize.indexOf(30)<0)
+				reportSize.push(30);
+		}else{
+			reportSize.push(S[i])
+		}
 		
-		reportSize.push(S[i])
 		
 		/**
 		 * 需要将本地缓存内容删掉防止下次打印报告数据错乱
@@ -43,6 +55,7 @@ for (let i = 0; i < S.length; i++) {
 	}
 
 }
+console.log(Tong,'通用')
 console.log(RESULT_DATA, '报告数据')
 const imgBaseURL = 'D:/AixlProject/AiWeb/'; //设置打印图片的基本目录
 
@@ -87,10 +100,42 @@ $(document).ready(function() {
 	}
 	for (let i = 0; i < reportSize.length; i++) {
 		/**
-		 * 跳过阿尔茨海默
+		 * 跳过阿尔茨海默,mmse,通用
 		 */
-		if(reportSize[i]==5)
-		continue
+		if(reportSize[i]==5||reportSize[i]==2||reportSize[i]>=30){
+			/**
+			 * 处理mmse中图片
+			 */
+			if(reportSize[i]==2){
+				let m =foreignData.mmse;
+				for(let t=0;t<m.item.length;t++){
+					if(m.item[t].img){
+						/**
+						 * 将图片保存到服务器
+						 */
+						let o = {
+							url: m.item[t].answer[0], //图片base64编码
+							name: 'mmse' + userMsg.aiUserId //图片的文件名
+					}
+						imgs.images.push(o);
+						$.ajax({
+							type: "POST",
+							url: config.url+'/pdf/Img',
+							async:false,
+							contentType: "application/json;charset=UTF-8",
+							data: JSON.stringify(imgs),
+							success: function(e) {
+								console.log('图片保存成功')
+							},
+							error: function(e) {
+								console.log(912)
+							}
+						})
+					}
+				}
+			}
+			continue
+		}
 		console.log('开始扫描图片')
 		let a = vue[vue.config[reportSize[i]].properName];
 		if (a.serviceImg) {
@@ -104,15 +149,13 @@ $(document).ready(function() {
 				imgs.images.push(o);
 			}
 		}
-
-		//console.log(a,'???????>>>>>>>>>>>>>')
 	}
 	console.log(imgs, '???????>>>>>>>>>>>>>')
 	if (imgs.images)
 		if (imgs.images.length > 0)
 			$.ajax({
 				type: "POST",
-				url: 'http://localhost:80/pdf/Img',
+				url: config.url+'/pdf/Img',
 				async:false,
 				contentType: "application/json;charset=UTF-8",
 				data: JSON.stringify(imgs),
@@ -332,6 +375,17 @@ let vue = new Vue({
 		 * 阿尔茨海默
 		 */
 		adas:foreignData.adas,
+		/**
+		 * mmse
+		 */
+		mmse:foreignData.mmse,
+		/**
+		 * 通用
+		 */
+		test:{
+			status:1,
+			test:Tong
+		}
 		
 	},
 	created() {
@@ -339,11 +393,8 @@ let vue = new Vue({
 			for (let j in RESULT_DATA[i]) {
 				this[this.config[i].properName][j] = RESULT_DATA[i][j]
 			}
-
-
 		}
-
-		console.log(this.scale_11)
+		console.log(this.test,'通用',reportSize)
 	},
 	computed: {
 		getUserTime: function() {

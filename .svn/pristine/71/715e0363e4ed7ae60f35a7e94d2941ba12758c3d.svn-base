@@ -1,0 +1,53 @@
+### status>100为需要服务器处理内容
+	//目标群id
+    private ArrayList<String> targets;
+
+    //单个目标id
+    private String target;
+
+    //数据包名称
+    private String dataName;
+
+    //发送方id
+    private String from_who;
+
+    //数据状态
+    private int status;
+
+    //数据值
+    private Object data;
+
+    //数据类型
+    private String dataType;
+
+    //数据分组
+    private String group;
+	
+	
+    //是否切割
+    private boolean incise;
+
+    //切割是否结束
+    private boolean endIncise;
+
+    //是否为长数据
+    private boolean isLongData;
+
+    //是否为主要数据
+    private boolean _isMain;
+
+    //数据操作
+    private String dataOptions;
+
+    //是否需要反馈消息
+    private boolean isFeedBack;
+
+    //反馈消息内容
+    private String feedBack;
+
+    //数据包是否需要缓存到服务器消息队列
+    private boolean isCache;
+	
+	//其它数据
+	private Object ot
+	

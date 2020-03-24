@@ -1,0 +1,705 @@
+{
+	"developer": [{
+			"title": "医生管理",
+			"value": [
+				"重置密码",
+				"信息修改和查看"
+			]
+		},
+		{
+			"title": "病人管理",
+			"value": [
+				"账号管理",
+				"信息修改和查看",
+				"历史测试记录"
+			]
+		}, {
+			"title": "账号管理",
+			"value": [
+				"新增账号",
+				"移除账号"
+			]
+		},
+		{
+			"title": "报告管理",
+			"value": [
+				"记录查看",
+				"管理"
+			]
+		},
+		{
+			"title": "系统",
+			"value": [
+				"清除系统缓存",
+				"系统信息"
+			]
+		}
+	],
+	"Adminstrator": [{
+			"title": "医生管理",
+			"value": [
+				"重置密码",
+				"信息修改和查看"
+			]
+		}, {
+			"title": "病人管理",
+			"value": [
+				"密码管理",
+				"信息修改和查看",
+				"历史测试记录"
+			]
+		}, {
+			"title": "题目管理",
+			"value": [
+				"查看量表信息",
+				"修改和查看题目信息",
+				"新增题目",
+				"移除题目"
+			]
+		}, {
+			"title": "账号管理",
+			"value": [
+				"新增账号",
+				"移除账号"
+			]
+		},
+		{
+			"title": "系统",
+			"value": [
+				"清除系统缓存", "系统信息"
+			]
+		}
+	],
+	"menue": {
+		"developer": {
+
+			"label": "部门",
+			"prop": "aiDocDepartment",
+			"type": "",
+			"autocomplete": "",
+			"disabled": false,
+			"placeholder": ""
+
+		},
+		"Adminstrator": {
+			"0-0": {
+				"isSearch": {
+					"value": false,
+					"placeholder": "请输入内容"
+				},
+				"item": [{
+					"label": "账号",
+					"prop": "aiDocId",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}],
+				"rules": {},
+				"updataUrl": "/docs/password",
+				"model": {}
+			},
+			"0-1": {
+				"isSearch": {
+					"value": true,
+					"placeholder": "请输入医生账号"
+				},
+				"url": "/docs/docMsg",
+				"updataUrl": "/docs/op",
+				"notPage":true,
+				"isModel":true,
+				"item": [{
+					"label": "账号",
+					"prop": "aiDocId",
+					"type": "",
+					"autocomplete": "off",
+					"disabled": true,
+					"placeholder": ""
+				}, {
+					"label": "姓名",
+					"prop": "aiDocName",
+					"type": "",
+					"autocomplete": "off",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "年龄",
+					"prop": "aiDocAge",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "性别",
+					"prop": "aiDocSex",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "部门",
+					"prop": "aiDocDepartment",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "单位",
+					"prop": "aiDocUnit",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "电话",
+					"prop": "aiDocPhone",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "身份证",
+					"prop": "aiDocCard",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "账号类型",
+					"prop": "aiUserType",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}],
+				"rules": {},
+				"model": {
+					"aiDocPhone":"",
+					"aiDocId":"",
+					"aiDocName":"",
+					"aiDocAge":"",
+					"aiDocSex":"",
+					"aiDocDepartment":"",
+					"aiDocUnit":"",
+					"aiDocCard":"",
+					"aiUserType":""
+				}
+			},
+			"1-0": {
+				"isSearch": {
+					"value": false,
+					"placeholder": "请输入内容"
+				},
+				"updataUrl":"/users/user",
+				"item": [{
+					"label": "账号",
+					"prop": "aiUserId",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "重置密码",
+					"prop": "aiUserPwd",
+					"type": "",
+					"autocomplete": "",
+					"disabled": true,
+					"placeholder": "123456"
+				}],
+				"rules": {},
+				"model": {
+					"aiUserId": "",
+					"aiUserPwd": "123456"
+				}
+			},
+			"1-1": {
+				"isSearch": {
+					"value": true,
+					"placeholder": "请输入病人账号"
+				},
+				"updataUrl":"/users/Msg",
+				"url":"/users/msgForDoc",
+				"notPage":true,
+				"isModel":true,
+				"item": [{
+						"label": "门诊号",
+						"prop": "aiUserPatientNumber",
+						"type": "",
+						"autocomplete": "",
+						"disabled": true,
+						"placeholder": ""
+					}, {
+						"label": "账号",
+						"prop": "aiUserId",
+						"type": "",
+						"autocomplete": "",
+						"disabled": true,
+						"placeholder": ""
+					}, {
+						"label": "姓名",
+						"prop": "aiUserName",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					},
+					{
+						"label": "年龄",
+						"prop": "aiUserAge",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "性别",
+						"prop": "aiUserSex",
+						"type": "",
+						"isSelect":true,
+						"options":[
+							"男","女"
+						],
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "电话",
+						"prop": "aiUserPhone",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "家庭地址",
+						"prop": "aiUserHome",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "籍贯",
+						"prop": "aiUserNation",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "出生日期",
+						"prop": "aiUserBirth",
+						"type": "data",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "教育背景",
+						"prop": "aiUserEduBg",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "出生地",
+						"prop": "aiUserNativePlace",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "所属单位",
+						"prop": "aiUserUnit",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "职位",
+						"prop": "aiUserDuty",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}, {
+						"label": "婚姻",
+						"prop": "aiUserMarriage",
+						"type": "",
+						"autocomplete": "",
+						"disabled": "",
+						"placeholder": ""
+					}
+				],
+				"rules": {},
+				"model": {
+					"aiUserPatientNumber": "",
+					"aiUserId": "",
+					"aiUserName": "",
+					"aiUserAge": "",
+					"aiUserSex": "",
+					"aiUserPhone": "",
+					"aiUserHome": "",
+					"aiUserNation": "",
+					"aiUserBirth": "",
+					"aiUserEduBg": "",
+					"aiUserNativePlace": "",
+					"aiUserUnit": "",
+					"aiUserDuty": "",
+					"aiUserMarriage": ""
+				}
+			},
+			"1-2": {
+				"isSearch": {
+					"value": false,
+					"placeholder": "请输入内容"
+				},
+				"url": "/report/html",
+				"isTable": true,
+				"tableHead": [{
+						"prop": "aiUserId",
+						"label": "账号"
+					}, {
+						"prop": "aiUserName",
+						"label": "姓名"
+					}, {
+						"prop": "aiScaleName",
+						"label": "量表名称"
+					}, {
+						"prop": "aiTestTime",
+						"label": "测试时间"
+					}, {
+						"prop": "aiDocId",
+						"label": "施测人账号"
+					}, {
+						"prop": "aiDocName",
+						"label": "施测人"
+					}
+
+				],
+				"item": [],
+				"rules": {}
+			},
+			"2-0": {
+				"isSearch": {
+					"value": false,
+					"placeholder": "请输入内容"
+				},
+				"isTable": true,
+				"url": "/scales/pages",
+				"tableHead": [{
+					"prop": "aiScaleId",
+					"label": "ID",
+					"width": 100
+				}, {
+					"prop": "aiScaleName",
+					"label": "名称",
+					"width": 200
+				}, {
+					"prop": "aiScaleOverview",
+					"label": "说明",
+					"width": 400
+				}, {
+					"prop": "aiScaleNotice",
+					"label": "注意事项",
+					"width": 300
+				}],
+				"item": [],
+				"rules": {}
+			},
+			"2-1": {
+				"isSubmit": false,
+				"isSearch": {
+					"value": true,
+					"placeholder": "请输入量表id或名称"
+				},
+				"isTable": true,
+				"url": "/scales/test/pages",
+				"updataUrl":"/scales/test",
+				"isChange": true,
+				"model":{},
+				"tableHead": [{
+						"prop": "aiScaleId",
+						"label": "ID",
+						"width": 100
+					}, {
+						"prop": "aiQuestionId",
+						"label": "题号",
+						"width": 100
+					}, {
+						"prop": "aiScaleName",
+						"label": "名称",
+						"width": 200
+					}, {
+						"prop": "aiQuestionContent",
+						"label": "题目内容",
+						"width": 400
+					},
+					{
+						"prop": "aiQuestionOption",
+						"label": "题目选项",
+						"width": 140
+					},
+					{
+						"prop": "aiQuestionAnswer",
+						"label": "问题答案",
+						"width": 200
+					},
+					{
+						"prop": "aiQuestionType",
+						"label": "问题类型",
+						"width": 120
+					},
+					{
+						"prop": "aiQuestionScore",
+						"label": "得分",
+						"width": 100
+					},
+					{
+						"prop": "aiQuestionNotice",
+						"label": "注意事项",
+						"width": 400
+					},
+					{
+						"prop": "aiQuestionGuid",
+						"label": "指导语",
+						"width": 400
+					},
+					{
+						"prop": "aiQuestionAnswerDescribe",
+						"label": "答案描述",
+						"width": 400
+					},
+					{
+						"prop": "aiScoreMethodName",
+						"label": "评分方式名称",
+						"width": 120
+					},
+					{
+						"prop": "aiScoreMethod",
+						"label": "评分方式",
+						"width": 120
+					}
+				],
+				"item": [],
+				"rules": {}
+			},
+			"2-2": {
+				"isSearch": {
+					"value": false,
+					"placeholder": "请输入内容"
+				},
+				"url":"/scales/ids",
+				"optionData":true,
+				"notPage":true,
+				"updataUrl":"/scales/test",
+				"httpType":"POST",
+				"item": [{
+					"label": "量表编号",
+					"prop": "aiScaleId",
+					"type": "",
+					"isSelect":true,
+					"options":[],
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "名称",
+					"prop": "aiScaleName",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "题号",
+					"prop": "aiQuestionId",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "问题内容",
+					"prop": "aiQuestionContent",
+					"type": "textarea",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "问题选项",
+					"prop": "aiQuestionOption",
+					"type": "textarea",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "答案",
+					"prop": "aiQuestionAnswer",
+					"type": "textarea",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "分数",
+					"prop": "aiQuestionScore",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "题目类型",
+					"prop": "aiQuestionType",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "注意点",
+					"prop": "aiQuestionNotice",
+					"type": "textarea",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "指导语",
+					"prop": "aiQuestionGuid",
+					"type": "textarea",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "描述",
+					"prop": "aiQuestionDescribe",
+					"type": "textarea",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "评分名称",
+					"prop": "aiScoreMethodName",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "评分方式",
+					"prop": "aiScoreMethod",
+					"type": "textarea",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}],
+				"model": {
+					"aiScaleId": "",
+					"aiQuestionId": "",
+					"aiQuestionContent": "",
+					"aiQuestionOption": "",
+					"aiQuestionAnswer": "",
+					"aiQuestionType": "",
+					"aiQuestionScore": "",
+					"aiQuestionNotice": "",
+					"aiQuestionGuid": "",
+					"aiQuestionAnswerDescribe": "",
+					"aiScoreMethodDescribe": "",
+					"aiScoreMethod": ""
+				},
+				"rules": {}
+			},
+			"2-3": {
+				"isSearch": {
+					"value": true,
+					"placeholder": "请输入量表id和题号用\"#\"分开"
+				},
+				"notPage": true,
+				"url": "/scales/test",
+				"updataUrl":"/scales/test",
+				"httpType":"DELETE",
+				"item": [{
+					"label": "",
+					"prop": "content",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": "请输入量表id和题号用\"#\"分开"
+				}],
+				"model": {
+					"content": ""
+				},
+				"rules": {},
+				"subType": "danger",
+				"subValue": "删除"
+			},
+			"3-0": {
+				"isSearch": {
+					"value": false,
+					"placeholder": ""
+				},
+				"updataUrl":"/users/both",
+				"httpType":"POST",
+				"item": [{
+					"label": "账号类型",
+					"isSelect": true,
+					"options": [
+						"医生", "用户"
+					],
+					"prop": "userType",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "ID",
+					"prop": "userId",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "密码",
+					"prop": "password",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}],
+				"model": {
+					"userType": "",
+					"userId": "",
+					"password": "123456"
+				},
+				"rules": {}
+			},
+			"3-1": {
+				"isSearch": {
+					"value": false,
+					"placeholder": "请输入内容"
+				},
+				"updataUrl":"/users/both",
+				"httpType":"DELETE",
+				"item": [{
+					"label": "账号类型",
+					"isSelect": true,
+					"options": [
+						"医生", "用户"
+					],
+					"prop": "userType",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}, {
+					"label": "ID",
+					"prop": "userId",
+					"type": "",
+					"autocomplete": "",
+					"disabled": "",
+					"placeholder": ""
+				}],
+				"model": {
+					"userType": "",
+					"userId": ""
+				},
+				"rules": {},
+				"subType": "danger",
+				"subValue": "删除",
+				"reType": "",
+				"reValue": ""
+			}
+		}
+
+	}
+}

@@ -1,0 +1,30 @@
+.back-img {
+
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	z-index: -10;
+	width: 100%;
+	height: 100%;
+	background-color: #5F9EA0;
+}
+
+.no-test {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: 100%;
+	user-select:none;
+	
+	font-family: SourceHanSansSC;
+	    font-weight: 400;
+	    font-size: 40px;
+	    color: rgba(255, 255, 255, 1);
+	  
+}
+

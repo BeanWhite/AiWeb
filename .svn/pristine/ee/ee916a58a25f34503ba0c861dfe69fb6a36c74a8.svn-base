@@ -1,0 +1,132 @@
+html{
+	overflow: overlay;
+	user-select: none;
+}
+body{
+	margin: 0;	
+}
+#app{
+	min-width: calc(100vw - 50px);
+	min-height: calc(100vh);
+	position: relative;
+}
+.t {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	width: 100%;
+	height: auto;
+}
+
+.bgc-img {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+	z-index: -10;
+}
+
+.login {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	width: 600px;
+	height: 400px;
+	display: flex;
+	justify-content: flex-start;
+	flex-direction: column;
+	align-items: center;
+	background-color: white;
+	border-radius: 5px;
+}
+
+.login-title {
+	width: 100%;
+	height: 100px;
+	text-align: center;
+	line-height: 100px;
+}
+
+.login-input {
+	width: 60%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.login-input-content {
+	width: 100%;
+	height: auto;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	border-radius: 5px;
+	border: solid 1px darkgray;
+	height: 40px;
+	padding-left: 5px;
+}
+
+.login-button {
+	width: 100px;
+	height: 50px;
+	text-align: center;
+	line-height: 50px;
+	background-color: #008B8B;
+	border-radius: 5px;
+	border: solid 1px transparent;
+	cursor: pointer;
+}
+
+.input-in {
+	width: 100%;
+	border: none;
+}
+
+.no-white-space {
+	white-space: nowrap;
+}
+
+.off{
+	display: none;
+}
+
+
+.form-input-stander{
+	width: 300px;
+}
+
+.full-y{
+	height: 100%;
+}
+
+.full-x{
+	width: 100%;
+}
+label{
+	white-space: nowrap;
+}
+
+.mytextArea{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	resize: none; 
+	border: none;
+	outline: none;	
+}
+

@@ -1,0 +1,25 @@
+{
+	"obj": {
+		"testResult": {
+			"aiUserId": "",
+			"aiScaleId": "",
+			"aiTestName":""
+		},
+		"testImgs": [{
+			"aiImgId": "",
+			"aiReportTime": "",
+			"aiImgSrc": "",
+			"aiImgContent": "",
+			"aiScaleId":""
+		}],
+		"testHtml": {
+			"aiReportTextTime": "",
+			"aiReportTextId": "",
+			"aiDocId": "",
+			"aiDocName": "",
+			"aiReportTextHtml": "",
+			"aiScaleId":""
+		}
+	}
+
+}

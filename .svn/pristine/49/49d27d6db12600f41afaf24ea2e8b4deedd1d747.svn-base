@@ -1,0 +1,93 @@
+@media print {
+	
+ 	@page {
+ 		size: A4 portrait;
+ 		margin: 2.5cm 1cm 4.5cm 1cm;
+		padding: 0;
+		@top-center{
+			width: 100%;
+			height: 100%;
+			content: element(divHeader);
+			
+		}
+		@bottom-center{
+			width: 100%;
+			height: 100%;
+			content:element(divFooter);
+		}
+		
+ 	}
+
+	
+	.first-h1{
+		page-break-before: avoid;
+	}
+	h1{
+		page-break-before: always;
+	}
+	
+	h1,h2,h3,h4,h5,h6,p{
+		margin: 0;
+		padding: 0;
+	}
+	#header-fix{
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		background-color: rosybrown;
+		content: counter(page);
+	}
+	#footer-fix{
+		position: absolute;
+		height: 100%;
+		width: 100%;
+	}
+	#footer-box{
+		height: 100%;
+		width: 100%;
+	}
+	#report-date{
+	
+	}
+	#office{
+	
+	}
+	.line-top{
+		display: flex;
+		justify-content: space-between;
+		border-bottom: 1px solid black;
+	}
+	.line-center{
+		margin-top: 2px;
+		border-top: 3px solid black;
+	}
+	.line-bottom{
+		margin-top: 3px;
+		border-bottom:1px solid black;
+	}
+	#page-num{
+		width: 100%;
+		text-align: center;
+		content:"(第"counter(page)"页/共"counter(pages)"页)";
+	}
+ 	button{
+		display: none;
+	}
+	#divHeader {    
+		
+		
+		position:running(divHeader) ;
+		prince-flow:static(divHeader,start)
+		width: 100%;	
+		height: 100px;
+		/* background-color: green; */
+	}
+	
+	#divFooter {
+		position: running(divFooter);
+		width: 100%;
+		/* background-color: red; */
+		height: 100%;
+	}
+	
+ }
