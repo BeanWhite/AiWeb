@@ -117,9 +117,6 @@
 			serviceImg:[],
 			buttomMsg:[]
 		}; 
-		let isPrint = false;
-		let reportTime = null;
-		let userMsg = sstorage.getItem('userMsg');
 
 		let START_TIME = ""; //计时开始时间
 		let isInsert = false; //是否加入新的成绩数据，false时不加入，只更新
@@ -429,29 +426,6 @@
 		 */
 		function next_scale() {
 
-
-			if (isPrint == false) {
-				let date = new Date().toLocaleString('chinese', {
-					hour12: false
-				});
-				date = date.replace(/\//g, '-')
-				if(reportTime == null)
-					reportTime = date;
-				sstorage.setItem('&11', RESULT_DATA);
-				$.ajax({
-					url: config.url + '/report/op/' + reportTime + '/' + userMsg.aiUserId + '/' + userMsg.aiUserName + '/' +
-						'画钟测验' + '/' + JSON.stringify(RESULT_DATA)+'/'+11,
-					type: 'POST',
-					success: function(e) {
-						console.log(e)
-					},
-					error: function() {
-			
-					}
-				})
-			}
-			isPrint = true;
-
 			let c = confirm('您是否测试完题目?')
 			if (c == true) {
 				let ind;
@@ -501,27 +475,6 @@
 		 * 打印报告
 		 */
 		function createReport() {
-			if (isPrint == false) {
-				let date = new Date().toLocaleString('chinese', {
-					hour12: false
-				});
-				date = date.replace(/\//g, '-')
-				if(reportTime == null)
-					reportTime = date;
-				sstorage.setItem('&11', RESULT_DATA);
-				$.ajax({
-					url: config.url + '/report/op/' + reportTime + '/' + userMsg.aiUserId + '/' + userMsg.aiUserName + '/' +
-						'画钟测验' + '/' + JSON.stringify(RESULT_DATA)+'/'+11,
-					type: 'POST',
-					success: function(e) {
-						console.log(e)
-					},
-					error: function() {
-			
-					}
-				})
-			}
-			isPrint = true;
 			//需要先将结果数据提交给服务器
 			//告诉打印页面应该处理哪一项测验，多个测验用&隔开
 			window.open("report/report.html?" + USER_ID)

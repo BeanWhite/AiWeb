@@ -138,12 +138,7 @@
 	<script>
 		let USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
 		console.log(USER_ID)
-		let userMsg = sstorage.getItem('userMsg');
 		let _targetID = 222;
-		//let _targetID = userMsg.aiUserId;
-		let isPrint = false;
-		let reportTime = null;
-		
 		let RESULT_DATA = { //	项目结论存储的信息
 			allResult: [],
 			useTime: "",
@@ -313,6 +308,12 @@
 		var notice = [];
 
 		//评分方式控制
+		// var user_methods = new Vue({
+		// 	el:'#use-method',
+		// 	data:{
+		// 		methods
+		// 	}
+		// })
 
 		new Vue({
 			el: '.options',
@@ -427,28 +428,6 @@
 		}
 
 		function next_scale() {
-			
-			if (isPrint == false) {
-				let date = new Date().toLocaleString('chinese', {
-					hour12: false
-				});
-				date = date.replace(/\//g, '-')
-				if(reportTime == null)
-					reportTime = date;
-				sstorage.setItem('&20', RESULT_DATA);
-				$.ajax({
-					url: config.url + '/report/op/' + reportTime + '/' + userMsg.aiUserId + '/' + userMsg.aiUserName + '/' +
-						'连线测验' + '/' + JSON.stringify(RESULT_DATA)+'/'+20,
-					type: 'POST',
-					success: function(e) {
-						console.log(e)
-					},
-					error: function() {
-			
-					}
-				})
-			}
-			isPrint = true;
 			if (Pos >= 3) {
 				let ind;
 				console.log(s);
@@ -529,27 +508,7 @@
 		 */
 		function createReport() {
 
-		if (isPrint == false) {
-				let date = new Date().toLocaleString('chinese', {
-					hour12: false
-				});
-				date = date.replace(/\//g, '-')
-				if(reportTime == null)
-					reportTime = date;
-				sstorage.setItem('&20', RESULT_DATA);
-				$.ajax({
-					url: config.url + '/report/op/' + reportTime + '/' + userMsg.aiUserId + '/' + userMsg.aiUserName + '/' +
-						'连线测验' + '/' + JSON.stringify(RESULT_DATA)+'/'+20,
-					type: 'POST',
-					success: function(e) {
-						console.log(e)
-					},
-					error: function() {
-			
-					}
-				})
-			}
-			isPrint = true;
+
 			//需要先将结果数据提交给服务器
 			//告诉打印页面应该处理哪一项测验，多个测验用&隔开
 			window.open("report/report.html?" + 20)

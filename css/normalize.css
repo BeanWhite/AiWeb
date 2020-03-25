@@ -39,10 +39,11 @@ html {
 body {
 	font-family: SourceHanSansSC;
 	margin: 0;
-	min-width: 1800px;
-	min-height: 860px;
+	/* min-width: 1800px;
+	min-height: 860px; */
 	/* height: 100%; */
-	width: 100%;
+	width: 100vw;
+	height: 100vh;
 	user-select:none;
 	text-align: justify;
 	text-justify:inter-ideograph;/*ie*/

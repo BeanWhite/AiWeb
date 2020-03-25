@@ -190,8 +190,6 @@
 		let vue = new Vue({
 			el: '.vue',
 			data: {
-				isPrint: false, //是否点击过打印
-				reportTime: null,
 				report_config: $.ajax({ //报告结果配置信息
 					url: '../JSON/report_config.json',
 					async: false
@@ -204,7 +202,7 @@
 				als: 0, //答题状态
 				RandomTest: RandomTest,
 				titleName: scaleData,
-				status: 0, //0,1,2三个状态分别对应三张卡片
+				status: 0,	//0,1,2三个状态分别对应三张卡片
 				cardTitle: ['卡片A', '卡片B', '卡片C'],
 				timerContent: ['开始', '暂停', '继续', '重置'],
 				scaleMsg: scaleMsg,
@@ -265,9 +263,6 @@
 					deep: true,
 					immediate: false
 				},
-				isFinish() {
-
-				}
 
 			},
 			created() {
@@ -324,30 +319,6 @@
 			},
 			methods: {
 				printPDF() {
-					if (this.isPrint == false) {
-						let date = new Date().toLocaleString('chinese', {
-							hour12: false
-						});
-						date = date.replace(/\//g, '-')
-						if(this.reportTime == null)
-							this.reportTime = date;
-						sstorage.setItem('&15', this.RESULT_DATA);
-
-						let that = this;
-						$.ajax({
-							url: config.url + '/report/op/' + that.reportTime + '/' + that.userMsg.aiUserId + '/' + that.userMsg.aiUserName + '/' +
-								that.titleName.aiScaleName + '/' + JSON.stringify(that.RESULT_DATA)+'/'+15,
-							type: 'POST',
-							success: function(e) {
-								console.log(e)
-								
-							},
-							error: function() {
-
-							}
-						})
-					}
-					this.isPrint = true;
 					window.open("report/report.html?" + USER_ID)
 				},
 				sendMsg(o) {
@@ -355,29 +326,6 @@
 					this.websocket.send(JSON.stringify(o));
 				},
 				nextScale() {
-					if (this.isPrint == false) {
-						let date = new Date().toLocaleString('chinese', {
-							hour12: false
-						});
-						date = date.replace(/\//g, '-')
-						if(this.reportTime == null)
-							this.reportTime = date;
-						sstorage.setItem('&15', this.RESULT_DATA);
-					
-						let that = this;
-						$.ajax({
-							url: config.url + '/report/op/' + that.reportTime + '/' + that.userMsg.aiUserId + '/' + that.userMsg.aiUserName + '/' +
-								that.titleName.aiScaleName + '/' + JSON.stringify(that.RESULT_DATA)+'/'+15,
-							type: 'POST',
-							success: function(e) {
-								console.log(e)
-							},
-							error: function() {
-					
-							}
-						})
-					}
-					this.isPrint = true;
 					if (this.isFinish == 1) {
 						let o = {
 							target: vue.userMsg.aiUserId,
@@ -398,9 +346,9 @@
 					} else return
 				},
 				toSt: function() {
-					/**
-					 * 点击开始按钮
-					 */
+				/**
+				 * 点击开始按钮
+				 */
 					this.isStart = false;
 					let that = this;
 					let o = {
@@ -431,21 +379,21 @@
 						this.finishStatus = 1;
 						return
 					}
-					if (this.pos == this.status) {
+					if(this.pos == this.status){
 						this.pos++;
 						let o = {
 							target: this.userMsg.aiUserId,
 							data: this.scaleMsg.aiQuestionGuid[this.status],
-							ot: this.status,
+							ot:this.status,
 							status: 6,
 							from_who: USER_ID,
 						}
 						this.sendMsg(o);
 					}
 					this.status++;
-
+					
 					console.log(this.status)
-
+					
 				},
 				itemsClick: function(index, index_2) {
 

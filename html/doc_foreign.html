@@ -87,6 +87,7 @@
 			watch: {
 				reportData() {
 					console.log('报告数据', this.reportData)
+					
 					sstorage.setItem('&'+ID, this.reportData);
 				}
 			},

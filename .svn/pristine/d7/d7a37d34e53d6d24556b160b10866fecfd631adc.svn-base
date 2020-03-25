@@ -26,7 +26,7 @@
 			align-items: center;justify-content: center;display: flex;
 		} */
 	</style>
-	<body >
+	<body>
 		<!-- 背景 -->
 		<div class="satic-area">
 			<div class="dynamic-area1"></div>
@@ -75,8 +75,7 @@
 								//将登录信息存入本地
 								sstorage.setItem('logins',o);
 								//跳转到医生界面
-								//window.location.href = "html/doc.html?" + user;
-								window.location.href = "html/menue.html?" + user;
+								window.location.href = "html/doc.html?" + user;
 							} else if (data.object == "用户" || data.object == 2) {
 								alert('该账号只限移动端登录')
 								//跳转到用户界面

@@ -29,7 +29,7 @@
 					<span>量表名称：{{scaleData.index.aiScaleName}}-认知</span>
 					<div class="change-page" style="width: 50%;justify-content: flex-end;">
 						<span class="back-page" v-on:click="backPage()" style="margin-right: 20px;">返回上一题</span>
-
+						
 						<span class="into-page" v-on:click="intoPage()" v-if="isFinish==0" style="margin-right: 20px;">进入下一题</span>
 						<span class="into-page" onclick="printPDF()" v-if="isFinish==1" style="margin-right: 20px;">打印报告</span>
 						<span class="into-page" onclick="next_scale()" v-if="isFinish==1" style="margin-right: 20px;">下一个测验</span>
@@ -99,7 +99,7 @@
 						<div class="content-title">
 							量表说明
 						</div>
-						<ul class="scale-explain-content scrollbar">
+						<ul class="scale-explain-content">
 							<li v-for="(it,index) in scaleData.index.aiScaleOverview">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{it}}</li>
 						</ul>
 					</div>
@@ -121,7 +121,7 @@
 							<li v-for="(it,index) in scaleData['1'].aiQuestionContent[0]" class="word-group   last-list-2">
 								<div class="word" v-on:click="wordClick(it,index)" v-bind:class="[wordTouch.indexOf(index)>-1?'word-bgc':'']">
 									<div v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" class="pointer-content">点击并朗读</div>
-									<img class="pointer transformY" v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/pointer.svg">
+									<img class="pointer transformY" v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/pointer.svg" >
 									{{it}}
 								</div>
 								<div class="line">
@@ -869,8 +869,7 @@
 		const vue = new Vue({
 			el: '.vue',
 			data: {
-				isPrint: false, //是否点击过打印
-				reportTime: null,
+
 				adas: {
 					"t1": "",
 					"t2": [],
@@ -1125,11 +1124,6 @@
 				ws: null,
 				userMsg: null
 			},
-			watch: {
-				isFinish() {
-
-				}
-			},
 			created() {
 				this.userMsg = sstorage.getItem("userMsg");
 				let that = this;
@@ -1218,8 +1212,8 @@
 				},
 				//进入下一个页面
 				intoPage: function() {
-
-					if (this.isFinish != 1) {
+					
+					if(this.isFinish!=1){
 						/**
 						 * 将结果存入本地
 						 */
@@ -1348,7 +1342,7 @@
 								this.adas.t12.answer = this.performence['12']
 							}
 						}
-
+						sstorage.setItem('&5',this.adas);
 					}
 					if (this.pagePos == 12) {
 						this.isFinish = 1;
@@ -1831,58 +1825,11 @@
 			}
 		}
 
-		function printPDF() {
-			if (vue.isPrint == false) {
-				let date = new Date().toLocaleString('chinese', {
-					hour12: false
-				});
-				date = date.replace(/\//g, '-');
-				if(vue.reportTime==null)
-					vue.reportTime = date;
-				sstorage.setItem('&5', this.adas);
-				let that = vue;
-				$.ajax({
-					url: config.url + '/report/op/' + that.reportTime + '/' + that.userMsg.aiUserId + '/' + that.userMsg.aiUserName + '/' +
-						that.scaleData.index.aiScaleName + '/' + JSON.stringify(that.adas)+'/'+5,
-					type: 'POST',
-					success: function(e) {
-						console.log(e)
-					},
-					error: function() {
-
-					}
-				})
-			}
-			vue.isPrint = true;
+		function printPDF(){
 			window.open('report/report.html')
 		}
-
 		function next_scale() {
 			console.log(scales)
-			
-			if (vue.isPrint == false) {
-				let date = new Date().toLocaleString('chinese', {
-					hour12: false
-				});
-				date = date.replace(/\//g, '-');
-				if(vue.reportTime==null)
-					vue.reportTime = date;
-				sstorage.setItem('&5', this.adas);
-				let that = vue;
-				$.ajax({
-					url: config.url + '/report/op/' + that.reportTime + '/' + that.userMsg.aiUserId + '/' + that.userMsg.aiUserName + '/' +
-						that.scaleData.index.aiScaleName + '/' + JSON.stringify(that.adas)+'/'+5,
-					type: 'POST',
-					success: function(e) {
-						console.log(e)
-					},
-					error: function() {
-			
-					}
-				})
-			}
-			vue.isPrint = true;
-			
 			if (vue.isFinish > 0) {
 				/**
 				 * 跳转之前通知平板进入下一个量表

@@ -36,9 +36,9 @@
 					<span>量表名称：{{titleName.aiScaleName}}</span>
 					<div class="" v-if="isFinish==1">
 						<span onclick="next_scale()" style="margin-right: 40px;">下一个量表</span>
-						<span @click="printPDF()">打印报告</span>
+						<span  @click="printPDF()">打印报告</span>
 					</div>
-
+					
 				</div>
 				<div class="scale-left flex-layout-aligin" style="width: 70%;justify-content: space-between;">
 					<div class="content-title">
@@ -208,8 +208,6 @@
 		let vue = new Vue({
 			el: '.vue',
 			data: {
-				isPrint: false,
-				reportTime: null,
 				titleName: scaleData,
 				status: 0,
 				scaleMsg: scaleMsg,
@@ -227,9 +225,9 @@
 					allResult: [],
 					bottomMsg: []
 				},
-				theEnd: $.ajax({
-					url: '../JSON/report_config.json',
-					async: false
+				theEnd:$.ajax({
+					url:'../JSON/report_config.json',
+					async:false
 				}).responseJSON.scale_13,
 				userMsg: sstorage.getItem("userMsg") //用户信息
 			},
@@ -237,34 +235,10 @@
 				console.log('用户信息', this.userMsg)
 			},
 			methods: {
-				printPDF() {
-
-					if (this.isPrint == false) {
-						let date = new Date().toLocaleString('chinese', {
-							hour12: false
-						});
-						date = date.replace(/\//g, '-')
-						if (this.reportTime == null)
-							this.reportTime = date;
-						sstorage.setItem('&13', this.RESULT_DATA);
-						let that = this;
-						$.ajax({
-							url: config.url + '/report/op/' + that.reportTime + '/' + that.userMsg.aiUserId + '/' + that.userMsg.aiUserName +
-								'/' +
-								'数字广度测验' + '/' + JSON.stringify(RESULT_DATA) + '/' + 13,
-							type: 'POST',
-							success: function(e) {
-								console.log(e)
-							},
-							error: function() {
-
-							}
-						})
-					}
-					this.isPrint = true;
+				printPDF(){
 					window.open("report/report.html?" + USER_ID)
 				},
-
+				
 				t: function(e) {
 					if (this.isFinish != 0)
 						return
@@ -294,7 +268,7 @@
 				},
 				nGroup: function(e) {
 					let srcEle = e.srcElement;
-					let a = false;
+					let a =false;
 					if (this.isFinish == 1)
 						return;
 					if (srcEle.innerHTML.replace(/(^\s*)|\s*$/g, '') == '完成') {
@@ -370,27 +344,27 @@
 					if (this.status == 0) {
 						allResult_item[0] = "顺背得分"; //项目名
 						allResult_item[1] = this.allR_A.length;
-						this.RESULT_DATA.allResult[0] = (allResult_item);
+						this.RESULT_DATA.allResult[0]=(allResult_item);
 					} else {
 						allResult_item[0] = "倒背得分"
 						allResult_item[1] = this.allR_B.length;
 						ai_2[0] = "总分";
 						ai_2[1] = this.allR_A.length + this.allR_B.length;
-						this.RESULT_DATA.allResult[1] = (allResult_item);
-						this.RESULT_DATA.allResult[2] = (ai_2);
+						this.RESULT_DATA.allResult[1]=(allResult_item);
+						this.RESULT_DATA.allResult[2]=(ai_2);
 						for (let i = 0; i < this.theEnd.methods.length; i++) {
 							if (this.allR_A.length + this.allR_B.length >= this.theEnd.methods[i].min &&
 								this.allR_A.length + this.allR_B.length <= this.theEnd.methods[i].max) {
 								bottomMsg = this.theEnd.methods[i].tzms;
-								this.RESULT_DATA.bottomMsg[0] = bottomMsg;
+								this.RESULT_DATA.bottomMsg[0]=bottomMsg;
 							}
 
 						}
 					}
-					console.log(this.RESULT_DATA, '打印内容')
+					console.log(this.RESULT_DATA,'打印内容')
 					sstorage.setItem('&13', this.RESULT_DATA);
 
-					if (a)
+					if(a)
 						this.status = 1;
 					if (srcEle.innerHTML.replace(/(^\s*)|\s*$/g, '') == '进入倒背测试') {
 						this.pos = 0;
@@ -429,44 +403,20 @@
 			}
 		}
 
-		let ws = new WebSocket(config.wsURL + '/websocket/' + USER_ID)
-
+	let ws = new WebSocket(config.wsURL+'/websocket/'+USER_ID)
 		function next_scale() {
 			console.log(scales)
-			let that = vue;
-			if (that.isPrint == false) {
-				let date = new Date().toLocaleString('chinese', {
-					hour12: false
-				});
-				date = date.replace(/\//g, '-')
-				if(that.reportTime == null)
-					that.reportTime = date;
-				sstorage.setItem('&13', that.RESULT_DATA);
-			
-				$.ajax({
-					url: config.url + '/report/op/' + that.reportTime + '/' + that.userMsg.aiUserId + '/' + that.userMsg.aiUserName + '/' +
-						'数字广度测验' + '/' + JSON.stringify(RESULT_DATA)+'/'+13,
-					type: 'POST',
-					success: function(e) {
-						console.log(e)
-					},
-					error: function() {
-			
-					}
-				})
-			}
-			that.isPrint = true;
-			window.open("report/reif (vue.isFinish != 0) {
+			if (vue.isFinish != 0) {
 				let ind = -1;
 				for (let i = 0; i < scales.items.length; i++) {
 					if (scales.items[i].aiScaleId == 13)
 						ind = i;
 				}
-
+				
 				let o = {
-					target: vue.userMsg.aiUserId,
-					status: 3,
-					from_who: USER_ID
+					target:vue.userMsg.aiUserId,
+					status:3,
+					from_who:USER_ID
 				}
 				ws.send(JSON.stringify(o))
 				if (ind + 1 == scales.items.length) {
@@ -474,7 +424,7 @@
 				} else {
 					toJump(scales.items[ind + 1].aiScaleId)
 				}
-
+			
 			} else {
 				alert('您还有未完成的内容');
 			}
