@@ -1,0 +1,83 @@
+	<div  v-for="(it,index) in test.test">
+                <p style="page-break-after:always"></p>
+                <table class="table1" >
+                    <tr>
+                        <td>门诊号:</td>
+                        <td>姓名:</td>
+                        <td>性别:</td>
+                        <td>年龄:</td>
+                    </tr>
+                    <tr>
+                        <td>来源:</td>
+                        <td>职业:</td>
+                        <td>婚姻:</td>
+                        <td>教育:</td>
+                    </tr>
+                </table>
+                <p class="title"> {{it.lbinfo.title}}</p>
+                <table class="table2" >
+                    <thead>
+                        <tr>
+                            <td class="td" style="width:158.5px;">
+                                项目
+                            </td>
+                            <td class="td" style="width:120px;">
+                                得分
+                            </td>
+                            <td class="td" style="">
+                                结论参考值
+                            </td>
+                            <td class="td" style="width:158.5px;">
+                                结论
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr  v-for="(yz,index1) in it.ajl">
+                            <td>总分</td>
+                            <td>{{yz.score}}</td>
+                            <td  v-if="yz.resultname!=null">{{yz.resultname}}:{{yz.start_fen}}--{{yz.end_fen}}</td>   
+                            <td  v-else>{{yz.start_fen}}--{{yz.end_fen}}</td>   
+                            <td>{{yz.resultname}}</td>
+                        </tr>
+                        <div v-if="Object.keys(it.yz).length >0">
+                            <tr  v-for="(yz,index1) in it.yz">
+                                <td>{{yz.title}}</td>
+                                <td>{{yz.score}}</td>
+                                <td  v-if="yz.resultname!=null">{{yz.resultname}}:{{yz.start_fen}}--{{yz.end_fen}}</td>   
+                                <td  v-else>{{yz.start_fen}}--{{yz.end_fen}}</td>   
+                                <td>{{yz.resultname}}</td>
+                            </tr>
+                        </div>
+                    </tbody>
+                </table>
+               
+                <div  v-if="Object.keys(it.questionlist).length >0">
+                    <table class="table2">
+                        <thead>
+                            <tr>
+                                <th>题目</th>
+                                <th>答案</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(questionlist,index3) in it.questionlist">
+                                <td >{{questionlist.qtitle}}</td>
+                                <td >{{questionlist.atitle}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="text-align: left;;font-size: 16px;font-weight: bold;height: 20px;text-decoration:underline;margin-left: 2px; ">
+                    <font style="text-decoration:underline;border-bottom:1px solid black;">总结论 :</font>
+                </p>
+                <p v-for="(ajl,index2) in it.ajl">{{ajl.tzms}}</p>
+                <div v-if="Object.keys(it.yz).length >0">
+                    <p v-if="it.yz[0]['tzms']!=null" style="text-align: left;;font-size: 16px;font-weight: bold;height: 20px;text-decoration:underline;margin-left: 2px; ">
+                        <font style="text-decoration:underline;border-bottom:1px solid black;">分因子结论 :</font>
+                    </p>
+                    <p  v-for="(yz,index1) in it.yz">
+                        <label v-if="yz.tzms!=null"><span style="font-weight: bold;">{{yz.title}}:</span>{{yz.tzms}}</label>
+                    </p>
+                </div>
+            </div>

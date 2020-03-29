@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html style="height: 100%;padding: 0;margin: 0;">
+	<head>
+		<meta charset="utf-8">
+		<title>神经心理辅助诊疗系统</title>
+	</head>
+	<body style="height: 100%;padding: 0;margin: 0;">
+		<div style="font-size: 50px;display: flex;justify-content: center;align-items: center;height: 100%;width: 100%;background-color: #008B8B;">
+			<img src="../img/poster-about.jpg" style="width: 100%;height: 100%;">
+			<span id="" style="font-size: 100%;">
+				已经全部完成
+			</span>
+		</div>
+	</body>
+	<script>
+		location.href = 'doc.html?22'
+	</script>
+</html>

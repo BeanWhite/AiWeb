@@ -4,8 +4,8 @@ var config = {
 	
 	
 	
-	//imgPrintUrl:'D:/nginx-1.17.7/html/xlrzpc/img/cacheImg',//服务器使用
-	imgPrintUrl:'http://localhost:81/xlrzpc/img/cacheImg',
+	imgPrintUrl:'D:/nginx-1.17.7/html/xlrzpc/img/cacheImg',//服务器使用
+	//imgPrintUrl:'http://localhost:81/xlrzpc/img/cacheImg',
 	//imgPrintUrl:'D://mmse222.png'
 	
 	

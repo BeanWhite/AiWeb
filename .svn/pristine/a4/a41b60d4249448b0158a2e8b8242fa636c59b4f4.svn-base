@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>神经心理辅助诊疗系统</title>
+		<!-- 背景动画 以及初始化样式 -->
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="../css/demo.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css">
+		<!-- 页面样式 -->
+		<link rel="stylesheet" type="text/css" href="../css/doc_ADAS.css" />
+		<link rel="stylesheet" type="text/css" href="../css/layoutStyle.css" />
+		<!-- 导入vue.js -->
+		<script src="../js/vue.min.js"></script>
+		<!-- <script type="text/javascript" src="../js/vue.min.js"></script> -->
+		<!-- 引入jQuery.js -->
+		<script src="../js/jquery/jquery.min.js"></script>
+	</head>
+	<body>
+		<!-- 背景 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+		<div id="content" class="vue">
+			<div class="dialog-back" v-bind:class="[isShow?'dialog-on':'dialog-off']" v-if="isShow"></div>
+			<div class="scale scale-Title ">
+				<div id="title">
+					<span>量表名称：{{scaleData.index.aiScaleName}}-认知</span>
+					<div class="change-page" style="width: 50%;justify-content: flex-end;">
+						<span class="back-page" v-on:click="backPage()" style="margin-right: 20px;">返回上一题</span>
+
+						<span class="into-page" v-on:click="intoPage()" v-if="isFinish==0" style="margin-right: 20px;">进入下一题</span>
+						<span class="into-page" onclick="printPDF()" v-if="isFinish==1" style="margin-right: 20px;">打印报告</span>
+						<span class="into-page" onclick="next_scale()" v-if="isFinish==1" style="margin-right: 20px;">下一个测验</span>
+					</div>
+				</div>
+
+				<div class="dialog-content" v-bind:class="[isShow?'dialog-on':'dialog-off']" v-if="isShow">
+					<div class="dialog-title">
+						单词{{clueData.ind[1]+1}}
+					</div>
+					<div class="img-name">
+						{{clueData.ind[0]}}
+					</div>
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('花')>-1?'on':'off']" src="../img/5/flower.jpg" alt="花">
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('钱包')>-1?'on':'off']" src="../img/5/billfold.jpg" alt="钱包" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('梳子')>-1?'on':'off']" src="../img/5/comb.jpg" alt="梳子" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('听诊器')>-1?'on':'off']" src="../img/5/echometer.jpg" alt="听诊器" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('食指')>-1?'on':'off']" src="../img/5/index_finger.jpg"
+					 alt="食指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('小手指')>-1?'on':'off']" src="../img/5/little_finger.jpg"
+					 alt="小手指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('假面具')>-1?'on':'off']" src="../img/5/mask.jpg" alt="假面具" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('中指')>-1?'on':'off']" src="../img/5/middle_finger.jpg"
+					 alt="中指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('口琴')>-1?'on':'off']" src="../img/5/organ.jpg" alt="口琴" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('铅笔')>-1?'on':'off']" src="../img/5/pen.jpg" alt="铅笔" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('夹子')>-1?'on':'off']" src="../img/5/pliers.jpg" alt="夹子" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('剪刀')>-1?'on':'off']" src="../img/5/scissor.jpg" alt="剪刀" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('毽子')>-1?'on':'off']" src="../img/5/shuttlecock.jpg" alt="毽子" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('沙发')>-1?'on':'off']" src="../img/5/sofa.jpg" alt="沙发" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('无名指')>-1?'on':'off']" src="../img/5/the_ring_finger.jpg"
+					 alt="无名指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('拇指')>-1?'on':'off']" src="../img/5/thumb.jpg" alt="拇指" />
+					<img class="show-img" v-bind:class="[clueData.ind.indexOf('哨子')>-1?'on':'off']" src="../img/5/whistle.jpg" alt="哨子" />
+					<div class="dialog-b">
+						<div class="clue-1">
+							{{clueData.title}}
+						</div>
+						<span>{{clueData.level}}&nbsp;&nbsp;&nbsp;{{clueData.des}}</span>
+					</div>
+					<div class="two-button">
+						<div class="tb-items">
+							<div class="tb-true" v-on:click="wordTrue_2(clueData.ind[1])" v-bind:class="[wordSelect_2.indexOf(clueData.ind[1])>-1?'show-bgc':'']">正确</div>
+						</div>
+						<div class="tb-items">
+							<div class="tb-false" v-on:click="wordFalse_2(clueData.ind[1])" v-bind:class="[wordCancle_2.indexOf(clueData.ind[1])>-1?'show-bgc':'']">错误</div>
+						</div>
+						<!-- <div class="tb-items">
+							<span v-on:click="closeDialog()" class="tb-cancle">X</span>
+						</div> -->
+					</div>
+
+				</div>
+				<div id="first" class="page-content" v-bind:class="[pagePos==0?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							指导语
+						</div>
+						<div class="guid-content">
+							<ul class="guid-content-list">
+								<li v-for="(it,index) in scaleData.index.aiScaleNotice">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{it}}</li>
+							</ul>
+						</div>
+
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							量表说明
+						</div>
+						<ul class="scale-explain-content scrollbar">
+							<li v-for="(it,index) in scaleData.index.aiScaleOverview">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{it}}</li>
+						</ul>
+					</div>
+				</div>
+				<div id="second" class="page-content" v-bind:class="[pagePos==1?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							1.单词回忆任务
+						</div>
+						<div class="second-content">
+							<span class="little-title">指导语:</span><span class="little-title-content"> {{scaleData['1'].aiQuestionGuid}}</span><br>
+							<span class="little-title">操作:</span> <span class="little-title-content">{{scaleData['1'].aiQuestionNotice}}</span>
+						</div>
+						<div class="content-title-size">
+							{{groupId_1[0]}}({{groupId_1[1]}})
+						</div>
+						<ul class="scale-topic">
+							<li class="toNext" v-on:click="toNextGroup_1()" style="cursor: pointer;" v-if="gropuId_1!=3">进入下一组</li>
+							<li v-for="(it,index) in scaleData['1'].aiQuestionContent[0]" class="word-group   last-list-2">
+								<div class="word" v-on:click="wordClick(it,index)" v-bind:class="[wordTouch.indexOf(index)>-1?'word-bgc':'']">
+									<div v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" class="pointer-content">点击并朗读</div>
+									<img class="pointer transformY" v-bind:class="[pos.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/pointer.svg">
+									{{it}}
+								</div>
+								<div class="line">
+								</div>
+								<div class="word-check" v-on:click="checkBox(it,index)">
+									<img class="checkBox-svg transformX" v-bind:class="[checkBoxIndex_1.indexOf(index)>-1?'toHidden':'toShow']"
+									 src="../svg/checkBox_off.svg">
+									<img class="checkBox-svg" v-bind:class="[checkBoxIndex_1.indexOf(index)>-1?'toShow':'toHidden']" src="../svg/checkBox_on.svg">
+								</div>
+							</li>
+						</ul>
+						<div id="" style="width: 100%;height: 40px;text-align: center;color: red;">
+							(请在回忆起的单词下方打勾，没回忆起的不做任何操作)
+						</div>
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评判
+						</div>
+						<ul class="judege">
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									<span class="title-style">
+										第一组
+									</span>
+
+								</div>
+								<div class="title-content-b">
+									<span>未能回忆的单词数:</span>
+									<span>{{wordCancle_1[0]}}</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									<span class="title-style">
+										第二组
+									</span>
+								</div>
+								<div class="title-content-b">
+									<span>未能回忆的单词数:</span>
+									<span>{{wordCancle_1[1]}}</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="text-align: left;width: 100%;">
+									<span class="title-style">
+										第三组
+									</span>
+								</div>
+								<div class="title-content-b">
+									<span>未能回忆的单词数:</span>
+									<span>{{wordCancle_1[2]}}</span>
+								</div>
+								<div class="line"></div>
+							</li>
+							<li class="judege-list">
+								<div style="width: 100%;display: flex;justify-content: flex-start;white-space: nowrap;">
+									<span class="title-style">评判得分:</span>
+									<span class="title-content-b little-title-redU">{{((wordCancle_1[2]+wordCancle_1[1]+wordCancle_1[0])/3).toFixed(1)}}</span>
+								</div>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+				<div id="third" class="page-content" v-bind:class="[pagePos==2?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							2.命名物体或手指
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content"> {{scaleData['2'].aiQuestionGuid}}</span><br>
+							<span class="little-title">操作:</span> <span class="little-title-content">{{scaleData['2'].aiQuestionNotice}}</span>
+						</div>
+						<ul class="scale-topic" style="justify-content: flex-start;">
+							<li v-for="(it,index) in scaleData['2'].aiQuestionContent" class="word-group word-group-wrap word-max radius"
+							 v-on:click="showPic_2(it,index)" v-bind:class="[clueData.ind.indexOf(index)>-1?'show-bgc':'']">{{it[0]}}</li>
+						</ul>
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评判
+						</div>
+						<ul class="scale-topic " style="justify-content: space-between;height: 100%;">
+							<li v-for="(it,index) in scaleData['2'].aiQuestionContent" class="word-group word-wrap-s word-judge-2 word-p radius"
+							 style="width: 30%;">
+								<div style="width: 100%;height: 100%;position: relative;">
+									<img v-bind:class="[wordSelect_2.indexOf(index)>-1?'on':'off']" class="word-select" src="../svg/checkBox_on_green.svg">
+									<img v-bind:class="[wordCancle_2.indexOf(index)>-1?'on':'off']" class="word-select" src="../svg/must.svg">
+									{{it[0]}}
+								</div>
+							</li>
+							<li style="border: none; width: 30%;"></li>
+							<!-- 							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li>
+							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li>
+							<li class="word-group  word-judge-2  word-wrap-s" style="border: none;"></li> -->
+						</ul>
+						<div class="score">
+							<div class="score-content">
+								<span class="little-title">评判得分:</span>
+								<span class="little-title-redU">{{performence['2']}}</span>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div id="fourth" class="page-content" v-bind:class="[pagePos==3?'toShow':'toHidden']">
+					<div class="center-box">
+						<div class="center radius">
+							<div class="content-title">
+								3.指令
+							</div>
+							<div class="third-content">
+								<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['3'].aiQuestionGuid}}</span>
+								<br>
+								<span class="little-title">操作:</span> <span class="little-title-content">{{scaleData['3'].aiQuestionNotice}}</span>
+							</div>
+							<div class="line">
+							</div>
+							<ul class="list">
+								<li class="list-items" v-for="(it,index) in scaleData['3'].aiQuestionContent">
+									<div class="list-items-left">
+										<span class="little-title-content">{{it[0]}}</span>
+									</div>
+									<div class="list-items-right">
+										<img :src="jClickT_3.indexOf(index)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'" alt="0" v-on:click="jClick_3(0,index)">
+										<img :src="jClickF_3.indexOf(index)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'" alt="0" v-on:click="jClick_3(1,index)">
+									</div>
+								</li>
+							</ul>
+							<div>
+								<span class="little-title">得分:</span>
+								<span class="little-title-redU">{{jClickF_3.length}}</span>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div id="fifth" class="page-content" v-bind:class="[pagePos==4?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							4.结构性练习
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content"> {{scaleData['4'].aiQuestionGuid}}</span><br>
+							<span class="little-title">操作:</span> <span class="little-title-content">{{scaleData['4'].aiQuestionContent}}</span>
+						</div>
+						<div class="line"></div>
+						<div class="little-title">正确图形:</div>
+						<img src="../img/5/5timg.png" style="width: 100%;" />
+						<div class="little-title">错误图形:</div>
+						<img src="../img/5/5fimg.png" style="width: 100%;" />
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							患者作图
+						</div>
+						<div class="uImg">
+							<span style="position: absolute;top: 0;left: 0;" class="little-title">图{{pos_4+1}}:</span>
+							<img class="re-img" :src="picUrls_4[pos_4]">
+						</div>
+						<div class="block-div"></div>
+						<div class="score">
+							<div class="score-j">
+								<span class="little-title">本次评判:</span>
+								<ul class="ul-list">
+									<li class="flex-layout-j"><img :src="jIcon_4[pos_4].indexOf(0)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'"
+										 v-on:click="jClick_4(0)" /><span class="des">正确</span></li>
+									<li class="flex-layout-j"><img :src="jIcon_4[pos_4].indexOf(1)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'"
+										 v-on:click="jClick_4(1)" /><span class="des">错误</span></li>
+									<li class="flex-layout-j"><img :src="jIcon_4[pos_4].indexOf(2)>-1?'../svg/doubt_green.svg':'../svg/doubt_gray.svg'"
+										 v-on:click="jClick_4(2)" /><span class="des">未做图</span></li>
+								</ul>
+								<div class="button ne-3">
+									<span style="display: inline-block;margin-right: 10px;" @click="back_4()">上一图</span>
+									<span style="display: inline-block;" v-on:click="save_4()" v-if="pos_4 + 1 < statusA_4.length">下一图</span>
+
+								</div>
+							</div>
+							<div class="score-content" style="justify-content: space-around;">
+								<span class="little-title">总得分:</span>
+								<span class="little-title-redU">{{jClickF_4.length}}分</span>
+								<span class="little-title-redU">且</span>
+								<span class="little-title-redU">{{jDoubt_4.length}}图为作答</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="sixth" class="page-content" v-bind:class="[pagePos==5?'toShow':'toHidden']">
+					<div class="scale-left flex-layout-aligin">
+						<div class="content-title">
+							5.意向性练习
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content"> {{scaleData['5'].aiQuestionGuid}}</span><br>
+							<span class="little-title">操<span style="visibility: hidden;">一</span>作:</span> <span class="little-title-content">{{scaleData['5'].aiQuestionAnswerDescribe}}</span>
+						</div>
+						<div class="line"></div>
+						<div class="little-title" style="width: 100%;text-align: left;">
+							步骤对照:
+						</div>
+						<ul class="content-5">
+							<li class="content-5-items" v-for="(it,index) in scaleData['5'].aiQuestionContent">
+								<div>
+									{{index+1}}<span style="visibility: hidden;">一</span>{{it[0]}}
+								</div>
+								<div>
+									<img :src="jClickT_5.indexOf(index)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'" v-on:click="jClick_5(0,index)"
+									 style="margin-right: 24px;" />
+									<img :src="jClickF_5.indexOf(index)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'" v-on:click="jClick_5(1,index)" />
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评判
+						</div>
+						<div class="flex-layout-aligin" style="width: 100%;align-items: flex-start;height: 40%;padding-top: 40px;">
+							<span class="little-title" style="margin-bottom: 30px;">评分方法:</span>
+							<span class="content-text">{{scaleData['5'].aiScoreMethod}}</span>
+						</div>
+						<div class="score">
+							<div class="score-content">
+								<span class="little-title">评判得分:</span>
+								<span class="little-title-redU">{{performence['5']}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="seventh" class="page-content" v-bind:class="[pagePos==6?'toShow':'toHidden']">
+					<div class="scale-left flex-layout-aligin">
+						<div class="content-title">
+							6.定向力
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content"> {{scaleData['6'].aiQuestionGuid}}</span><br>
+						</div>
+						<div class="line"></div>
+
+						<ul class="content-5">
+							<li class="content-5-items" v-for="(it,index) in scaleData['6'].aiQuestionContent">
+								<div>
+									{{index+1}}<span style="visibility: hidden;">一</span>{{it[0]}}
+								</div>
+								<div>
+									<img :src="jClickT_6.indexOf(index)>-1?'../svg/true_green.svg':'../svg/true_gray.svg'" v-on:click="jClick_6(0,index)"
+									 style="margin-right: 24px;" />
+									<img :src="jClickF_6.indexOf(index)>-1?'../svg/false_red.svg':'../svg/false_gray.svg'" v-on:click="jClick_6(1,index)" />
+								</div>
+							</li>
+						</ul>
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评判
+						</div>
+						<div class="flex-layout-aligin" style="width: 100%;align-items: flex-start;height: 40%;padding-top: 40px;">
+							<span class="little-title" style="margin-bottom: 30px;">评分方法:</span>
+							<span class="content-text">{{scaleData['6'].aiScoreMethod}}</span>
+						</div>
+						<div class="score">
+							<div class="score-content">
+								<span class="little-title">评判得分:</span>
+								<span class="little-title-redU">{{performence['6']}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="eighth" class="page-content" v-bind:class="[pagePos==7||pagePos==8?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							7.单词辨认任务
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content"> {{scaleData['7'].aiQuestionGuid[0][0]}}</span><br>
+							<!-- <span class="little-title">操作:</span> <span class="little-title-content">{{scaleData['7'].aiQuestionContent}}</span> -->
+						</div>
+						<ul class="flex-layout-j-space-evenly ul" style="flex-wrap: wrap;">
+							<li class="word-group word-wrap-s word-judge-2 word-p radius" v-for="(it,index) in scaleData['7'].aiQuestionContent[0][0]"
+							 style="width: 16%;">
+								{{it}}
+							</li>
+						</ul>
+						<div class="little-title-content" style="height: auto;padding-top: 15px;padding-bottom: 15px;">
+							{{scaleData['7'].aiQuestionNotice}}
+						</div>
+						<div class="line"></div>
+						<div class="third-content">
+							<span class="little-title">指导语二:</span>
+							<span class="little-title-content">{{scaleData['7'].aiQuestionGuid[1][0]}}</span>
+						</div>
+						<div class="little-title-content">{{scaleData['8'].aiQuestionNotice}}</div>
+
+					</div>
+					<!-- <div class="scale-right flex-layout-aligin" style="width: 30%;" :style="{display:(isShow_7>0?'none':'')}"> -->
+					<div class="scale-right flex-layout-aligin" style="width: 30%;" v-if="pagePos==7">
+						<div class="content-title">
+							患者作答
+						</div>
+						<ul class="flex-layout-j-space-between ul" style="flex-wrap: wrap;height: 100%;">
+							<li v-for="(it,index) in scaleData['7'].aiQuestionContent[wPos_7-1][pos_7]" class="word-group word-wrap-s word-judge-2 word-p radius"
+							 style="width: 22%;" v-bind:class="[chooseF_7[pos_7-1].indexOf(index)>-1?'red-bgc':'',chooseT_7[pos_7-1].indexOf(index)>-1?'green-bgc':'']">
+								{{it}}
+							</li>
+							<li class="word-group word-wrap-s word-judge-2 word-p radius" style="width: 22%;visibility: hidden;"></li>
+							<li class="word-group word-wrap-s word-judge-2 word-p radius" style="width: 22%;visibility: hidden;"></li>
+							<li class="word-group word-wrap-s word-judge-2 word-p radius" style="width: 22%;visibility: hidden;"></li>
+						</ul>
+						<div class="flex-layout-aligin" style="align-items: flex-start;height: auto;justify-content: flex-end;padding-top: 30px;">
+							<div style="width: 100%;text-align: right;height: auto">
+								<span class="little-title-red" v-on:click="toNextGroup_7($event)">{{pos_7==3?'进行回忆':'进入下一组'}}</span>
+							</div>
+							<div>
+								<span class="little-title">第一组错误个数:</span>
+								<span class="little-title-redU">{{performence['7']['1']}}</span>
+							</div>
+							<div>
+								<span class="little-title">第二组错误个数:</span>
+								<span class="little-title-redU">{{performence['7']['1']}}</span>
+							</div>
+
+							<div>
+								<span class="little-title">第三组错误个数:</span>
+								<span class="little-title-redU">{{performence['7']['1']}}</span>
+							</div>
+						</div>
+					</div>
+					<!-- <div class="scale-right off" v-bind:class="[isShow_7>0?'flex-on':'']"> -->
+					<div class="scale-right" v-else>
+						<div class="content-title">
+							8.回忆测验指令
+						</div>
+						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
+							<li v-for="(it,index) in scaleData['8'].aiQuestionOption" class="content-8" v-on:click="cList_8(index)"
+							 v-bind:class="[performence['8']==index?'blue-bgc':'']">
+								{{scaleData['8'].aiQuestionAnswer[index][0]}}--{{it[0]}}
+							</li>
+						</ul>
+						<div style="height: auto;width: 100%;text-align: right;">
+							<span class="little-title">最终得分:</span>
+							<span class="little-title-red">{{performence['8']}}分</span>
+						</div>
+					</div>
+				</div>
+				<div id="tenth" class="page-content" v-bind:class="[pagePos==9?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							9.口头语言能力
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['9'].aiQuestionContent}}</span>
+						</div>
+
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评<span style="visibility: hidden;">一</span>分
+						</div>
+						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
+							<li v-for="(it,index) in scaleData['9'].aiQuestionOption" class="content-9" v-on:click="cList_9(index)"
+							 v-bind:class="[performence['9']==index?'blue-bgc':'']">
+								<span style="font-size: 20px;font-weight: 700;">{{scaleData['9'].aiQuestionAnswer[index][0]}}</span>
+								<span style="font-size: 12px;">{{it[0]}}</span>
+							</li>
+						</ul>
+						<div style="height: auto;width: 100%;text-align: right;">
+							<span class="little-title">最终得分:</span>
+							<span class="little-title-red">{{performence['9']}}分</span>
+						</div>
+					</div>
+				</div>
+				<div id="eleventh" class="page-content" v-bind:class="[pagePos==10?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							10.找词困难
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['10'].aiQuestionContent}}</span>
+						</div>
+
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评<span style="visibility: hidden;">一</span>分
+						</div>
+						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
+							<li v-for="(it,index) in scaleData['10'].aiQuestionOption" class="content-9" v-on:click="cList_10(index)"
+							 v-bind:class="[performence['10']==index?'blue-bgc':'']">
+								<span style="font-size: 20px;font-weight: 700;">{{scaleData['10'].aiQuestionAnswer[index][0]}}</span>
+								<span style="font-size: 12px;">{{it[0]}}</span>
+							</li>
+						</ul>
+						<div style="height: auto;width: 100%;text-align: right;">
+							<span class="little-title">最终得分:</span>
+							<span class="little-title-red">{{performence['10']}}分</span>
+						</div>
+					</div>
+				</div>
+				<div id="twelfth" class="page-content" v-bind:class="[pagePos==11?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							11.口头语言理解能力
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['11'].aiQuestionContent}}</span>
+						</div>
+
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评<span style="visibility: hidden;">一</span>分
+						</div>
+						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
+							<li v-for="(it,index) in scaleData['11'].aiQuestionOption" class="content-9" v-on:click="cList_11(index)"
+							 v-bind:class="[performence['11']==index?'blue-bgc':'']">
+								<span style="font-size: 20px;font-weight: 700;">{{scaleData['11'].aiQuestionAnswer[index][0]}}</span>
+								<span style="font-size: 12px;">{{it[0]}}</span>
+							</li>
+						</ul>
+						<div style="height: auto;width: 100%;text-align: right;">
+							<span class="little-title">最终得分:</span>
+							<span class="little-title-red">{{performence['11']}}分</span>
+						</div>
+					</div>
+				</div>
+				<div id="thirteenth" class="page-content" v-bind:class="[pagePos==12?'toShow':'toHidden']">
+					<div class="scale-left">
+						<div class="content-title">
+							12.注意力
+						</div>
+						<div class="third-content">
+							<span class="little-title">指导语:</span> <span class="little-title-content">{{scaleData['12'].aiQuestionContent}}</span>
+						</div>
+
+					</div>
+					<div class="scale-right">
+						<div class="content-title">
+							评<span style="visibility: hidden;">一</span>分
+						</div>
+						<ul class="ul flex-layout-aligin" style="height: 100%;width: 100%;">
+							<li v-for="(it,index) in scaleData['12'].aiQuestionOption" class="content-9" v-on:click="cList_12(index)"
+							 v-bind:class="[performence['12']==index?'blue-bgc':'']">
+								<span style="font-size: 20px;font-weight: 700;">{{scaleData['12'].aiQuestionAnswer[index][0]}}</span>
+								<span style="font-size: 12px;">{{it[0]}}</span>
+							</li>
+						</ul>
+						<div style="height: auto;width: 100%;text-align: right;">
+							<span class="little-title">最终得分:</span>
+							<span class="little-title-red">{{performence['12']}}分</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="config/urlConfig.js"></script>
+	<script src="utils/Storage.js"></script>
+	<script src="../js/toJump.js"></script>
+	<script>
+		//const USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
+		const USER_ID = 22;
+		/**
+		 * 数据初始化
+		 */
+
+
+		$(document).ready(function() {
+			$.ajax({
+				url: config.url + '/scales/testMsg/' + 5,
+				type: 'GET',
+				success: function(e) {
+					let topicMsg = e.object;
+					console.log(topicMsg, 'topicMsg')
+					//渲染每个题目数据
+					let reg_1 = /&/;
+					let reg_2 = /$/;
+					let reg_3 = /split;/
+
+					for (let i = 0; i < topicMsg.length; i++) {
+						let obj = {};
+						//获取对象属性名
+						let propertyNames = Object.getOwnPropertyNames(topicMsg[i])
+						for (let j = 0; j < propertyNames.length; j++) {
+							//一级分段
+							if (reg_1.test(topicMsg[i][propertyNames[j]])) {
+								let arr = topicMsg[i][propertyNames[j]].split('&');
+								//二级分段
+
+								if (reg_2.test(topicMsg[i][propertyNames[j]])) {
+									obj[propertyNames[j]] = arr;
+									for (let k = 0; k < obj[propertyNames[j]].length; k++) {
+										let arr2 = obj[propertyNames[j]][k].split('$');
+										//三级分段
+										if (reg_3.test(topicMsg[i][propertyNames[j]])) {
+											for (let t = 0; t < arr2.length; t++) {
+												arr2[t] = arr2[t].split('split;');
+											}
+										}
+										obj[propertyNames[j]][k] = arr2;
+									}
+								} else {
+									obj[propertyNames[j]] = arr;
+								}
+							} else { //不分段
+								obj[propertyNames[j]] = topicMsg[i][propertyNames[j]];
+							}
+						}
+						//console.log(obj,'分段')
+						if (obj.aiQuestionId == 1) {
+							//根据上次做题时间判断选择哪一套
+							/**
+							 * @param {Object} true
+							 */
+							if (true) {
+								obj.aiScoreMethodName = '第一套'
+								obj.aiQuestionContent = obj.aiQuestionContent[0]
+								vue.groupId_1[1] = obj.aiScoreMethodName;
+							} else {
+								obj.aiScoreMethodName = '第二套'
+								obj.aiQuestionContent = obj.aiQuestionContent[1]
+								vue.groupId_1[1] = obj.aiScoreMethodName;
+							}
+						} else {
+
+						}
+						scaleData[obj.aiQuestionId] = obj
+						// n.push(obj);
+					}
+					console.log(scaleData, 'scaleData')
+					// let scaleQIdNames = Object.getOwnPropertyNames(scaleData);
+					//初始化线索
+					{
+						let desNames = Object.getOwnPropertyNames(clueData.contentNames);
+
+						let t = scaleData['2'].aiQuestionAnswerDescribe;
+						console.log(clueData)
+						if (clueData.title)
+							clueData.title = t[0][0];
+
+						for (let i = 1; i < t.length; i++) {
+							let obj = {
+								content: {}
+							};
+							obj.level = t[i][0];
+							for (let j = 1; j < t[i].length; j++) {
+								let x = desNames.indexOf(t[i][j].slice(0, 3)),
+									y = desNames.indexOf(t[i][j].slice(0, 2)),
+									z = desNames.indexOf(t[i][j].slice(0, 1));
+
+								if (x > -1) {
+									obj.content[desNames[x]] = t[i][j];
+								} else if (y > -1) {
+									obj.content[desNames[y]] = t[i][j];
+								} else if (z > -1) {
+									obj.content[desNames[z]] = t[i][j];
+								}
+							}
+							clueData.content.push(obj);
+						}
+					}
+
+					//初始化第一题没有被选中的单词
+					vue.wordCancle_1.push(scaleData['1'].aiQuestionContent[0].length);
+					vue.wordCancle_1.push(scaleData['1'].aiQuestionContent[1].length);
+					vue.wordCancle_1.push(scaleData['1'].aiQuestionContent[2].length);
+					vue.performence['1'] = vue.wordCancle_1[2] + vue.wordCancle_1[1] + vue.wordCancle_1[0];
+
+				},
+				error: function(e) {
+					console.log('后台获取出错')
+				}
+			})
+
+			//document.getElementsByClassName('dialog-content')[0].style.display = 'flex'
+
+		});
+		//题目信息数据包
+		const scaleData = {
+			index: {
+				aiScaleId: '',
+				aiScaleName: '',
+				aiScaleOverview: [],
+				aiScaleNotice: []
+			},
+			'1': {
+				aiQuestionContent: [],
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			2: {
+				aiQuestionAnswerDescribe: '',
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			3: {
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			4: {
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			5: {
+				aiQuestionContent: '',
+				aiQuestionGuid: '',
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			6: {
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			7: {
+				aiQuestionAnswerDescribe: '',
+				aiQuestionContent: [
+					[]
+				],
+				aiQuestionGuid: [
+					[],
+					[]
+				],
+				aiQuestionId: '',
+				aiQuestionNotice: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			8: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			9: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			10: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			11: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			},
+			12: {
+				aiQuestionAnswer: '',
+				aiQuestionContent: '',
+				aiQuestionId: '',
+				aiQuestionOption: '',
+				aiQuestionScore: '',
+				aiQuestionType: '',
+				aiScaleId: '',
+				aiScoreMethodName: '',
+			}
+		};
+		//物品线索
+		const clueData = {
+			title: '',
+			content: [],
+			level: '',
+			des: '',
+			ind: [],
+			contentNames: {
+				'花': '',
+				'沙发': '',
+				'哨子': '',
+				'铅笔': '',
+				'毽子': '',
+				'假面具': '',
+				'剪刀': '',
+				'梳子': '',
+				'钱包': '',
+				'口琴': '',
+				'听诊器': '',
+				'夹子': '',
+				'拇指': '',
+				'小手指': '',
+				'食指': '',
+				'中指': '',
+				'无名指': ''
+			}
+		};
+		//vue控制器
+		const vue = new Vue({
+			el: '.vue',
+			data: {
+				isPrint: false, //是否点击过打印
+				reportTime: null,
+				adas: {
+					"t1": "",
+					"t2": [],
+					"t3": {
+						num: "",
+						answer: []
+					},
+					"t4": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "四幅图全部正确"
+						}, {
+							value: 1,
+							title: "1幅图错误"
+						}, {
+							value: 2,
+							title: "2幅图错误"
+						}, {
+							value: 3,
+							title: "3幅图错误"
+						}, {
+							value: 4,
+							title: "4幅均错误"
+						}, {
+							value: 5,
+							title: "未作画;描写;只有部分图形;文字代替图形"
+						}]
+					},
+					"t5": {
+						num: "",
+						answer: []
+					},
+					"t6": {
+						num: "3",
+						answer: []
+					},
+					"t8": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无"
+						}, {
+							value: 1,
+							title: "很轻:忘记一次"
+						}, {
+							value: 2,
+							title: "轻度:必须提醒两次"
+						}, {
+							value: 3,
+							title: "中度:必须提醒3或4次"
+						}, {
+							value: 4,
+							title: "中重度:必须提醒5或6次"
+						}, {
+							value: 5,
+							title: "重度:必须提醒7次或7次以上"
+						}]
+					},
+					"t7": 0,
+					"t9": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无"
+						}, {
+							value: 1,
+							title: "很轻:有一次缺乏可理解性的情况"
+						}, {
+							value: 2,
+							title: "轻度:<25%的时间内存在言语可理解性困难"
+						}, {
+							value: 3,
+							title: "中度:被试者在25%~50%的时间内存在言语可理解性困难"
+						}, {
+							value: 4,
+							title: "中重度:被试在50%以上的时间内存在言语可理解性困难"
+						}, {
+							value: 5,
+							title: "重度:说-两个词即中断;说话虽流利,但内容空洞;缄默"
+						}]
+					},
+					"t10": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无"
+						}, {
+							value: 1,
+							title: "很轻:出现一两次"
+						}, {
+							value: 2,
+							title: "轻度:明显的赘述或用同义词替代"
+						}, {
+							value: 3,
+							title: "中度:偶尔缺词，且无替代词"
+						}, {
+							value: 4,
+							title: "中重度:频繁缺词,且无替代词"
+						}, {
+							value: 5,
+							title: "重度:几乎完全缺乏有内容的单词言语听起来空洞"
+						}]
+					},
+					"t11": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无:患者能理解"
+						}, {
+							value: 1,
+							title: "很轻:错误的理解1次"
+						}, {
+							value: 2,
+							title: "轻度:错误的理解3~5次"
+						}, {
+							value: 3,
+							title: "中度:需要多次重复和改述"
+						}, {
+							value: 4,
+							title: "中重度:仅偶尔正确回答;也就是说只回答”是”或“否”"
+						}, {
+							value: 5,
+							title: "重度:患者极少对问题作出恰当反映"
+						}]
+					},
+					"t12": {
+						answer: "",
+						option: [{
+							value: 0,
+							title: "无"
+						}, {
+							value: 1,
+							title: "很轻:有1次注意力不集中"
+						}, {
+							value: 2,
+							title: "轻度:有2~3次注意力不集中;出现坐立不安心不在焉的表现"
+						}, {
+							value: 3,
+							title: "中度:访谈过程中4~5次注意力"
+						}, {
+							value: 4,
+							title: "中重度:访谈过程中很多时候注意力不集中"
+						}, {
+							value: 5,
+							title: "重度:极其难以集中注意力和注意力极其易转移无法完成任务"
+						}]
+					}
+				},
+				totalSend: [], //已经发送的题目
+				pagePos: 0, //当前页面页号,默认0
+				isShow: false,
+				scaleData,
+
+				titleGroup: [
+					"单词回忆任务",
+					"命名物体或手指",
+					"命令",
+					"结构性练习",
+					"意向性练习",
+					"定向力",
+					"单词辨认任务",
+					"回忆测验指令",
+					"口头语言能力",
+					"找词困难",
+					"口头语言理解能力",
+					"注意力"
+				],
+				groupId_1: ['第一组', '第一套', 0], //第三个参数表示组号
+				isClick: true, //部分点击需要延时，为true可以点击
+				checkBoxIndex_1: [], //复选框索引
+				pos: [0], //手指位置
+				gropuId_1: 1, //第一题组号
+				wordTouch: [], //已经被点击过的单词
+				wordCancle_1: [], //记录每一组单词中哪些单词未被选中,默认全部未选中
+				clueData,
+				wordSelect_2: [], //记录哪些单词是正确的
+				wordCancle_2: [], //记录哪些单词是错误的		
+				picUrl: [
+					"../img/5/flower.jpg",
+					"../img/5/sofa.jpg",
+					"../img/5/whistle.jpg",
+					"../img/5/pen.jpg",
+					"../img/5/shuttlecock.jpg",
+					"../img/5/mask.jpg",
+					"../img/5/scissor.jpg",
+					"../img/5/comb.jpg",
+					"../img/5/billfold.jpg",
+					"../img/5/organ.jpg",
+					"../img/5/echometer.jpg",
+					"../img/5/pliers.jpg",
+					"../img/5/thumb.jpg",
+					"../img/5/little_finger.jpg",
+					"../img/5/index_finger.jpg",
+					"../img/5/middle_finger.jpg",
+					"../img/5/the_ring_finger.jpg"
+				], //第二题图片路径
+				jClickT_3: [], //记录正确图标被选中
+				jClickF_3: [], //记录错误图标被选中
+				jClickT_4: [], //正确图标被选中结果集合
+				jClickF_4: [], //错误图标被选中结果集合
+				jDoubt_4: [], //疑问图标被选中结果集合
+				jResult_4: [], //结果记录
+				jIcon_4: [
+					[],
+					[],
+					[],
+					[],
+					[]
+				], //当前图标选中记录
+				picUrls_4: [], //第四题患者的结果图
+				pos_4_max: 0, //第四题最远组
+				statusA_4: [1, 2, 3, 4], //所有题目
+				pos_4: 0, //当前题号，默认为0
+
+				jClickT_5: [], //正确图标被选中集合
+				jClickF_5: [], //错误图标被选中集合
+				jClickT_6: [], //正确图标被选中集合
+				jClickF_6: [], //错误图标被选中集合
+				pos_7: 1, //第七题组号
+				wPos_7: 1, //第七题试题套号
+				chooseT_7: [
+					[],
+					[],
+					[]
+				], //记录患者回答正确的下标(只记录当前组)
+				chooseF_7: [
+					[],
+					[],
+					[]
+				], //记录患者回答错误的下标(只记录当前组)
+				isShow_7: 0, //第七题和第八题显示
+				isFinish: 0, //所有题目是否已完成,>0表示完成
+				performence: { //得分信息记录
+					1: null,
+					2: null,
+					3: null,
+					4: null,
+					5: null,
+					6: null,
+					7: {
+						1: '0',
+						2: '0',
+						3: '0'
+					},
+					8: null,
+					9: null,
+					10: null,
+					11: null,
+					12: null,
+				},
+				ws: null,
+				userMsg: null
+			},
+			watch: {
+				isFinish() {
+
+				}
+			},
+			created() {
+				this.userMsg = sstorage.getItem("userMsg");
+				let that = this;
+				this.ws = new WebSocket(config.wsURL + "/websocket/" + USER_ID);
+				this.ws.onclose = function() {
+					console.log('连接关闭')
+				};
+				this.ws.onerror = function() {
+					console.log('连接出错')
+				};
+				this.ws.onmessage = function(e) {
+					let data = JSON.parse(e.data);
+					if (data.status == 1) {
+						/**
+						 * 处理平板端第七题
+						 */
+						if (data.dataOptions == 7) {
+							let ar = that.scaleData['7'].aiQuestionContent[that.wPos_7 - 1][that.pos_7];
+							let bas = that.scaleData['7'].aiQuestionContent[0][0];
+							let ind = ar.indexOf(data.data.title);
+							let pp = bas.indexOf(data.data.title);
+							let p1 = that.chooseF_7[that.pos_7 - 1].indexOf(ind);
+							let p2 = that.chooseT_7[that.pos_7 - 1].indexOf(ind);
+							if (data.data.value == 0) {
+								//平板点击否
+								if (pp > -1) {
+									if (p1 == -1)
+										that.chooseF_7[that.pos_7 - 1].push(ind);
+									if (p2 > -1)
+										that.chooseT_7[that.pos_7 - 1].splice(p2, 1);
+								} else {
+									if (p2 < 0)
+										that.chooseT_7[that.pos_7 - 1].push(ind);
+									if (p1 > -1)
+										that.chooseF_7[that.pos_7 - 1].splice(p1, 1);
+								}
+							} else {
+								//平板点击是
+								if (pp > -1) {
+									if (p2 < 0)
+										that.chooseT_7[that.pos_7 - 1].push(ind);
+									if (p1 > -1)
+										that.chooseF_7[that.pos_7 - 1].splice(p1, 1);
+								} else {
+									if (p1 < 0)
+										that.chooseF_7[that.pos_7 - 1].push(ind);
+									if (p2 > -1)
+										that.chooseT_7[that.pos_7 - 1].splice(p2, 1);
+								}
+							}
+						} else if (data.dataOptions == 4) {
+							/**
+							 * 处理第四题
+							 */
+							if (that.picUrls_4[that.pos_4_max]) {
+								that.picUrls_4.splice(that.pos_4_max, 1, data.data)
+							} else {
+								that.picUrls_4.push(data.data)
+							}
+						}
+
+					}
+					console.log(data, '推送消息')
+				}
+				this.ws.onopen = function(e) {
+					console.log('建立连接')
+				}
+				window.onbeforeunload = function() {
+					that.ws.close();
+				}
+			},
+			methods: {
+				//websocket实现的消息发送
+				sendMsg(o) {
+					this.ws.send(JSON.stringify(o));
+				},
+				//返回
+				backPage: function() {
+					this.pagePos--;
+					if (this.pagePos < 0)
+						this.pagePos = 0;
+				},
+				//关闭弹窗
+				closeDialog: function() {
+					this.isShow = false;
+				},
+				//进入下一个页面
+				intoPage: function() {
+
+					if (this.isFinish != 1) {
+						/**
+						 * 将结果存入本地
+						 */
+						if (this.pagePos == 1) {
+							if (this.gropuId_1 == 3 && this.pos[0] > 9) {
+								let a = (this.wordCancle_1[2] + this.wordCancle_1[1] + this.wordCancle_1[0]) / 3;
+								this.adas.t1 = a.toFixed(1)
+							} else return
+
+						} else if (this.pagePos == 2) {
+							if (this.wordSelect_2.length + this.wordCancle_2.length == this.scaleData['2'].aiQuestionContent.length) {
+								this.adas.t2.splice(0)
+								let a = this.scaleData['2'].aiQuestionContent;
+								for (let i = 0; i < a.length; i++) {
+									let o = {}
+									o.name = a[i][0];
+									let b = this.wordSelect_2.indexOf(i);
+									let c = this.wordCancle_2.indexOf(i);
+									if (b > -1) {
+										o.select = 1;
+									} else if (c > -1) {
+										o.select = 0;
+									}
+									this.adas.t2.push(o);
+								}
+
+							} else return
+						} else if (this.pagePos == 3) {
+							let a = this.scaleData['3'].aiQuestionContent;
+							if (this.jClickF_3.length + this.jClickT_3.length == a.length) {
+								this.adas.t3.num = this.jClickF_3.length;
+								this.adas.t3.answer.splice(0)
+								for (let i = 0; i < a.length; i++) {
+									let o = {};
+									let b = this.jClickF_3.indexOf(i);
+									let c = this.jClickT_3.indexOf(i);
+									if (b > -1) {
+										o.select = 1;
+										o.name = a[i][0]
+									} else if (c > -1) {
+										o.select = 0;
+										o.name = a[i][0]
+									}
+									this.adas.t3.answer.push(o)
+								}
+							} else return
+						} else if (this.pagePos == 4) {
+							let a = this.scaleData['4'].aiQuestionContent;
+							if (this.jClickF_4.length + this.jClickT_4.length + this.jDoubt_4.length == 4) {
+								if (this.jClickF_4.length == 4)
+									this.adas.t4.answer = 0;
+								else if (this.jDoubt_4 == 4)
+									this.adas.t4.answer = 5
+								else this.adas.t4.answer = this.jClickF_4.length;
+							} else return
+						} else if (this.pagePos == 5) {
+							if (this.jClickT_5.length + this.jClickF_5.length == 5) {
+								this.adas.t5.num = this.jClickF_5.length;
+								let a = this.scaleData['5'].aiQuestionContent;
+
+								this.adas.t5.answer.splice(0)
+								for (let i = 0; i < a.length; i++) {
+									let o = {}
+									o.name = a[i][0];
+									let b = this.jClickF_5.indexOf(i);
+									let c = this.jClickT_5.indexOf(i);
+									if (b > -1) {
+										o.select = 1
+									} else if (c > -1) {
+										o.select = 0
+									}
+									this.adas.t5.answer.push(o)
+								}
+							} else return
+						} else if (this.pagePos == 6) {
+							if (this.jClickT_6.length + this.jClickF_6.length == 8) {
+								this.adas.t6.num = this.jClickF_6.length;
+								let a = this.scaleData['6'].aiQuestionContent;
+								this.adas.t6.answer.splice(0);
+								for (let i = 0; i < a.length; i++) {
+									let o = {};
+									o.name = a[i][0];
+									let b = this.jClickF_6.indexOf(i);
+									let c = this.jClickT_6.indexOf(i);
+									if (b > -1) {
+										o.select = 1
+									} else if (c > -1) {
+										o.select = 0
+									}
+									this.adas.t6.answer.push(o);
+								}
+							} else return
+						} else if (this.pagePos == 7) {
+							if (this.pos_7 == 3 && this.chooseF_7[this.pos_7 - 1].length + this.chooseT_7[this.pos_7 - 1].length >= 24) {
+								this.adas.t7 = ((this.performence['7']['1'] + this.performence['7']['2'] + this.performence['7']['3']) / 3).toFixed(
+									1)
+							} else return
+						} else if (this.pagePos == 8) {
+							if (this.performence['8'] == null) {
+								return
+							} else {
+								this.adas.t8.answer = this.performence['8']
+							}
+						} else if (this.pagePos == 9) {
+							if (this.performence['9'] == null) {
+								return
+							} else {
+								this.adas.t9.answer = this.performence['9']
+							}
+						} else if (this.pagePos == 10) {
+							if (this.performence['10'] == null) {
+								return
+							} else {
+								this.adas.t10.answer = this.performence['10']
+							}
+						} else if (this.pagePos == 11) {
+							if (this.performence['11'] == null) {
+								return
+							} else {
+								this.adas.t11.answer = this.performence['11']
+							}
+						} else if (this.pagePos == 12) {
+							if (this.performence['12'] == null) {
+								return
+							} else {
+								this.adas.t12.answer = this.performence['12']
+							}
+						}
+
+					}
+					if (this.pagePos == 12) {
+						this.isFinish = 1;
+						return
+					}
+					// if (this.pagePos == 7)
+					// 	return
+					if (this.pagePos > 0) {
+						if (this.performence[this.pagePos] == null) {
+							alert('题目还没有完成!');
+							return;
+						}
+					}
+
+					this.pagePos++;
+					if (this.pagePos > 12) {
+						this.pagePos = 12;
+					}
+
+					if (this.pagePos > 0) {
+						this.scaleData[this.pagePos].name = this.titleGroup[this.pagePos - 1]
+						let o = {
+							target: this.userMsg.aiUserId,
+							status: 7,
+							data: this.scaleData[this.pagePos]
+						}
+						let p = this.totalSend.indexOf(this.pagePos);
+						if (p < 0) {
+							this.totalSend.push(this.pagePos);
+							this.sendMsg(o)
+						} else {
+							// do nothing
+						}
+
+					}
+				},
+				/**	第一题
+				 */
+				checkBox: function(e, index) {
+					let pos = this.groupId_1[2];
+					if (this.wordTouch.length < this.scaleData['1'].aiQuestionContent[0].length) {
+						//alert('请先完成读词!');
+						return
+					}
+
+					let arr = this.checkBoxIndex_1.indexOf(index);
+					if (arr > -1) {
+						this.checkBoxIndex_1.splice(arr, 1);
+					} else {
+						this.checkBoxIndex_1.push(index);
+					}
+
+					this.wordCancle_1[pos] = scaleData['1'].aiQuestionContent[0].length - this.checkBoxIndex_1.length;
+					this.performence['1'] = this.wordCancle_1[2] + this.wordCancle_1[1] + this.wordCancle_1[0];
+				},
+				wordClick: function(e, index) {
+					if (this.isClick == false)
+						return
+					else this.isClick = false;
+					if (index == this.wordTouch[this.wordTouch.length - 1] + 1)
+						this.wordTouch.push(index);
+					if (this.wordTouch.length == 0 && index == 0)
+						this.wordTouch.push(index);
+					let arr = this.checkBoxIndex_1.indexOf(index);
+					setTimeout(() => {
+						this.isClick = true;
+					}, 2000)
+					if (this.pos.length > 0) {
+						if (index == this.pos[0]) {
+							this.pos.pop();
+							this.pos.push(index + 1)
+							let o = {
+								target: this.userMsg.aiUserId,
+								status: 1,
+								data: e
+							}
+							this.sendMsg(o)
+						}
+					} else {
+						this.pos.push(index + 1);
+						let o = {
+							target: this.userMsg.aiUserId,
+							status: 1,
+							data: e
+						}
+						this.sendMsg(o)
+					}
+
+
+				},
+				toNextGroup_1: function() {
+					if (this.wordTouch.length < this.scaleData['1'].aiQuestionContent[0].length) {
+						alert('请先完成读词!');
+						return
+					}
+					let pos = this.groupId_1[2]; //当前组号
+					let size = scaleData['1'].aiQuestionContent.length; //组的大小
+					if (pos == size - 1) {
+						alert('您已完成所有组,请进入下一题!');
+						return;
+					}
+					let name = scaleData['1'].aiScoreMethodName[1][0]; //套名
+					//进入下一组后要进行初始化
+					//将第一组移动到最后一组。
+					//如果需要重做，要在重做函数里面将当前第一组移到最后，然后重置pos为0,重置groupId_1[0]为第一组
+					let p = scaleData['1'].aiQuestionContent.splice(0, 1);
+					scaleData['1'].aiQuestionContent.splice(size - 1, 0, p[0]);
+
+					console.log(scaleData['1'].aiQuestionContent);
+					this.checkBoxIndex_1 = []; //初始化复选框
+					this.pos = [0]; //初始化手指位置
+					this.wordTouch = []; //清空点击过的单词
+					if (pos == 0) {
+						this.groupId_1[0] = '第二组';
+						this.gropuId_1++;
+					} else if (pos == 1) {
+						this.groupId_1[0] = '第三组'
+						this.gropuId_1++;
+					}
+					pos++;
+					if (pos >= size)
+						pos = size - 1;
+					this.groupId_1[2] = pos;
+				},
+				/**
+				 * @param {Object} it
+				 * @param {Object} index 第二题
+				 */
+				showPic_2: function(it, index) {
+					let ind = it[0];
+					clueData.ind.splice(0)
+					clueData.ind.push(ind);
+					clueData.ind.push(index)
+					clueData.level = '';
+					clueData.des = '';
+					for (let i = 0; i < clueData.content.length; i++) {
+						let p = clueData.content[i].content[ind];
+						if (p) {
+							clueData.level = clueData.content[i].level;
+							clueData.des = p;
+						}
+					}
+					if (clueData.level == '' || clueData.des == '')
+						clueData.title = '';
+					else clueData.title = '物品线索:'
+					this.isShow = true;
+					let img = document.createElement("img");
+					img.src = this.picUrl[index];
+					let canvas = document.createElement("canvas");
+					canvas.width = img.width;
+					canvas.height = img.height;
+					canvas.getContext("2d").drawImage(img, 0, 0);
+					let d = canvas.toDataURL();
+					let o = {
+						target: this.userMsg.aiUserId,
+						data: d,
+						status: 1,
+					}
+					this.sendMsg(o)
+				},
+				wordTrue_2: function(i) {
+					if (this.wordSelect_2.indexOf(i) < 0) {
+						this.wordSelect_2.push(i);
+						if (this.wordCancle_2.indexOf(i) > -1)
+							this.wordCancle_2.splice(this.wordCancle_2.indexOf(i), 1)
+					}
+					let len = this.wordCancle_2.length;
+					if (len >= 0 && len <= 2) {
+						this.performence['2'] = 0;
+					} else if (len >= 3 && len <= 5) {
+						this.performence['2'] = 1;
+					} else if (len >= 6 && len <= 8) {
+						this.performence['2'] = 2;
+					} else if (len >= 9 && len < 11) {
+						this.performence['2'] = 3;
+					} else if (len >= 12 && len < 14) {
+						this.performence['2'] = 4;
+					} else if (len >= 15) {
+						this.performence['2'] = 5;
+					}
+					this.closeDialog()
+				},
+				wordFalse_2: function(i) {
+					if (this.wordCancle_2.indexOf(i) < 0) {
+						if (this.wordSelect_2.indexOf(i) > -1)
+							this.wordSelect_2.splice(this.wordSelect_2.indexOf(i), 1)
+						this.wordCancle_2.push(i);
+					}
+					let len = this.wordCancle_2.length;
+					if (len >= 0 && len <= 2) {
+						this.performence['2'] = 0;
+					} else if (len >= 3 && len <= 5) {
+						this.performence['2'] = 1;
+					} else if (len >= 6 && len <= 8) {
+						this.performence['2'] = 2;
+					} else if (len >= 9 && len < 11) {
+						this.performence['2'] = 3;
+					} else if (len >= 12 && len < 14) {
+						this.performence['2'] = 4;
+					} else if (len >= 15) {
+						this.performence['2'] = 5;
+					}
+					console.log(this.performence['2'], len)
+					this.closeDialog()
+				},
+
+				/**
+				 * 第三题
+				 */
+				jClick_3: function(e, index) {
+					//e==0表示选中正确的，1表示选中错误的
+					let T = this.jClickT_3.indexOf(index);
+					let F = this.jClickF_3.indexOf(index);
+					if (e == 0) {
+						if (T > -1) { //0被选中状态
+							this.jClickT_3.splice(T, 1);
+						} else if (F > -1) { //1被选中状态
+							this.jClickT_3.push(index);
+							this.jClickF_3.splice(F, 1);
+						} else { //都没有被选中状态
+							this.jClickT_3.push(index);
+						}
+					} else if (e == 1) {
+						if (F > -1) { //1被选中状态
+							this.jClickF_3.splice(F, 1);
+						} else if (T > -1) { //0被选中状态
+							this.jClickT_3.splice(T, 1);
+							this.jClickF_3.push(index);
+						} else { //都没有被选中
+							this.jClickF_3.push(index);
+						}
+					}
+
+					this.performence['3'] = this.jClickF_3.length;
+				},
+
+				/**
+				 * 第四题
+				 */
+				jClick_4: function(e) {
+					let i = this.jIcon_4[this.pos_4].indexOf(e);
+					if (e == 0) { //正确图标
+						if (i > -1)
+							this.jIcon_4[this.pos_4].splice(i, 1);
+						else {
+							this.jIcon_4[this.pos_4].splice(0)
+							this.jIcon_4[this.pos_4].push(e);
+						}
+					} else if (e == 1) { //错误图标
+						if (i > -1)
+							this.jIcon_4[this.pos_4].splice(i, 1);
+						else {
+							this.jIcon_4[this.pos_4].splice(0)
+							this.jIcon_4[this.pos_4].push(e);
+						}
+					} else if (e == 2) { //未作答图标
+						if (i > -1)
+							this.jIcon_4[this.pos_4].splice(i, 1);
+						else {
+							this.jIcon_4[this.pos_4].splice(0)
+							this.jIcon_4[this.pos_4].push(e);
+						}
+					}
+					this.save_4(1)
+				},
+				save_4: function(e) {
+					if (this.jIcon_4[this.pos_4].length == 0) {
+						alert("请完成题目")
+						return
+					}
+					if (e == 1) {
+
+					} else {
+						if (this.pos_4 > this.statusA_4.length)
+							return
+					}
+					let i = this.jIcon_4[this.pos_4][0];
+					let a = this.jClickF_4.indexOf(this.pos_4);
+					let b = this.jClickT_4.indexOf(this.pos_4);
+					let c = this.jDoubt_4.indexOf(this.pos_4);
+					if (i == 0) {
+						if (b < 0)
+							this.jClickT_4.push(this.pos_4);
+						if (a > -1)
+							this.jClickF_4.splice(a, 1);
+						if (c > -1)
+							this.jDoubt_4.splice(c, 1)
+					} else if (i == 1) {
+						if (a < 0)
+							this.jClickF_4.push(this.pos_4);
+						if (b > -1)
+							this.jClickT_4.splice(b, 1);
+						if (c > -1)
+							this.jDoubt_4.splice(c, 1)
+					} else if (i == 2) {
+						if (c < 0)
+							this.jDoubt_4.push(this.pos_4);
+						if (a > -1)
+							this.jClickF_4.splice(a, 1);
+						if (b > -1)
+							this.jClickT_4.splice(b, 1);
+					}
+					this.jResult_4.push(this.pos_4);
+					if (e == 1) {
+
+					} else {
+						if (this.pos_4 + 1 >= this.statusA_4.length) {
+							//	alert("题目已全部完成");
+							//this.pos_4 = this.statusA_4.length + 1;
+						} else {
+							this.pos_4++;
+							if (this.pos_4 > this.pos_4_max)
+								this.pos_4_max = this.pos_4;
+						}
+						this.performence['4'] = this.jClickF_4.length;
+
+						let o = {
+							target: this.userMsg.aiUserId,
+							status: 1,
+							data: this.pos_4_max,
+							dataOptions: 4,
+						}
+						this.sendMsg(o)
+					}
+
+				},
+				back_4: function() {
+					if (this.pos_4 - 1 < 0)
+						return
+					this.pos_4--;
+					this.save_4(1)
+
+
+				},
+				/**
+				 * 第五题
+				 */
+				jClick_5: function(e, index) {
+					let T = this.jClickT_5.indexOf(index);
+					let F = this.jClickF_5.indexOf(index);
+					if (e == 0) {
+						if (T > -1)
+							this.jClickT_5.splice(T, 1);
+						else {
+							if (F > -1) {
+								this.jClickF_5.splice(F, 1);
+								this.jClickT_5.push(index);
+							} else
+								this.jClickT_5.push(index);
+						}
+					} else if (e == 1) {
+						if (F > -1)
+							this.jClickF_5.splice(F, 1);
+						else {
+							if (T > -1) {
+								this.jClickT_5.splice(T, 1);
+								this.jClickF_5.push(index);
+							} else
+								this.jClickF_5.push(index);
+						}
+					}
+					this.performence['5'] = this.jClickF_5.length;
+				},
+
+				/**
+				 * 第六题
+				 */
+				jClick_6: function(e, index) {
+					let T = this.jClickT_6.indexOf(index);
+					let F = this.jClickF_6.indexOf(index);
+					if (e == 0) {
+						if (T > -1)
+							this.jClickT_6.splice(T, 1);
+						else {
+							if (F > -1) {
+								this.jClickF_6.splice(F, 1);
+								this.jClickT_6.push(index);
+							} else
+								this.jClickT_6.push(index);
+						}
+					} else if (e == 1) {
+						if (F > -1)
+							this.jClickF_6.splice(F, 1);
+						else {
+							if (T > -1) {
+								this.jClickT_6.splice(T, 1);
+								this.jClickF_6.push(index);
+							} else
+								this.jClickF_6.push(index);
+						}
+					}
+					this.performence['6'] = this.jClickF_6.length;
+				},
+
+				/**
+				 * 第七题
+				 */
+				websocket_7: function(e) {
+					let o = {
+						1: '',
+						2: '',
+						3: ''
+					};
+					let s = this.chooseF_7.length;
+					if (this.performence['7'] == null)
+						this.performence['7'] = o;
+					if (s > 12)
+						s = 12;
+					this.performence['7'][this.wPos_7] = 12;
+				},
+				toNextGroup_7: function(e) {
+					if (this.chooseF_7[this.pos_7 - 1].length + this.chooseT_7[this.pos_7 - 1].length < 24)
+						return
+					let el = e.srcElement;
+					if (el.innerHTML == '进行回忆') {
+
+						this.intoPage()
+						console.log('进行回忆', this.pagePos)
+						this.isShow_7 = 1;
+						return
+					}
+					this.pos_7++;
+					if (this.pos_7 >= 3)
+						this.pos_7 = 3;
+					let o = {
+						target: this.userMsg.aiUserId,
+						data: this.pos_7,
+						status: 1
+					}
+					this.sendMsg(o);
+				},
+
+				/**
+				 * 第八题
+				 */
+				cList_8: function(e) {
+					this.performence['8'] = e;
+				},
+				/**
+				 * 第九题
+				 */
+				cList_9: function(e) {
+					this.performence['9'] = e;
+				},
+				/**
+				 * 第十题
+				 */
+				cList_10: function(e) {
+					this.performence['10'] = e;
+				},
+				/**
+				 * 第十一题
+				 */
+				cList_11: function(e) {
+					this.performence['11'] = e;
+				},
+				/**
+				 * 第十二题
+				 */
+				cList_12: function(e) {
+					this.performence['12'] = e;
+				}
+			}
+		});
+
+		//获取量表基本信息(首页)
+		var scales = sstorage.getItem("scaleRest");
+		for (let i = 0; i < scales.items.length; i++) {
+
+			if (scales.items[i].aiScaleId == 5) {
+				scaleData.index.aiScaleId = scales.items[i].aiScaleId;
+				scaleData.index.aiScaleName = scales.items[i].aiScaleName;
+				let notice, overView;
+				if (scales.items[i].aiScaleNotice)
+					notice = scales.items[i].aiScaleNotice.split('&');
+				if (scales.items[i].aiScaleOverview)
+					overView = scales.items[i].aiScaleOverview.split('&');
+				scaleData.index.aiScaleNotice = notice;
+				scaleData.index.aiScaleOverview = overView;
+			}
+		}
+
+		function printPDF() {
+			if (vue.isPrint == false) {
+				let date = new Date().toLocaleString('chinese', {
+					hour12: false
+				});
+				date = date.replace(/\//g, '-');
+				if(vue.reportTime==null)
+					vue.reportTime = date;
+				sstorage.setItem('&5', this.adas);
+				let that = vue;
+				$.ajax({
+					url: config.url + '/report/op/' + that.reportTime + '/' + that.userMsg.aiUserId + '/' + that.userMsg.aiUserName + '/' +
+						that.scaleData.index.aiScaleName + '/' + JSON.stringify(that.adas)+'/'+5,
+					type: 'POST',
+					success: function(e) {
+						console.log(e)
+					},
+					error: function() {
+
+					}
+				})
+			}
+			vue.isPrint = true;
+			window.open('report/report.html')
+		}
+
+		function next_scale() {
+			console.log(scales)
+			
+			if (vue.isPrint == false) {
+				let date = new Date().toLocaleString('chinese', {
+					hour12: false
+				});
+				date = date.replace(/\//g, '-');
+				if(vue.reportTime==null)
+					vue.reportTime = date;
+				sstorage.setItem('&5', this.adas);
+				let that = vue;
+				$.ajax({
+					url: config.url + '/report/op/' + that.reportTime + '/' + that.userMsg.aiUserId + '/' + that.userMsg.aiUserName + '/' +
+						that.scaleData.index.aiScaleName + '/' + JSON.stringify(that.adas)+'/'+5,
+					type: 'POST',
+					success: function(e) {
+						console.log(e)
+					},
+					error: function() {
+			
+					}
+				})
+			}
+			vue.isPrint = true;
+			
+			if (vue.isFinish > 0) {
+				/**
+				 * 跳转之前通知平板进入下一个量表
+				 */
+				let o = {
+					target: vue.userMsg.aiUserId,
+					status: 3,
+					from_who: USER_ID
+				}
+				vue.sendMsg(o);
+				let ind = -1;
+				for (let i = 0; i < scales.items.length; i++) {
+					if (scales.items[i].aiScaleId == 5)
+						ind = i;
+				}
+				if (ind + 1 == scales.items.length) {
+					window.location.href = 'finish.html'
+				} else {
+					toJump(scales.items[ind + 1].aiScaleId)
+				}
+
+			} else {
+				alert('您还有未完成的内容');
+			}
+		}
+	</script>
+</html>

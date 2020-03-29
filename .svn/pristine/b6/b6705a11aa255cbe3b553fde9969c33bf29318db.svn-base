@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<!-- 背景动画 以及初始化样式-->
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="../css/demo.css">
+		<link rel="stylesheet" href="../css/style.css">
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<!-- 引入jQuery.js -->
+		<script src="../js/jquery/jquery.min.js"></script>
+
+		<!-- 引入element -->
+		<script src="../element/element.js"></script>
+		<link rel="stylesheet" type="text/css" href="../element/element.css" />
+		<!-- <script type="text/javascript" src="../js/laydate.js"></script> -->
+		<script src="config/urlConfig.js"></script>
+		<style>
+			html,body{
+				padding: 0;
+				margin: 0;
+			}
+			#content {
+				width: 100vw;
+				height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				position: relative;
+			}
+			.scale {
+				position: relative;
+				display: flex;
+				justify-content: center;
+				align-items: flex-start;
+				/* width: 1764px;
+				height: 820px; */
+				width: 80%;
+				height: 90%;
+				background-color: rgba(255, 255, 255,1);
+				border-color: rgb(255, 255, 255);
+				border-width: 1px;
+				border-style: solid;
+				border-radius: 5px;
+				font-size: 16px;
+				opacity: 1;
+				padding: 30px 30px 30px 30px;
+			}
+			.box{
+				border: 1px solid black;padding: 20px;box-sizing: border-box;;
+			}
+			.border{
+				border:1px solid #BBBBBB;border-radius: 5px;
+			}
+			.line_h{
+				height: 50px;line-height: 50px;padding: 0;;margin:0;box-sizing: border-box;padding-left: 5px;text-align: center;display: inline-block;
+			}
+			.table-t1{
+				 border-collapse:collapse;table-layout: fixed;
+				word-wrap: break-word; word-break: break-all;width: 100%;border:none
+			}
+			
+			.table-t1 td{border:1px solid #BBBBBB;text-align: center;height: 35px;line-height: 35px;}
+			.table-t1 th{border:1px solid #BBBBBB;;text-align: center;height: 35px;line-height: 35px;background: rgba(16, 112, 193, 0.8);color: white;}
+		</style>
+	</head>
+	<body>
+		<!-- 背景图 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+		<div id="content">
+			<div class="scale">
+				<div style="width: 100%;height: 100%;">
+					<div class="box border" style="width: 30%;height: 100%;float: left;">
+						<input v-model="dataModel.id" type="text" class="border line_h" placeholder="请输入患者ID号精确查询" style="width: 100%;">
+
+						<input v-model="dataModel.name" type="text" name="" id="" class="border line_h" placeholder="请输入患者姓名模糊查询" style="width: 100%;margin-top: 10px;">
+						<div class="" style="display: flex;justify-content: center;align-items: center;">
+							<el-date-picker v-model="dataModel.time1" type="date" placeholder="开始时间" style="width: 45%;margin-top: 10px;"></el-date-picker>
+							<label style="width: 10%;text-align: center;">到</label>
+							<el-date-picker v-model="dataModel.time2" type="date" placeholder="开始时间" style="width: 45%;margin-top: 10px;"></el-date-picker>
+						</div>
+						<div style="margin-top: 20px;text-align:center;">
+							<button @click="check()" style="border:none ;border-radius: 5px;background: rgb(49, 133, 187);color: white;padding:10px;margin-top: 20px;;width: 150px;">查询</button>
+						</div>
+					</div>
+					<div class="box border" id="app" style="width: 65%;height: 100%;float: right;overflow: overlay;">
+						<table class="table-t1">
+							<thead>
+								<tr>
+									<th style="width: 30%;border-top-left-radius: 5px;border-left: none;border-top: none;">测验时间</th>
+									<th style="width: 15%;">患者ID号</th>
+									<th style="width: 15%;">患者姓名</th>
+									<th style="width: 30%;">测验名称</th>
+									<th style="width: 10%;border-top-right-radius: 5px;border-right: none;border-top: none;">操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="it in item">
+									<td>{{it["aiTestTime"]}}</td>
+									<td>{{it["aiUserId"]}}</td>
+									<td>{{it["aiUserName"]}}</td>
+									<td>{{it["aiScaleName"]}}</td>
+									<td @click="printPDF(it)">{{it["operation"]}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div style="clear: both;"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		let url = config.url + '/report'
+		// laydate.render({
+		// 	elem: '#time1',
+		// 	type: 'date',
+		// 	trigger: 'click',
+		// 	showBottom: false,
+		// });
+		// laydate.render({
+		// 	elem: '#time2',
+		// 	type: 'date',
+		// 	trigger: 'click',
+		// 	showBottom: false,
+		// });
+		new Vue({
+			el: '#content',
+			data: {
+				item: [],
+				dataModel: {
+					time1: "",
+					time2: "",
+					id: "",
+					name: ""
+				},
+				printData: [] //待打印的列表
+			},
+			created() {
+				let that = this;
+				$.ajax({
+					//初始化默认表格数据
+					url: url + '/msg',
+					type: 'GET',
+					success: function(e) {
+						let o = e.object;
+						for (let i = 0; i < o.length; i++) {
+							let b = o[i];
+							b.operation = '查看';
+							that.item.push(b);
+						}
+						console.log(e)
+					},
+					error: function() {
+
+					}
+				})
+			},
+			computed: {},
+			watchs: {
+
+			},
+			methods: {
+				check() {
+					console.log(this.dataModel)
+					let that = this;
+					this.item.splice(0);
+					let a = this.dataModel.id.replace(/(^\s*)|(\s*$)/g, "");
+					let b = this.dataModel.name.replace(/(^\s*)|(\s*$)/g, "");
+					let c = this.dataModel.time1
+					let d = this.dataModel.time2
+					if (a == "" && b == "" && c == null && d == null) {
+						$.ajax({
+							//初始化默认表格数据
+							url: url + '/msg',
+							type: 'GET',
+							success: function(e) {
+								let o = e.object;
+								for (let i = 0; i < o.length; i++) {
+									let b = o[i];
+									b.operation = '查看';
+									that.item.push(b);
+								}
+								console.log(e)
+							},
+							error: function() {
+
+							}
+						})
+					} else {
+						$.ajax({
+							//按照用户id查询报告
+							url: url + '/msgs/' + JSON.stringify(this.dataModel),
+							type: 'GET',
+							success: function(e) {
+								let o = e.object;
+								for (let i = 0; i < o.length; i++) {
+									let b = o[i];
+									b.operation = '查看';
+									that.item.push(b);
+								}
+								console.log(e)
+							},
+							error: function() {
+
+							}
+						})
+					}
+				},
+				/**	单项打印
+				 * @param {Object} e
+				 */
+				printPDF: function(e) {
+
+					this.printData.splice(0);
+
+					let o = {
+						aiUserId: e.aiUserId,
+						aiTestTime: e.aiTestTime,
+						aiScaleName: e.aiScaleName
+					};
+					this.printData.push(o)
+					window.open('../html/report/report.html?' + JSON.stringify(this.printData));
+					let that = this;
+					setTimeout(() => {
+						that.printData.splice(0)
+					})
+				},
+				/**
+				 * 多项打印
+				 */
+				printPDFs() {
+					window.open('../html/report/report.html?' + JSON.stringify(this.printData))
+				}
+			}
+		})
+	</script>
+</html>

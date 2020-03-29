@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>神经心理辅助诊疗系统</title>
+		<!-- 背景动画 以及初始化样式 -->
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="../css/demo.css">
+		<link rel="stylesheet" type="text/css" href="../css/style.css">
+		<!-- 页面样式 -->
+		<link rel="stylesheet" type="text/css" href="../css/drawClock.css" />
+		<!-- 导入vue.js -->
+		<script type="text/javascript" src="../js/vue.js"></script>
+
+		<script type="text/javascript" src="./config/urlConfig.js"></script>
+		<!-- 引入jQuery.js -->
+		<script src="../js/jquery/jquery.min.js"></script>
+	</head>
+	<body>
+		<!-- 背景 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+		<div id="content">
+			<div class="scale">
+				<!-- <div style="bottom: 0;font-size: 24px;color: #008B8B;cursor: pointer;" id="next-scale" >
+					
+				</div> -->
+				<div class="cdt-menu">
+					<span class="cdt">CDT-3</span>
+					<span class="cdt">CDT-4</span>
+					<span class="cdt">CDT-5</span>
+					<span class="cdt">CDT-7</span>
+					<span class="cdt">CDT-10</span>
+					<span class="cdt">CDT-30</span>
+				</div>
+
+				<div class="scale-right" id="scale-right">
+					<div id="scale-name">量表名称：画钟测验（{{name}}）</div>
+					<div class="scale-right-content content1">
+						<div class="content-title">指导语</div>
+						<div class="question-content">
+							<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{guid}}</p>
+						</div>
+						<p class="question-title toH">图例:</p>
+						<div class="question-img">
+							<img src="../img/clock.png" id="question-img" />
+						</div>
+
+					</div>
+
+					<div class="scale-right-content  content2">
+						<div class="content-title">患者绘图结果展示</div>
+						<!-- 动态展示用户画板 -->
+						<div class="re-img">
+							<img id="re-img" />
+						</div>
+
+					</div>
+				</div>
+				<div class="scale-left">
+
+					<div class="scale-check  content1" onclick="checkScore()">查看患者绘图并打分</div>
+					<div class="scale-check  content2">
+						<span  onclick="backPage()" style="margin-right: 40px;color: green;">返回</span>
+						<span onclick="next_scale()" style="margin-right: 20px;">下一个练习</span>
+						<span  onclick="createReport()">生成报告</span>
+						
+					</div>
+					<div class="scale-content  content1 scrollbar">
+						<div class="content-title">量表说明</div>
+						<ul id="scale-list">
+							<li v-for="item in scale_explain">
+								<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{item.value}}</p>
+							</li>
+						</ul>
+					</div>
+
+					<div class="scale-content  content2">
+						<div class="content-title">
+							评判
+						</div>
+						<ul class="options">
+							<li  v-bind:class="[indexList.indexOf(p)>-1 ? 'on' :'off']" v-for="(it,p) in scale_test_package" :key="it.index"
+							 v-on:click="greet(it,p)" :style="{width:(scale_test_package.length<6?'80%':'')}">{{it.aiQuestionOption}}</li>
+						</ul>
+						<div class="test-data">
+							<span id="do-time">完成时长:{{data}}</span>
+							<span id="do-score">
+								评判得分:{{data}}
+							</span>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+			<canvas id="" width="" height="" style="display: none;"></canvas>
+		</div>
+	</body>
+	<script src="utils/Storage.js"></script>
+	<script src="../js/toJump.js"></script>
+	<script>
+		let USER_ID = window.location.search.split('?')[1].split(0,1).join("");
+		//let USER_ID = 22;
+		let RESULT_DATA = {	//	项目结论存储的信息
+			allResult:[
+				// ['CDT-3'],
+				// ['CDT-4'],
+				// ['CDT-5'],
+				// ['CDT-7'],
+				// ['CDT-10'],
+				// ['CDT-30']
+			],
+			useTime:"",
+			serviceImg:[],
+			buttomMsg:[]
+		}; 
+		let isPrint = false;
+		let reportTime = null;
+		let userMsg = sstorage.getItem('userMsg');
+
+		let START_TIME = ""; //计时开始时间
+		let isInsert = false; //是否加入新的成绩数据，false时不加入，只更新
+		let isFirstLine = 0; //判断是否为接受图片的第一笔,0表示等待接受，1表示正在绘图
+		//获取评分方式信息，用于生成最后结果
+		let theEnd = JSON.parse($.ajax({
+			url: '../JSON/report_config.json',
+			async: false
+		}).responseText).scale_11;
+		$(document).ready(function() {
+
+			$.ajax({
+				type: 'GET',
+				url: config.url + '/scales/testMsg/' + 11,
+				success: function(e) {
+					console.log(e.object)
+					all_test = e.object.slice(0, e.object.length);
+					//初始化引导语
+					for (let i = 0; i < all_test.length; i++)
+						if (all_test[i].aiScoreMethodName == "CDT-3") {
+							scale_name.guid = all_test[i].aiQuestionGuid;
+							break
+						}
+
+				},
+				error: function() {
+
+				}
+			})
+
+			let scale;
+			try {
+				//取出第一个量表，然后从本地中删除这个量表信息
+				s = sstorage.getItem("scaleRest");
+				//s=sessionStorage.getItem("scaleRest");
+				for (let i = 0; i < s.items.length; i++)
+					if (s.items[i].aiScaleId == 11) {
+						scale = s.items[i];
+						break
+					}
+
+			} catch (e) {
+				console.log('出错了')
+				return
+			}
+			let p = [];
+			let f = "";
+			try {
+				for (let i = 0; i < scale.aiScaleOverview.length; i++) {
+					if (scale.aiScaleOverview[i] == '&') {
+						p.push(f);
+						f = "";
+					} else {
+						f += scale.aiScaleOverview[i];
+					}
+
+				}
+			} catch (e) {
+				console.log('出错')
+				//TODO handle the exception
+			}
+
+			p.push(f);
+			for (let j = 0; j < p.length; j++) {
+				let obj = {};
+				obj.value = p[j];
+				scale_explain.push(obj);
+			}
+			scale_explain.push({
+				value: "本次测量采用CDT-3评分法"
+			});
+
+			let obj1 = {
+				index: 0,
+				aiQuestionOption: "画好一个封闭的圆",
+				aiQuestionScore: 1
+			}
+			let obj2 = {
+				index: 1,
+				aiQuestionOption: "正确标出12个数字",
+				aiQuestionScore: 1
+			}
+
+			let obj3 = {
+				index: 2,
+				aiQuestionOption: "将指针置于正确位置",
+				aiQuestionScore: 1
+			}
+			scale_test_package.push(obj1, obj2, obj3)
+
+			for (let i = 0; i < cdt.length; i++)
+				cdt[i].onclick = function() {
+					for (let r = 0; r < cdt.length; r++) {
+						cdt[r].style.backgroundColor = "white"
+					}
+					this.style.backgroundColor = "#dfdfdf"
+
+					//量表说明
+					let obj = {};
+					obj.value = "本次测量采用" + cdt[i].innerText + "评分法";
+					scale_explain.pop();
+					scale_explain.push(obj);
+					scale_name.name = cdt[i].innerText;
+
+					//配置图片
+					if (cdt[i].innerText == "CDT-7") {
+						document.getElementById('question-img').src = "../img/cdt-7.png";
+					} else {
+						document.getElementById('question-img').src = "../img/clock.png";
+
+					}
+
+					//配置引导语
+					for (let n = 0; n < all_test.length; n++)
+						if (all_test[n].aiScoreMethodName == cdt[i].innerText) {
+							scale_name.guid = all_test[n].aiQuestionGuid;
+							break
+						}
+
+
+					for (let k = 0; k < all_test.length; k++) {
+
+						if (cdt[i].innerText == all_test[k].aiScoreMethodName) {
+							let options = [];
+							let scores = [];
+							let str = "";
+							let test_package = [];
+							for (let t = 0; t < all_test[k].aiQuestionOption.length; t++) {
+								if (all_test[k].aiQuestionOption[t] == '&') {
+									options.push(str);
+									str = "";
+								} else
+									str += all_test[k].aiQuestionOption[t];
+							}
+							options.push(str);
+							str = "";
+							for (let t = 0; t < all_test[k].aiQuestionScore.length; t++) {
+								if (all_test[k].aiQuestionScore[t] == '&') {
+									scores.push(str);
+									str = "";
+								} else str += all_test[k].aiQuestionScore[t]
+							}
+							scores.push(str);
+							str = "";
+
+							//数组清空,分数置0
+							scale_test_package.splice(0, scale_test_package.length)
+							scale_test.indexList.splice(0)
+							do_score.data = 0;
+
+							for (let t = 0; t < scores.length; t++) {
+								let obj = {
+									index: t,
+									aiQuestionGuid: all_test[k].aiQuestionGuid,
+									aiQuestionId: all_test[k].aiQuestionId,
+									aiQuestionOption: options[t],
+									aiQuestionScore: scores[t],
+									aiQuestionType: all_test[k].aiQuestionType,
+									aiScaleId: all_test[k].aiScaleId,
+									aiScoreMethodName: all_test[k].aiScoreMethodName
+								}
+								scale_test_package.push(obj)
+							}
+							break;
+						}
+					}
+
+				}
+				console.log(scale)
+			//if (!scale)
+				//alert("系统错误");
+
+		});
+
+		//从本地读出的量表信息
+		let s;
+
+		var cdt = document.getElementsByClassName('cdt');
+
+		//所有题目信息
+		var all_test = [];
+
+		//量表说明数据包
+		var scale_explain = [];
+
+		//题目选项数据包
+		var scale_test_package = [];
+		
+		var do_time = new Vue({
+			el: '#do-time',
+			data: {
+				data: '65s'
+			}
+		});
+
+		var do_score = new Vue({
+			el: '#do-score',
+			data: {
+				data: 0
+			}
+		});
+
+		var scale_list = new Vue({
+			el: '#scale-list',
+			data: {
+				scale_explain
+			}
+		})
+		var scale_name = new Vue({
+			el: '#scale-right',
+			data: {
+				name: 'CDT-3',
+				guid: ""
+			}
+		});
+		var scale_test = new Vue({
+			el: '.options',
+			data: {
+				scale_test_package,
+				ispitch: false,
+				indexList: []
+			},
+			methods: {
+				greet: function(it, p) {
+					//console.log(it)
+					let arr = this.indexList.indexOf(p);
+					if (arr > -1) {
+						this.indexList.splice(arr, 1);
+						do_score.data -= parseInt(it.aiQuestionScore);
+					} else {
+						this.indexList.push(p);
+						do_score.data += parseInt(it.aiQuestionScore);
+					}
+					this.ispitch = ~this.ispitch;
+					stopTest()
+					//console.log(do_score.)
+				}
+			}
+		});
+
+		/**
+		 * 测试完成停止计时
+		 */
+		function stopTest() {
+			
+			let img = document.getElementById('re-img');
+						
+			let EndTime = new Date(); //完成时的时间
+			
+			
+			console.log(img.src)
+			let allResult_item=[];	
+			let serviceImg =[];
+			let bottomMsg="";	//最后结论
+			/**
+			 * 后期需要将标准图加上
+			 */
+			
+			let imgObj = {
+				id:11,
+				title:scale_name.name,
+				localURL:"",
+				proURL:"",
+				base64:img.src
+			}
+			
+			
+			allResult_item[0] = scale_name.name;	//项目名
+			allResult_item[1] = do_score.data;	//得分
+			for (let i = 0; i < theEnd.methods.length; i++) {
+				if (theEnd.methods[i].topicName == scale_name.name) {
+					if (do_score.data >= theEnd.methods[i].min &&
+						do_score.data <= theEnd.methods[i].max) {
+						allResult_item[2] = theEnd.methods[i].referenceValue;
+						allResult_item[3] = theEnd.methods[i].des;
+						bottomMsg = scale_name.name+theEnd.methods[i].tzms;
+					}
+				}
+			}
+			if(RESULT_DATA.allResult.length == 0){//如果还没有操作
+				RESULT_DATA.allResult.push(allResult_item);
+				RESULT_DATA.buttomMsg.push(bottomMsg);
+				RESULT_DATA.serviceImg.push(imgObj);
+			}else{
+				let ind =-1;
+				for(let i=0;i<RESULT_DATA.allResult.length;i++){
+					ind = RESULT_DATA.allResult[i].indexOf(scale_name.name)
+					if(ind>-1){
+						RESULT_DATA.allResult[i] = allResult_item;
+						RESULT_DATA.buttomMsg[i] = bottomMsg;
+						RESULT_DATA.serviceImg[i] = imgObj;
+						break;
+					}	
+				}
+				if(ind==-1){
+					RESULT_DATA.allResult.push(allResult_item);
+					RESULT_DATA.buttomMsg.push(bottomMsg);
+					RESULT_DATA.serviceImg.push(imgObj);
+				}
+			}
+			sstorage.setItem('&11', RESULT_DATA);
+			console.log(RESULT_DATA)
+		}
+
+		/**
+		 * 页面跳转
+		 */
+		function next_scale() {
+
+
+			if (isPrint == false) {
+				let date = new Date().toLocaleString('chinese', {
+					hour12: false
+				});
+				date = date.replace(/\//g, '-')
+				if(reportTime == null)
+					reportTime = date;
+				sstorage.setItem('&11', RESULT_DATA);
+				$.ajax({
+					url: config.url + '/report/op/' + reportTime + '/' + userMsg.aiUserId + '/' + userMsg.aiUserName + '/' +
+						'画钟测验' + '/' + JSON.stringify(RESULT_DATA)+'/'+11,
+					type: 'POST',
+					success: function(e) {
+						console.log(e)
+					},
+					error: function() {
+			
+					}
+				})
+			}
+			isPrint = true;
+
+			let c = confirm('您是否测试完题目?')
+			if (c == true) {
+				let ind;
+				console.log(s);
+				for (let i = 0; i < s.items.length; i++) {
+					if (s.items[i].aiScaleId == 11)
+						ind = i;
+				}
+
+				if (ind + 1 == s.items.length) {
+					window.location.href = 'finish.html'
+				} else {
+					toJump(s.items[ind + 1].aiScaleId)
+				}
+
+				alert('页面跳转')
+			} else {
+				//nothing
+			}
+		}
+
+
+		/**
+		 * 切换窗口
+		 */
+		function checkScore() {
+			let a = document.getElementsByClassName('content1');
+			let b = document.getElementsByClassName('content2');
+			for (let i = 0; i < a.length; i++) {
+				b[i].style.display = getComputedStyle(a[i], null).getPropertyValue('display');
+				a[i].style.display = 'none';
+			}
+		}
+		/**
+		 * 返回上一层
+		 */
+		function backPage() {
+			let a = document.getElementsByClassName('content1');
+			let b = document.getElementsByClassName('content2');
+			for (let i = 0; i < a.length; i++) {
+				a[i].style.display = getComputedStyle(b[i], null).getPropertyValue('display');
+				b[i].style.display = 'none';
+			}
+		}
+
+		/**
+		 * 打印报告
+		 */
+		function createReport() {
+			if (isPrint == false) {
+				let date = new Date().toLocaleString('chinese', {
+					hour12: false
+				});
+				date = date.replace(/\//g, '-')
+				if(reportTime == null)
+					reportTime = date;
+				sstorage.setItem('&11', RESULT_DATA);
+				$.ajax({
+					url: config.url + '/report/op/' + reportTime + '/' + userMsg.aiUserId + '/' + userMsg.aiUserName + '/' +
+						'画钟测验' + '/' + JSON.stringify(RESULT_DATA)+'/'+11,
+					type: 'POST',
+					success: function(e) {
+						console.log(e)
+					},
+					error: function() {
+			
+					}
+				})
+			}
+			isPrint = true;
+			//需要先将结果数据提交给服务器
+			window.open("report/report.html")
+		}
+
+		/**
+		 * websocket连接
+		 */
+		var websocket = null;
+		websocket = new WebSocket(config.wsURL + '/websocket/' + USER_ID)
+		websocket.onopen = function(e) {
+			console.log('建立连接')
+		}
+
+		websocket.onclose = function(e) {
+			console.log('连接关闭')
+		}
+
+
+		var flag = false;
+		var src = '';
+		websocket.onmessage = function(e) {
+			let o = JSON.parse(e.data);
+			console.log(o)
+			if (o.incise == true) {
+				if (o.endIncise == true) {
+					src += o.data;
+					document.getElementById('re-img').src = src;
+					src = '';
+				} else {
+					src += o.data;
+				}
+			} else {
+				src = o.data;
+			}
+			if (isFirstLine == 0) {
+				isFirstLine = 1;
+				/**
+				 * 计时开始
+				 */
+				START_TIME = new Date();
+			}
+		}
+
+		// function sendMSG() {
+		// 	websocket.send(JSON.stringify(b));
+
+		// }
+
+		websocket.onerror = function() {
+			console.log('建立连接出错')
+		}
+		window.onbeforeunload = function() {
+			websocket.close();
+		}
+	</script>
+</html>
