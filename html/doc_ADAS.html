@@ -3,6 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>神经心理辅助诊疗系统</title>
+		<script src="config/userConfig.js"></script>
 		<!-- 背景动画 以及初始化样式 -->
 		<link rel="stylesheet" type="text/css" href="../css/normalize.css" />
 		<link rel="stylesheet" type="text/css" href="../css/demo.css">
@@ -32,7 +33,7 @@
 
 						<span class="into-page" v-on:click="intoPage()" v-if="isFinish==0" style="margin-right: 20px;">进入下一题</span>
 						<span class="into-page" onclick="printPDF()" v-if="isFinish==1" style="margin-right: 20px;">打印报告</span>
-						<span class="into-page" onclick="next_scale()" v-if="isFinish==1" style="margin-right: 20px;">下一个测验</span>
+						<span id="f" class="into-page" onclick="next_scale()" v-if="isFinish==1" style="margin-right: 20px;">下一个测验</span>
 					</div>
 				</div>
 
@@ -190,7 +191,7 @@
 					</div>
 				</div>
 				<div id="third" class="page-content" v-bind:class="[pagePos==2?'toShow':'toHidden']">
-					<div class="scale-left">
+					<div class="scale-left scrollbar" style="overflow: overlay;">
 						<div class="content-title">
 							2.命名物体或手指
 						</div>
@@ -395,7 +396,7 @@
 					</div>
 				</div>
 				<div id="eighth" class="page-content" v-bind:class="[pagePos==7||pagePos==8?'toShow':'toHidden']">
-					<div class="scale-left">
+					<div class="scale-left scrollbar" style="overflow: overlay;">
 						<div class="content-title">
 							7.单词辨认任务
 						</div>
@@ -586,10 +587,10 @@
 	<script src="../js/toJump.js"></script>
 	<script>
 		//const USER_ID = window.location.search.split('?')[1].split(0, 1).join("");
-	let USER_ID = sstorage.getItem('logins');
-	if(USER_ID==null||USER_ID==undefined)
-		location.href = '../index.html'
-	USER_ID = USER_ID.id
+	// let USER_ID = sstorage.getItem('logins');
+	// if(USER_ID==null||USER_ID==undefined)
+	// 	location.href = '../index.html'
+	// USER_ID = USER_ID.id
 		/**
 		 * 数据初始化
 		 */
@@ -1418,7 +1419,7 @@
 					let arr = this.checkBoxIndex_1.indexOf(index);
 					setTimeout(() => {
 						this.isClick = true;
-					}, 2)
+					}, 2000)
 					if (this.pos.length > 0) {
 						if (index == this.pos[0]) {
 							this.pos.pop();
@@ -1481,6 +1482,7 @@
 				 * @param {Object} index 第二题
 				 */
 				showPic_2: function(it, index) {
+					let that = this;
 					let ind = it[0];
 					clueData.ind.splice(0)
 					clueData.ind.push(ind);
@@ -1500,17 +1502,25 @@
 					this.isShow = true;
 					let img = document.createElement("img");
 					img.src = this.picUrl[index];
-					let canvas = document.createElement("canvas");
-					canvas.width = img.width;
-					canvas.height = img.height;
-					canvas.getContext("2d").drawImage(img, 0, 0);
-					let d = canvas.toDataURL();
-					let o = {
-						target: this.userMsg.aiUserId,
-						data: d,
-						status: 1,
-					}
-					this.sendMsg(o)
+					img.addEventListener('load',()=>{
+						let canvas = document.createElement("canvas");
+						canvas.width = img.width;
+						canvas.height = img.height;
+						canvas.getContext("2d").drawImage(img, 0, 0);
+						
+						
+							let d = canvas.toDataURL();
+							let o = {
+								target: that.userMsg.aiUserId,
+								data: d,
+								status: 1,
+							}
+							console.log(o)
+							that.sendMsg(o)
+					})
+					
+				
+					
 				},
 				wordTrue_2: function(i) {
 					if (this.wordSelect_2.indexOf(i) < 0) {
@@ -1819,6 +1829,17 @@
 
 		//获取量表基本信息(首页)
 		var scales = sstorage.getItem("scaleRest");
+		
+		let x = -1;
+		for (let i = 0; i < scales.items.length; i++) {
+			if (scales.items[i].aiScaleId == 5)
+				x = i;
+		}
+		if (x + 1 == scales.items.length) {
+			document.getElementById('f').style.display = 'none'
+		}
+		
+		
 		for (let i = 0; i < scales.items.length; i++) {
 
 			if (scales.items[i].aiScaleId == 5) {
@@ -1871,6 +1892,21 @@
 			}
 			vue.isPrint = true;
 			window.open('report/report.html')
+			var scales = sstorage.getItem("scaleRest");
+			let x = -1;
+			for (let i = 0; i < scales.items.length; i++) {
+				if (scales.items[i].aiScaleId == 5)
+					x = i;
+			}
+			if (x + 1 == scales.items.length) {
+				let o = {
+					target: vue.userMsg.aiUserId,
+					status: 3,
+					from_who: USER_ID
+				}
+				vue.sendMsg(o);
+				location.href = 'finish.html'
+			}
 		}
 
 		function next_scale() {
