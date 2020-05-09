@@ -1,12 +1,241 @@
 <!DOCTYPE html>
 <html lang="zh">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<title></title>
-</head>
-<body>
-	这是设置页面
-</body>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<meta charset="utf-8">
+		<title>神经心理辅助诊疗系统</title>
+		<script src="config/userConfig.js"></script>
+		<!-- 背景动画 以及初始化样式-->
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="../css/demo.css">
+		<link rel="stylesheet" href="../css/style.css">
+		<script type="text/javascript" src="../js/vue.js"></script>
+		<!-- 引入jQuery.js -->
+		<script src="../js/jquery/jquery.min.js"></script>
+		<!-- 引入element -->
+		<script src="../element/element.js"></script>
+		<link rel="stylesheet" type="text/css" href="../element/element.css" />
+		<script src="config/urlConfig.js"></script>
+		<script src="utils/Storage.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="../css/setting.css" />
+	</head>
+	<body>
+		<!-- 背景图 -->
+		<div class="satic-area">
+			<div class="dynamic-area1"></div>
+			<div class="dynamic-area2"></div>
+		</div>
+
+		<div id="content">
+
+			<div class="scale" style="flex-direction: column;">
+
+				<div class="top">
+
+				</div>
+				<div class="center">
+					<div class="left">
+						<div class="left-content">
+							<div class="mButton mButton-bgc-blue">
+								用户管理
+							</div>
+							<div class="mButton mButton-bgc-white">
+								本机设置
+							</div>
+						</div>
+					</div>
+					<div class="right">
+						<div class="right-content">
+							<div class="right-1">
+								<el-input style="width: 500px;" placeholder="请输入内容" class="mDivider">
+									<i slot="prefix" class="el-input__icon el-icon-search"></i>
+								</el-input>
+								<div class="mButton-1-1 mDivider">
+									查询
+								</div>
+								<div class="mButton-1-2">
+									新增
+								</div>
+							</div>
+							<div class="right-2">
+								<table class="table-1" style="border-top-left-radius: 5px;border-top-right-radius: 5px;">
+									<tr>
+										<td class="t-border-right" style="width: 18%;">id/账号</td>
+										<td class="t-border-right" class="t-border-right" style="width: 18%;">姓名</td>
+										<td class="t-border-right" style="width: 20%;">权限类型</td>
+										<td class="t-border-right" style="width: 20%;">账号状态</td>
+										<td style="width: 24%;">操作</td>
+									</tr>
+								</table>
+								<div class="table-list">
+									<table style="border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;border-top: none;">
+										<tr v-for="(it,index) in tableList" :key="index" class="table-mouserOver">
+											<td class="t-border-right" style="width: 18%;" :style="getTableStyle(index)">id/账号</td>
+											<td class="t-border-right" style="width: 18%;" :style="getTableStyle(index)">姓名</td>
+											<td class="t-border-right" style="width: 20%;" :style="getTableStyle(index)">权限类型</td>
+											<td class="t-border-right" style="width: 20%;font-weight: 800;" :style="[getTableStyle(index),getStatus(index)]">账号状态</td>
+											<td style="width: 24%;" :style="getTableStyle(index)">
+												<div class="mButton-4-3" @click="reback(index)">
+													恢复
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+
+								<div class="table-page">
+									<el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage"
+									 :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="total">
+									</el-pagination>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="bottom">
+					<div class="mButton-2-1">
+						<img src="../svg/setting_icons/back.svg">
+						<span>返回</span>
+					</div>
+					<div class="mButton-2-2">
+						<img src="../svg/setting_icons/setting.svg">
+						<span>修改</span>
+					</div>
+					<div class="mButton-2-3">
+						<img src="../svg/setting_icons/rubbish.svg">
+						<span>作废</span>
+					</div>
+
+					<div class="mButton-3-1">
+						代发
+					</div>
+				</div>
+				<div class="mButton-4-1">
+					代发
+				</div>
+				<div class="mButton-4-2">
+					代发
+				</div>
+			</div>
+		</div>
+
+	</body>
+	<script>
+		var Profile = Vue.extend({
+			template: `<div class="Message">
+				<div class="Message-content">
+					<div class="Message-header"></div>
+					<img src="../svg/setting_icons/error.svg" >
+					<p class="Message-text" v-for="(it,index) in Message.text" :key="index">{{it}}</p>
+					<div class="Message-button">
+						<div class="Message-button-cancle" @click="cancle">
+							取消
+						</div>
+						<div class="Message-button-ok" @click="ok">
+							确认
+						</div>
+					</div>
+				</div>
+			</div>`,
+			data(a) {
+				return {
+					res: null,
+					rej: null
+				}
+			},
+			props: ['Message'],
+			methods: {
+				get() {
+					return new Promise((res, rej) => {
+						this.res = res;
+						this.rej = rej;
+					})
+				},
+				ok() {
+
+					this.$destroy(true);
+					this.$el.parentNode.removeChild(this.$el);
+					this.res()
+				},
+				cancle() {
+					this.$destroy(true);
+					this.$el.parentNode.removeChild(this.$el);
+					this.rej()
+				},
+			}
+		})
+
+		function Message(value) {
+			let instance = new Profile({
+				el: document.createElement('div'),
+				propsData: {
+					Message: {
+						text: value.text
+					}
+				}
+			});
+			document.body.appendChild(instance.$el)
+			return new Promise((res, rej) => {
+				instance.get().then(function() {
+					res()
+				}).catch(function() {
+					rej()
+				})
+			})
+		}
+		Vue.prototype.$Message = Message
+		new Vue({
+			el: '#content',
+			data() {
+				return {
+					tableList: [1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1, 1, 1, 11, 1, 1, 1, 1],
+					currentPage: 1,
+					total: 1000,
+				}
+			},
+			computed: {
+
+			},
+			methods: {
+				reback(index) {
+					this.$Message({
+						text: ['是否确认回复该用户账号？', '恢复后即可查询该用户的所有信息。']
+					}).then(function() {
+						console.log(1)
+					}).catch(function() {
+						console.log(9)
+					})
+				},
+				getTableStyle(index) {
+					return {
+						borderTop: index == 0 ? 'none' : '',
+						borderBottom: index < this.tableList.length - 1 ? 'solid 1px rgba(0,0,0,0.3)' : ''
+					}
+				},
+				getStatus(index) {
+					var t = '#D93838';
+					return {
+						color: '#128057'
+					}
+				},
+				tableItemMouserOver() {
+
+				},
+				handleSizeChange() {
+
+				},
+				handleCurrentChange() {
+
+				},
+
+			},
+			created() {
+
+			}
+		})
+	</script>
 </html>

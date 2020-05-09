@@ -10,8 +10,20 @@
 	</head>
 	<body>
 		<div id="app" style="width: 500px;height: 500px;background-color: wheat;">
+			
 			<div style="border: solid 1px #000000;">
 				 <el-radio :label="3">备选项</el-radio>
+			</div>
+		</div>
+		<div id="" style="height: 500px;width: 200px;display: flex;flex-direction: column;background-color: #00FF00;">
+			<div id="">
+				1
+			</div>
+			<div class="">
+				1
+			</div>
+			<div class="" style="height: 100%;width: 70%;background-color: #008B8B;">
+				
 			</div>
 		</div>
 	</body>
@@ -25,5 +37,16 @@
 			}
 		},
 	})
+	let a = new WebSocket('ws://122.112.225.219:88/websocket/99');
+	a.onmessage =function(e){
+		console.log(e.data)
+	}
+	setTimeout(function(){
+		a.send(JSON.stringify({
+			target:22,
+			data:55555
+		}))
+	},2000)
+	
 	</script>
 </html>
