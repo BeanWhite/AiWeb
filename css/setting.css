@@ -2,12 +2,12 @@
 	width: 20%;
 	height: 100%;
 	border-radius: 5px;
-	border: solid 1px darkgray;
+	border: solid 1px #C3C3C3;
 	overflow: hidden;
 }
 
 .right {
-	border: solid 1px darkgray;
+	border: solid 1px #C3C3C3;
 	border-radius: 5px;
 	height: 100%;
 	width: calc(80% - 20px);
@@ -43,16 +43,31 @@
 	flex-direction: column;
 }
 
+.right-pages {
+	width: 100%;
+	height: 100%;
+}
+
 .table-list {
 	height: 100%;
 	overflow: overlay;
 }
 
 .bottom {
+	padding-top: 10px;
 	display: flex;
 	width: 100%;
+	justify-content: flex-end;
 	height: auto;
 }
+.bottom img {
+	background-color: #3185BB;
+	border-radius: 50px;
+	padding: 5px;
+	width: 24px;
+	margin-right: 10px;
+}
+
 
 .left-content {
 	margin: 20px;
@@ -161,6 +176,7 @@
 }
 
 .mButton-3-1 {
+
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -265,9 +281,10 @@ table td {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(0, 0, 0, 0.3);
 }
-.Message-content{
+
+.Message-content {
 	width: 400px;
 	min-height: 150px;
 	height: auto;
@@ -280,23 +297,27 @@ table td {
 	overflow: hidden;
 	text-align: center;
 }
-.Message-text{
+
+.Message-text {
 	margin: 5px 0;
 }
-.Message-header{
+
+.Message-header {
 	width: 100%;
 	background-color: #3185BB;
 	height: 30px;
 	margin-bottom: 10px;
 }
-.Message-button{
+
+.Message-button {
 	width: auto;
 	height: auto;
 	display: flex;
 	justify-content: center;
 	margin: 10px;
 }
-.Message-button-ok{
+
+.Message-button-ok {
 	display: inline-block;
 	white-space: nowrap;
 	border-radius: 5px;
@@ -305,9 +326,10 @@ table td {
 	padding: 5px 20px;
 	background-color: #20996C;
 	margin-left: 30px;
-	
+
 }
-.Message-button-cancle{
+
+.Message-button-cancle {
 	display: inline-block;
 	white-space: nowrap;
 	border-radius: 5px;
@@ -316,5 +338,49 @@ table td {
 	padding: 5px 20px;
 	background-color: #D93838;
 	margin-right: 30px;
+}
+
+.right-2-s {
+	display: flex;
+	flex-direction: column;
+}
+
+.right-2-1-a {
+	display: flex;
+
+}
+
+.right-2-2-msg {
+	border-radius: 5px;
+	border: solid 1px #C3C3C3;
+	padding: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.right-2-2-msg input {
+	text-align: center;
+}
+
+.align-center {
+	margin-bottom: 10px;
+	margin-top: 10px;
+	font-size: 20px;
+	color: #1B77C4;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+.cc:hover{
+	color: #337FD2;
+	fill:#1B70CE;
+}
+
+.icon-margin-r{
+	margin-right: 10px;
+}
+.icon-margin-l{
+	margin-left: 10px;
 }
 

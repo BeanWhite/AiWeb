@@ -1,6 +1,6 @@
 var config = {
-	url:'http://122.112.225.219:88',
-	wsURL:'ws://122.112.225.219:88', 
+	// url:'http://122.112.225.219:88',
+	// wsURL:'ws://122.112.225.219:88', 
 
 
 
@@ -10,8 +10,8 @@ var config = {
 
 
 	//imgPrintUrl:'http://localhost:81/xlrzpc/img/cacheImg',
-	// url: "http://localhost:88",
-	// wsURL: "ws://localhost:88",
+	url: "http://localhost:88",
+	wsURL: "ws://localhost:88",
 	// imgPrintUrl:'http://localhost:8848/AiWeb/img/cacheImg'
 
 	// imgPrintUrl:'http://192.168.1.105:8848/AiWeb/img/cacheImg'	,//pdf图片url

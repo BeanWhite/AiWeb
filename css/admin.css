@@ -82,7 +82,8 @@ body{
 	height: 50px;
 	text-align: center;
 	line-height: 50px;
-	background-color: #008B8B;
+	background-color: cornflowerblue;
+	color: white;
 	border-radius: 5px;
 	border: solid 1px transparent;
 	cursor: pointer;

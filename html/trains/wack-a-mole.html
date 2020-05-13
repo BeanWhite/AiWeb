@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<script src="../../js/jquery-3.4.1.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../element/element.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../element/element.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/wackAMole.css" />
+		<title>神经心理辅助诊疗系统</title>
+	</head>
+	<body>
+		<div class="app">
+			<div class="mole-box">
+				<div class="row" v-for="(it,index) in light">
+					<div class="colum" v-for="(i,ind) in it" :style="{backgroundColor:getColor(ind,index)}" @click="itemClick(ind,index)">
+
+					</div>
+				</div>
+			</div>
+
+			<div class="" style="margin-top: 10px;">
+
+			</div>
+			<div class="" style="margin-bottom: 10px;">
+				得分:{{score}}
+			</div>
+			<div class="mole-box">
+				<div @click="itemClickHandlerEvent(index)" class="list" v-for="(it,index) in moleModel" :key="index" :style="{backgroundColor:(index==position?' #008B8B':'')}">
+
+				</div>
+			</div>
+
+	
+			<div class="mole-box" @mouseover="mouserOverEvent" @mousemove="mouserOverEvent">
+				<div class="" style="position: absolute;width: 40px;height: 40px;background-color: #008B8B;" :style="{left:x+'px',top:y+'px'}">
+
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		new Vue({
+			el: '.app',
+			data() {
+				var light = []
+				for (let i = 0; i < 10; i++)
+					light.push(new Array(10))
+				return {
+					x: -1,
+					y: -1,
+					x1: -1,
+					y1: -1,
+					position: -1,
+					lock: false,
+					moleModel: new Array(100),
+					light,
+					score: 0
+				}
+			},
+			methods: {
+				getColor(x,y){
+					if(x+1==this.x1&&y+1==this.y1){
+						return 'red'
+					}else return null;
+				},
+				mouserOverEvent(e) {
+					this.x = e.offsetX;
+					this.y = e.offsetY;
+					console.log(e)
+				},
+				getPosition(x, y) {
+
+				},
+				itemClick(x,y){
+					if(this.lock)
+					return
+					if(this.x1 == x+1&&this.y1==y+1){
+						this.lock = true
+						this.score++
+					}
+				},
+				itemClickHandlerEvent(e) {
+					if (this.lock)
+						return
+					if (e == this.position) {
+						this.lock = true;
+						this.score++
+						console.log('ok')
+					}
+				}
+			},
+			mounted() {
+				/**
+				 * 		1	2	3
+				 * 		4		5	
+				 * 		6	7	8
+				 */
+				let that = this;
+				setInterval(function() {
+					
+					let r = Math.floor(Math.random() * 100)
+					that.position = r;
+				}, 1500);
+				this.x1 = Math.floor(Math.random() * 10);
+				this.y1 = Math.floor(Math.random() * 10);
+				setInterval(() => {
+					let p = -1;
+					that.lock = false
+					p = Math.floor(Math.random() * 8) + 1;
+					if (p == 1) {
+						if (this.x1 - 1 < 1)
+							this.x1++
+						else
+							this.x1--;
+
+						if (this.y1 - 1 < 1)
+							this.y1++
+						else
+							this.y1--;
+
+					} else if (p == 2) {
+						if (this.y1 - 1 < 1)
+							this.y1++
+						else
+							this.y1--;
+					} else if (p == 3) {
+						if (this.y1 - 1 < 1)
+							this.y1++
+						else
+							this.y1--;
+						if (this.x1 + 1 > this.light[0].length)
+							this.x1--
+						else
+							this.x1++
+					} else if (p == 4) {
+
+						if (this.x1 - 1 < 1)
+							this.x1++
+						else
+							this.x1--;
+					} else if (p == 5) {
+
+						if (this.x1 + 1 > this.light[0].length)
+							this.x1--
+						else
+							this.x1++
+					} else if (p == 6) {
+						if (this.x1 - 1 < 1)
+							this.x1++
+						else
+							this.x1--;
+						if (this.y1 + 1 > this.light.length)
+							this.y1--;
+						else
+							this.y1++
+					} else if (p == 7) {
+
+						if (this.y1 + 1 > this.light.length)
+							this.y1--;
+						else
+							this.y1++
+					} else if (p == 8) {
+						if (this.y1 + 1 > this.light.length)
+							this.y1--;
+						else
+							this.y1++
+
+						if (this.x1 + 1 > this.light[0].length)
+							this.x1--
+						else
+							this.x1++
+					}
+				}, 1000)
+			}
+		})
+	</script>
+
+</html>
