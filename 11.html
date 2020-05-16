@@ -1,52 +1,18 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<link rel="stylesheet" type="text/css" href="./element/element.css" />
-		<script src="js/vue.js"></script>
-		<script src="js/jquery/jquery.min.js"></script>
-		<script src="./element/element.js" type="text/javascript" charset="utf-8"></script>
-		<title></title>
-	</head>
-	<body>
-		<div id="app" style="width: 500px;height: 500px;background-color: wheat;">
-			
-			<div style="border: solid 1px #000000;">
-				 <el-radio :label="3">备选项</el-radio>
-			</div>
-		</div>
-		<div id="" style="height: 500px;width: 200px;display: flex;flex-direction: column;background-color: #00FF00;">
-			<div id="">
-				1
-			</div>
-			<div class="">
-				1
-			</div>
-			<div class="" style="height: 100%;width: 70%;background-color: #008B8B;">
-				
-			</div>
-		</div>
-	</body>
-
-	<script type="text/javascript">
-	new Vue({
-		el:'#app',
-		data(){
-			return{
-				a:0
-			}
-		},
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<script src="js/jquery-3.4.1.js" type="text/javascript" charset="utf-8"></script>
+	<title></title>
+</head>
+<body>
+	<iframe src="http://localhost:8080/games/vistrac" width="600" height="600" style="background-color: #009688;"></iframe>
+</body>
+<script type="text/javascript">
+	window.addEventListener("message",(e)=>{
+		console.log(e.data,"###########")
 	})
-	let a = new WebSocket('ws://122.112.225.219:88/websocket/99');
-	a.onmessage =function(e){
-		console.log(e.data)
-	}
-	setTimeout(function(){
-		a.send(JSON.stringify({
-			target:22,
-			data:55555
-		}))
-	},2000)
-	
-	</script>
+</script>
 </html>

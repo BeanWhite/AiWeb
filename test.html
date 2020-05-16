@@ -2,22 +2,37 @@
 <html lang="zh">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	
 	<script src="js/jquery-3.4.1.js" type="text/javascript" charset="utf-8"></script>
-	<title></title>
+	<title>99999</title>
 </head>
 <body>
-	
+	<div id="" style="width: 400px;height: 400px;background-color: red;">
+		8888
+	</div>
+	<button onclick="printPDF()">ok</button>
 </body>
-<script>
-	let url = 'http://localhost:88/t';
-	$.ajax({
-		type:'PUT',
-		url:url+'/t/%2F',
-		success:function(e){
-			console.log(e)
-		}
-	})
+<script type="text/javascript">
+	function printPDF() {
+		var k = document.documentElement.outerHTML;
+		var pdf = 'test.pdf';
+		$.ajax({
+			type: "POST",
+			url: "http://localhost:88/pdf/p",
+			data: {
+				s: k,
+				name: pdf
+			},
+			success: function(data) {
+				console.log(data)
+				//if (data.object == true)
+					// window.open('http://localhost:8848/AiWeb/js/pdf.js/web/viewer.html?../../pdfDocument/' + pdf, 'PDF');
+				//window.open('http://192.168.62.61:8848/AiWeb/js/pdf.js/web/viewer.html?../../pdfDocument/' + pdf, 'PDF');
+			},
+			error: function() {
+				console.log(555)
+			}
+		})
+	}
 </script>
 </html>

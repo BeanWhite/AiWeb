@@ -864,7 +864,7 @@
 			var pdf = 'test.pdf';
 			$.ajax({
 				type: "POST",
-				url: "http://192.168.62.61:80/pdf/p",
+				url: "http://localhost:88/pdf/p",
 				// url: 'http://localhost:80/pdf/p',
 				data: {
 					s: k,
@@ -872,14 +872,14 @@
 				},
 				success: function(data) {
 					console.log(data)
-					if (data.object == true)
+					//if (data.object == true)
 						// window.open('http://localhost:8848/AiWeb/js/pdf.js/web/viewer.html?../../pdfDocument/' + pdf, 'PDF');
-					window.open('http://192.168.62.61:8848/AiWeb/js/pdf.js/web/viewer.html?../../pdfDocument/' + pdf, 'PDF');
+					//window.open('http://192.168.62.61:8848/AiWeb/js/pdf.js/web/viewer.html?../../pdfDocument/' + pdf, 'PDF');
 				},
 				error: function() {
 					console.log(555)
 				}
 			})
-		};
+		}
 	</script>
 </html>

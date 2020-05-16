@@ -64,7 +64,7 @@
 	background-color: #3185BB;
 	border-radius: 50px;
 	padding: 5px;
-	width: 24px;
+	width: 30px;
 	margin-right: 10px;
 }
 
@@ -340,13 +340,18 @@ table td {
 	margin-right: 30px;
 }
 
-.right-2-s {
+
+
+.right-2-3 {
 	display: flex;
 	flex-direction: column;
+	justify-content: flex-start;
+	height: 100%;
 }
 
 .right-2-1-a {
 	display: flex;
+	height: auto;
 
 }
 
@@ -371,6 +376,7 @@ table td {
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
+	height: auto;
 }
 .cc:hover{
 	color: #337FD2;

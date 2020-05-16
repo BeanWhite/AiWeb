@@ -410,9 +410,8 @@
 									<el-input :show-password="true" type="password" v-model.trim="localManage.checkMsg.pwd2" style="width: 22%;"
 									 placeholder="确认密码"></el-input>
 								</div>
-								<div class="" style="width: 100%;display: flex;justify-content: center;margin-top: 20px;">
-
-									<div class="mButton-2-2" style="width: 100px;" @click="changeUser">
+								<div style="width: 100%;display: flex;justify-content: center;margin-top: 20px;align-items: center;height: 100%;">
+									<div class="mButton-2-2" style="width: 180px;height: 60px;font-size: 20px;" @click="changeUser">
 										<img src="../svg/setting_icons/ok.svg"><span>修改</span>
 									</div>
 								</div>
@@ -821,11 +820,14 @@
 							value:JSON.stringify(o)
 						},
 						success:function(e){
-							if(e.object)
+							if(e.object){
 								that.$message({
 									type:'success',
 									message:'创建成功!'
 								})
+								that.userManage.status = 0;
+							}
+								
 							else {
 								that.$message({
 									type:'error',
@@ -901,6 +903,7 @@
 											message: '修改成功！',
 											type: 'success'
 										})
+										that.userManage.status =0;
 									} else {
 										that.$message({
 											showClose: true,
@@ -1034,6 +1037,7 @@
 									url: config.url + '/users/status/1/100',
 									success: function(e) {
 										that.tableList = e.object;
+										that.userManage.status = 0;
 									}
 								})
 							},

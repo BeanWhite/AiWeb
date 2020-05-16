@@ -3,7 +3,6 @@ var config = {
 	// wsURL:'ws://122.112.225.219:88', 
 
 
-
 	imgPrintUrl: 'D:/nginx-1.17.7/html/xlrzpc/img/cacheImg', //服务器使用
 	//imgPrintUrl:'http://localhost:81/xlrzpc/img/cacheImg',
 	//imgPrintUrl:'D://mmse222.png'
@@ -24,6 +23,7 @@ var config = {
 	/**
 	 * pdf 打印时需要的图片地址
 	//  */
+	
 	// imgUrl_test:'http://192.168.1.105:8848/img/5',	//测试使用
 	// imgUrl:'http://192.168.1.105:8848/img'	,//运营使用
 }
